@@ -78,9 +78,9 @@ export function RevealObserver() {
     // A fast jump (End key, anchor, flick) can skip past elements without them ever
     // intersecting. Anything that ends up above the viewport is shown outright so nothing
     // is left hidden when the reader scrolls back up.
-    let scrollScheduled = false;
+    let scrollTimer: number | null = null;
     const revealAbove = () => {
-      scrollScheduled = false;
+      scrollTimer = null;
       for (const element of pending) {
         if (element.dataset.reveal === "pending" && element.getBoundingClientRect().bottom < 0) {
           element.dataset.reveal = "in";
@@ -88,10 +88,10 @@ export function RevealObserver() {
         }
       }
     };
+    // A timeout (not requestAnimationFrame) so it still runs in background documents.
     const onScroll = () => {
-      if (!scrollScheduled) {
-        scrollScheduled = true;
-        window.requestAnimationFrame(revealAbove);
+      if (scrollTimer === null) {
+        scrollTimer = window.setTimeout(revealAbove, 50);
       }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -108,6 +108,9 @@ export function RevealObserver() {
     return () => {
       observer.disconnect();
       window.removeEventListener("scroll", onScroll);
+      if (scrollTimer !== null) {
+        window.clearTimeout(scrollTimer);
+      }
       mediaQuery.removeEventListener("change", onMotionChange);
     };
   }, [pathname]);

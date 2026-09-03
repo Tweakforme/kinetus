@@ -1,0 +1,60 @@
+/* Deck utility bar executed in tokens: bg/deep, text/inverse, py space-2, Label. */
+.bar {
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+  padding-block: var(--kinetus-space-2);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kinetus-space-4);
+}
+
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--kinetus-space-2);
+  row-gap: 0;
+  margin: 0;
+}
+
+.icon {
+  flex: 0 0 auto;
+  color: var(--kinetus-text-inverse);
+}
+
+/* Each packaging string stays on one line; on narrow viewports the second wraps below. */
+.line {
+  white-space: nowrap;
+}
+
+.separator {
+  display: none;
+}
+
+.link {
+  display: none;
+  flex: 0 0 auto;
+  padding-block: var(--kinetus-space-2);
+  color: var(--kinetus-text-inverse);
+  text-decoration: none;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.link:hover,
+.link:active {
+  color: var(--kinetus-brand-teal-light);
+}
+
+@media (min-width: 768px) {
+  .separator {
+    display: inline;
+  }
+
+  .link {
+    display: inline-block;
+  }
+}

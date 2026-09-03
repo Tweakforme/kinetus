@@ -1,0 +1,56 @@
+/*
+ * Figma Button set (5:53): Primary (bg brand/teal, inverse label), Secondary (1px
+ * brand/teal border, teal label), Tertiary (label only, bg/subtle on hover). All px
+ * space-6 / py space-4, radius/sm, 48px tall. Transitions on the shared motion curve.
+ */
+.primary,
+.secondary,
+.tertiary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kinetus-space-2);
+  min-height: var(--kinetus-tap-target);
+  padding: var(--kinetus-space-4) var(--kinetus-space-6);
+  border: 1px solid transparent;
+  border-radius: var(--kinetus-radius-sm);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--motion-duration) var(--motion-ease),
+    border-color var(--motion-duration) var(--motion-ease),
+    color var(--motion-duration) var(--motion-ease);
+}
+
+.primary {
+  background: var(--kinetus-brand-teal);
+  border-color: var(--kinetus-brand-teal);
+  color: var(--kinetus-text-inverse);
+}
+
+.primary:hover,
+.primary:active {
+  background: var(--kinetus-brand-teal-dark);
+  border-color: var(--kinetus-brand-teal-dark);
+}
+
+.secondary {
+  background: transparent;
+  border-color: var(--kinetus-brand-teal);
+  color: var(--kinetus-brand-teal);
+}
+
+.secondary:hover,
+.secondary:active {
+  background: var(--kinetus-brand-teal-light);
+}
+
+.tertiary {
+  background: transparent;
+  color: var(--kinetus-text-primary);
+}
+
+.tertiary:hover,
+.tertiary:active {
+  background: var(--kinetus-bg-subtle);
+}

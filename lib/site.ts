@@ -19,6 +19,12 @@ export const RESEARCH_USE_COPY_LINES = [
 
 export const RESEARCH_USE_COPY = RESEARCH_USE_COPY_LINES.join(" ");
 
+/** Header utility-bar strings — verbatim from the client's packaging. Do not reword. */
+export const UTILITY_BAR_LINES = ["RESEARCH USE ONLY", "NOT FOR HUMAN CONSUMPTION."] as const;
+
+/** Hero eyebrow — verbatim from the client's packaging. Do not reword. */
+export const TAGLINE = "PRECISION SCIENCE. PEAK POTENTIAL.";
+
 export type NavLink = {
   label: string;
   href: string;
@@ -29,7 +35,19 @@ export type NavLink = {
   prefetch?: boolean;
 };
 
-/** Canonical full listing, shown after the collection links in the catalogue nav. */
+/** A primary-nav entry; `children` makes it a dropdown (desktop) / accordion (drawer). */
+export type NavItem = NavLink & {
+  children?: NavLink[];
+};
+
+/** Minimal collection shape the nav builder needs (see lib/collections getNavCollections). */
+export type NavCollectionInput = {
+  slug: string;
+  name: string;
+  products: { slug: string; name: string }[];
+};
+
+/** Canonical full listing. */
 export const ALL_PRODUCTS_LINK: NavLink = { label: "View all products", href: "/products" };
 
 /** Hub of every published collection. */
@@ -39,12 +57,25 @@ export const ALL_COLLECTIONS_LINK: NavLink = { label: "All collections", href: "
 export const CONTACT_LINK: NavLink = { label: "Contact", href: "/contact", prefetch: false };
 
 /**
- * Primary navigation = published collections (database-driven, display order) as
- * top-level items per the client-confirmed deck, then Contact. "View all products",
- * About and FAQ live in the footer (Phase 4.5 craft pass) so the nav fits one line.
+ * Primary navigation, per the client-confirmed deck: each published collection is a
+ * top-level dropdown listing its products and ending with "View all", then Contact.
+ * View all products, About and FAQ live in the footer.
  */
-export function buildPrimaryNav(collectionLinks: NavLink[]): NavLink[] {
-  return [...collectionLinks, CONTACT_LINK];
+export function buildPrimaryNav(collections: NavCollectionInput[]): NavItem[] {
+  return [
+    ...collections.map((collection) => ({
+      label: collection.name,
+      href: `/collections/${collection.slug}`,
+      children: [
+        ...collection.products.map((product) => ({
+          label: product.name,
+          href: `/products/${product.slug}`,
+        })),
+        { label: "View all", href: `/collections/${collection.slug}` },
+      ],
+    })),
+    CONTACT_LINK,
+  ];
 }
 
 /** Footer "Catalogue" column = All products, each published collection, All collections. */
