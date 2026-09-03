@@ -1,0 +1,184 @@
+@import "./tokens.css";
+
+/*
+ * Global base styles. All colour, spacing, radius and type values come from
+ * app/tokens.css. Breakpoint: 768px (mobile-first).
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--kinetus-bg-base);
+  color: var(--kinetus-text-primary);
+  font-family: var(--kinetus-font-family);
+  font-size: var(--kinetus-type-body-size);
+  line-height: var(--kinetus-type-body-line-height);
+  font-weight: var(--kinetus-type-body-weight);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Lock page scroll while the mobile navigation drawer is open. */
+body.nav-open {
+  overflow: hidden;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+a {
+  color: inherit;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--kinetus-brand-teal);
+  outline-offset: 2px;
+}
+
+/* Skip link: visually hidden until focused. */
+.skip-link {
+  position: absolute;
+  left: var(--kinetus-space-4);
+  top: var(--kinetus-space-4);
+  z-index: 1000;
+  padding: var(--kinetus-space-2) var(--kinetus-space-3);
+  background: var(--kinetus-bg-base);
+  color: var(--kinetus-text-primary);
+  border: 1px solid var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-sm);
+  transform: translateY(-200%);
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------- Typography classes (map 1:1 to the Figma text styles) ----------
+ * Headings are mobile-first: Mobile/* below 768px, desktop style at >=768px.
+ */
+.type-display {
+  font-size: var(--kinetus-type-mobile-display-size);
+  line-height: var(--kinetus-type-mobile-display-line-height);
+  font-weight: var(--kinetus-type-mobile-display-weight);
+  letter-spacing: var(--kinetus-type-mobile-display-letter-spacing);
+}
+
+.type-h1 {
+  font-size: var(--kinetus-type-mobile-h1-size);
+  line-height: var(--kinetus-type-mobile-h1-line-height);
+  font-weight: var(--kinetus-type-mobile-h1-weight);
+  letter-spacing: var(--kinetus-type-mobile-h1-letter-spacing);
+}
+
+.type-h2 {
+  font-size: var(--kinetus-type-mobile-h2-size);
+  line-height: var(--kinetus-type-mobile-h2-line-height);
+  font-weight: var(--kinetus-type-mobile-h2-weight);
+  letter-spacing: var(--kinetus-type-mobile-h2-letter-spacing);
+}
+
+.type-h3 {
+  font-size: var(--kinetus-type-mobile-h3-size);
+  line-height: var(--kinetus-type-mobile-h3-line-height);
+  font-weight: var(--kinetus-type-mobile-h3-weight);
+  letter-spacing: var(--kinetus-type-mobile-h3-letter-spacing);
+}
+
+.type-body-l {
+  font-size: var(--kinetus-type-body-l-size);
+  line-height: var(--kinetus-type-body-l-line-height);
+  font-weight: var(--kinetus-type-body-l-weight);
+  letter-spacing: var(--kinetus-type-body-l-letter-spacing);
+}
+
+.type-body {
+  font-size: var(--kinetus-type-body-size);
+  line-height: var(--kinetus-type-body-line-height);
+  font-weight: var(--kinetus-type-body-weight);
+  letter-spacing: var(--kinetus-type-body-letter-spacing);
+}
+
+.type-body-s {
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+  font-weight: var(--kinetus-type-body-s-weight);
+  letter-spacing: var(--kinetus-type-body-s-letter-spacing);
+}
+
+.type-caption {
+  font-size: var(--kinetus-type-caption-size);
+  line-height: var(--kinetus-type-caption-line-height);
+  font-weight: var(--kinetus-type-caption-weight);
+  letter-spacing: var(--kinetus-type-caption-letter-spacing);
+}
+
+.type-label {
+  font-size: var(--kinetus-type-label-size);
+  line-height: var(--kinetus-type-label-line-height);
+  font-weight: var(--kinetus-type-label-weight);
+  letter-spacing: var(--kinetus-type-label-letter-spacing);
+  text-transform: var(--kinetus-type-label-transform);
+}
+
+@media (min-width: 768px) {
+  .type-display {
+    font-size: var(--kinetus-type-display-size);
+    line-height: var(--kinetus-type-display-line-height);
+    font-weight: var(--kinetus-type-display-weight);
+    letter-spacing: var(--kinetus-type-display-letter-spacing);
+  }
+
+  .type-h1 {
+    font-size: var(--kinetus-type-h1-size);
+    line-height: var(--kinetus-type-h1-line-height);
+    font-weight: var(--kinetus-type-h1-weight);
+    letter-spacing: var(--kinetus-type-h1-letter-spacing);
+  }
+
+  .type-h2 {
+    font-size: var(--kinetus-type-h2-size);
+    line-height: var(--kinetus-type-h2-line-height);
+    font-weight: var(--kinetus-type-h2-weight);
+    letter-spacing: var(--kinetus-type-h2-letter-spacing);
+  }
+
+  .type-h3 {
+    font-size: var(--kinetus-type-h3-size);
+    line-height: var(--kinetus-type-h3-line-height);
+    font-weight: var(--kinetus-type-h3-weight);
+    letter-spacing: var(--kinetus-type-h3-letter-spacing);
+  }
+}

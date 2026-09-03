@@ -1,0 +1,103 @@
+/* Figma Mobile footer (64:55): bg/subtle, 1px border/subtle top, py space-8, stack gap space-8. */
+.footer {
+  background: var(--kinetus-bg-subtle);
+  border-top: 1px solid var(--kinetus-border-subtle);
+  padding-block: var(--kinetus-space-8);
+  color: var(--kinetus-text-secondary);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-8);
+}
+
+/* Two columns on mobile (gap space-4); the desktop frame's four-column rhythm at >=768px. */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--kinetus-space-4);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+}
+
+.heading {
+  margin: 0;
+  color: var(--kinetus-text-primary);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile: 46px tap rows (py space-3 around a 22px line). */
+.link {
+  display: block;
+  padding-block: var(--kinetus-space-3);
+  color: var(--kinetus-text-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.link:hover {
+  color: var(--kinetus-brand-teal);
+}
+
+.rule {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+.legal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+}
+
+.legalText {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  /* Figma Footer (43:143): py space-16, stack gap space-12, columns gap space-16, links gap space-3. */
+  .footer {
+    padding-block: var(--kinetus-space-16);
+  }
+
+  .inner {
+    gap: var(--kinetus-space-12);
+  }
+
+  .columns {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--kinetus-space-16);
+  }
+
+  .column {
+    gap: var(--kinetus-space-4);
+  }
+
+  .list {
+    gap: var(--kinetus-space-3);
+  }
+
+  .link {
+    padding-block: 0;
+  }
+
+  .legal {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--kinetus-space-8);
+  }
+}

@@ -1,0 +1,71 @@
+.header {
+  background: var(--kinetus-bg-base);
+}
+
+/* Figma Mobile header (55:9): py space-2, 48px row, 1px border/subtle. */
+.bar {
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+  padding-block: var(--kinetus-space-2);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kinetus-space-4);
+}
+
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--kinetus-radius-sm);
+}
+
+/*
+ * Approved stacked logo. Rendered at 48px (mobile) / 64px (desktop) height so the
+ * wordmark stays legible — see hand-off note on header height vs. the 52px Figma lockup.
+ */
+.logo {
+  height: var(--kinetus-tap-target);
+  width: auto;
+}
+
+.nav {
+  display: none;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-8);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLink {
+  display: inline-block;
+  padding-block: var(--kinetus-space-2);
+  color: var(--kinetus-text-primary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.navLink:hover {
+  color: var(--kinetus-brand-teal);
+}
+
+@media (min-width: 768px) {
+  /* Figma Header (38:45): py space-4. */
+  .bar {
+    padding-block: var(--kinetus-space-4);
+  }
+
+  .logo {
+    height: var(--kinetus-space-16);
+  }
+
+  .nav {
+    display: block;
+  }
+}
