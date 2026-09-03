@@ -47,8 +47,7 @@ export function DocumentationList({ documents }: DocumentationListProps) {
               href={doc.fileUrl}
               className={styles.download}
               aria-label={`Download ${doc.title}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              download
             >
               <DownloadIcon />
             </a>

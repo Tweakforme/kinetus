@@ -23,7 +23,9 @@
   min-width: 0;
 }
 
+/* Inline padding enlarges the hit area (18px text → 50px) without changing the line box. */
 .link {
+  padding-block: var(--kinetus-space-4);
   color: inherit;
   text-decoration: none;
   transition: color 0.15s ease;
