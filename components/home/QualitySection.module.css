@@ -1,0 +1,90 @@
+/* Full-bleed bg/subtle band: py space-12 (mobile, 65:94) / space-24 (desktop, 43:90). */
+.band {
+  background: var(--kinetus-bg-subtle);
+  padding-block: var(--kinetus-space-12);
+}
+
+/* Heading · divider · columns · action, gap space-6 (mobile) / space-8 (desktop). */
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-6);
+}
+
+/* Diamond rule divider (43:95): rules on border/default, brand/teal diamond, gap space-4. */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-4);
+}
+
+.rule {
+  flex: 1 0 0;
+  height: 1px;
+  background: var(--kinetus-border-default);
+}
+
+.diamond {
+  flex: 0 0 auto;
+  color: var(--kinetus-brand-teal);
+}
+
+/* Stacked blocks on mobile (65:103), three columns with space-8 gaps on desktop (43:100). */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-6);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Icon, Label title, Body S copy with space-4 between (43:101). */
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--kinetus-space-4);
+  min-width: 0;
+}
+
+.icon {
+  color: var(--kinetus-brand-teal);
+}
+
+.title {
+  margin: 0;
+  color: var(--kinetus-text-primary);
+}
+
+.copy {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+.actions {
+  display: flex;
+}
+
+.actions > a {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .band {
+    padding-block: var(--kinetus-space-24);
+  }
+
+  .inner {
+    gap: var(--kinetus-space-8);
+  }
+
+  .columns {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--kinetus-space-8);
+  }
+
+  .actions > a {
+    width: auto;
+  }
+}

@@ -12,6 +12,14 @@
   color: var(--kinetus-text-primary);
   border-radius: var(--kinetus-radius-sm);
   cursor: pointer;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.toggle:hover,
+.toggle:active,
+.close:hover,
+.close:active {
+  color: var(--kinetus-brand-teal);
 }
 
 /* Full-screen drawer (Figma 55:8). Hidden state keeps it out of layout and the tab order. */
@@ -43,13 +51,6 @@
     transform var(--motion-duration) var(--motion-ease);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .drawer,
-  .drawerOpen {
-    transition: none;
-  }
-}
-
 /* Block, not flex: the Container's auto side margins would otherwise shrink-wrap it. */
 .top {
   flex: 0 0 auto;
@@ -79,7 +80,7 @@
   width: auto;
 }
 
-/* Main navigation (71:205): pt space-4; each item py space-4 with a 1px border/subtle rule. */
+/* Main navigation (71:205): pt space-4; each row py space-4 with a 1px border/subtle rule. */
 .body {
   padding-top: var(--kinetus-space-4);
 }
@@ -94,18 +95,82 @@
   border-bottom: 1px solid var(--kinetus-border-subtle);
 }
 
-.link {
-  display: block;
-  padding-block: var(--kinetus-space-4);
+.link,
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kinetus-space-4);
+  width: 100%;
+  padding: var(--kinetus-space-4) 0;
+  background: none;
+  border: 0;
   color: var(--kinetus-text-primary);
+  text-align: left;
   text-decoration: none;
+  cursor: pointer;
+  transition: color var(--motion-duration) var(--motion-ease);
 }
 
-.link:hover {
+.link:hover,
+.link:active,
+.row:hover,
+.row:active {
   color: var(--kinetus-brand-teal);
 }
 
-/* Drawer bottom (71:225): pb space-8; rule · contact · research-use line, gap space-4. */
+.rowChevron {
+  flex: 0 0 auto;
+  transition: transform var(--motion-duration) var(--motion-ease);
+}
+
+.rowChevronOpen {
+  transform: rotate(180deg);
+}
+
+/* Accordion body: animates its row track from 0fr to 1fr; inert while closed. */
+.sub {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--motion-duration) var(--motion-ease);
+}
+
+.subOpen {
+  grid-template-rows: 1fr;
+}
+
+.subInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Submenu (Figma 71:210): indented space-8, 50px rows (Body + space-3 padding). */
+.subList {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 var(--kinetus-space-3) var(--kinetus-space-8);
+}
+
+.subLink {
+  display: flex;
+  align-items: center;
+  min-height: var(--kinetus-tap-target);
+  padding-block: var(--kinetus-space-3);
+  color: var(--kinetus-text-secondary);
+  text-decoration: none;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.subLink:hover,
+.subLink:active {
+  color: var(--kinetus-brand-teal);
+}
+
+.subViewAll {
+  color: var(--kinetus-brand-teal);
+}
+
+/* Drawer bottom (71:225): pb space-8; rule · research-use line, gap space-4. */
 .bottom {
   padding-block: var(--kinetus-space-8);
 }
@@ -127,9 +192,18 @@
   color: var(--kinetus-text-secondary);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .drawer,
+  .drawerOpen,
+  .sub {
+    transition: none;
+  }
+}
+
+/* Hidden on desktop unless the desktop nav has collapsed into the drawer (.forced). */
 @media (min-width: 768px) {
-  .toggle,
-  .drawer {
+  .toggle:not(.forced),
+  .drawer:not(.forced) {
     display: none;
   }
 }

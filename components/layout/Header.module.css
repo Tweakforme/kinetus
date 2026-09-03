@@ -17,6 +17,7 @@
 
 .logoLink {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   border-radius: var(--kinetus-radius-sm);
 }
@@ -30,36 +31,6 @@
   width: auto;
 }
 
-.nav {
-  display: none;
-}
-
-/* Database-driven item count: wrap onto a second line rather than overflow. */
-.navList {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: center;
-  column-gap: var(--kinetus-space-8);
-  row-gap: var(--kinetus-space-2);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.navLink {
-  display: inline-block;
-  padding-block: var(--kinetus-space-2);
-  color: var(--kinetus-text-primary);
-  text-decoration: none;
-  transition: color var(--motion-duration) var(--motion-ease);
-}
-
-.navLink:hover,
-.navLink:active {
-  color: var(--kinetus-brand-teal);
-}
-
 @media (min-width: 768px) {
   /* Figma Header (38:45): py space-4. */
   .bar {
@@ -68,9 +39,5 @@
 
   .logo {
     height: var(--kinetus-space-16);
-  }
-
-  .nav {
-    display: block;
   }
 }

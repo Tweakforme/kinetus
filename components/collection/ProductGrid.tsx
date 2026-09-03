@@ -12,6 +12,8 @@ type ProductGridProps = {
   /** Shown instead of the grid when there is nothing published. */
   emptyMessage: string;
   emptyLink: NavLink;
+  /** Omit the "Showing N products" line (homepage featured grid). */
+  hideCount?: boolean;
 };
 
 /** "Showing 1 product" / "Showing 12 products" — Figma results bar (51:102). */
@@ -27,10 +29,18 @@ const FIRST_ROW_SIZE = 4;
  * (292px cards, 24px column / 32px row gaps), 2 columns on mobile (Figma 51:108 / 67:91).
  * The Figma results bar also shows a static sort control; sorting is out of scope.
  */
-export function ProductGrid({ products, label, emptyMessage, emptyLink }: ProductGridProps) {
+export function ProductGrid({
+  products,
+  label,
+  emptyMessage,
+  emptyLink,
+  hideCount = false,
+}: ProductGridProps) {
   return (
     <Container as="section" className={styles.section} aria-label={label} data-reveal="">
-      <p className={`type-body-s numeric ${styles.count}`}>{resultCountLabel(products.length)}</p>
+      {!hideCount && (
+        <p className={`type-body-s numeric ${styles.count}`}>{resultCountLabel(products.length)}</p>
+      )}
 
       {products.length > 0 ? (
         <ul className={styles.grid}>

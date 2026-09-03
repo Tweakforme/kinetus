@@ -100,24 +100,45 @@ export async function getCollectionRedirectTarget(fromSlug: string): Promise<str
 /*  Navigation                                                                */
 /* -------------------------------------------------------------------------- */
 
-export type NavCollection = {
+export type NavProduct = {
   slug: string;
   name: string;
 };
 
+export type NavCollection = {
+  slug: string;
+  name: string;
+  /** Published member products in membership order — the dropdown / accordion entries. */
+  products: NavProduct[];
+};
+
 /**
- * Published collections for the header, drawer and footer, in display order.
- * Cached across requests (revalidated hourly, or on demand via COLLECTIONS_CACHE_TAG
- * once the admin lands in Phase 7) so the shell never queries per render.
+ * Published collections (with their published products) for the header dropdowns, the
+ * drawer accordions and the footer, in display order. Cached across requests
+ * (revalidated hourly, or on demand via COLLECTIONS_CACHE_TAG once the admin lands in
+ * Phase 7) so the shell never queries per render.
  */
 export const getNavCollections = unstable_cache(
   async (): Promise<NavCollection[]> => {
-    return prisma.collection.findMany({
+    const rows = await prisma.collection.findMany({
       where: { status: CollectionStatus.PUBLISHED },
-      select: { slug: true, name: true },
+      select: {
+        slug: true,
+        name: true,
+        products: {
+          where: { product: { status: ProductStatus.PUBLISHED } },
+          orderBy: { displayOrder: "asc" },
+          select: { product: { select: { slug: true, name: true } } },
+        },
+      },
       orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
     });
+    return rows.map((row) => ({
+      slug: row.slug,
+      name: row.name,
+      products: row.products.map((link) => link.product),
+    }));
   },
-  ["nav-collections"],
+  ["nav-collections", "with-products"],
   { revalidate: 3600, tags: [COLLECTIONS_CACHE_TAG] },
 );
