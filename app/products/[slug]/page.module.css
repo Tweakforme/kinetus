@@ -113,8 +113,9 @@
   color: var(--kinetus-text-primary);
 }
 
+/* A space precedes the slash in the markup (accessible name), so only the right margin. */
 .eyebrowSlash {
-  margin-inline: var(--kinetus-space-2);
+  margin-inline: 0 var(--kinetus-space-2);
 }
 
 /* Collections (Figma 30:24 / 70:179): "Part of" label then tertiary link buttons, gap space-4. */

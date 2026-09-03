@@ -36,8 +36,9 @@
   color: var(--kinetus-text-primary);
 }
 
+/* A space precedes the slash in the markup (accessible name), so only the right margin. */
 .channelSlash {
-  margin-inline: var(--kinetus-space-2);
+  margin-inline: 0 var(--kinetus-space-2);
 }
 
 .channelValue {
