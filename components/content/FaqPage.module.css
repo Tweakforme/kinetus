@@ -1,0 +1,90 @@
+/* Accordions may run wider than prose: the measure is relaxed to the column width. */
+.prose {
+  max-width: none;
+}
+
+.entries {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+.entry {
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+}
+
+/* index · question · chevron; ≥48px rows; the native marker is hidden. */
+.summary {
+  display: grid;
+  grid-template-columns: var(--kinetus-space-12) minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--kinetus-space-3);
+  min-height: var(--kinetus-tap-target);
+  padding-block: var(--kinetus-space-4);
+  color: var(--kinetus-text-primary);
+  cursor: pointer;
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary:hover .question,
+.summary:active .question {
+  color: var(--kinetus-brand-teal);
+}
+
+.entryIndex {
+  color: var(--kinetus-text-secondary);
+}
+
+/* Question: Body (mobile) / Body L (desktop) at medium weight. */
+.question {
+  font-size: var(--kinetus-type-body-size);
+  line-height: var(--kinetus-type-body-line-height);
+  font-weight: var(--kinetus-type-label-weight);
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.chevron {
+  flex: 0 0 auto;
+  color: var(--kinetus-text-secondary);
+  transition: transform var(--motion-duration) var(--motion-ease);
+}
+
+.entry[open] .chevron {
+  transform: rotate(180deg);
+}
+
+/* Answer text at the measure, indented to the question column. */
+.answer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+  max-width: var(--kinetus-measure-body);
+  padding: 0 0 var(--kinetus-space-6) var(--kinetus-space-12);
+}
+
+.closingAction {
+  display: flex;
+}
+
+.closingAction > a {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .prose {
+    max-width: var(--kinetus-measure-body);
+  }
+
+  .question {
+    font-size: var(--kinetus-type-body-l-size);
+    line-height: var(--kinetus-type-body-l-line-height);
+  }
+
+  .closingAction > a {
+    width: auto;
+  }
+}

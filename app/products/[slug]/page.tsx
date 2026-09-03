@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
+import { SectionHeading } from "@/components/home/SectionHeading";
 import { Container } from "@/components/layout/Container";
+import { SectionRule } from "@/components/marks/SectionRule";
 import { DocumentationList } from "@/components/product/DocumentationList";
 import { ProductBreadcrumb } from "@/components/product/ProductBreadcrumb";
 import { ProductCard } from "@/components/product/ProductCard";
@@ -22,7 +24,7 @@ import {
   toVariantViews,
 } from "@/lib/products";
 import { canonicalUrl, DEFAULT_DESCRIPTION } from "@/lib/seo";
-import { SITE_NAME } from "@/lib/site";
+import { CONTACT_LINK, SITE_NAME } from "@/lib/site";
 import styles from "./page.module.css";
 
 type ProductPageProps = {
@@ -84,8 +86,10 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 /**
  * Product detail — the only routable catalogue entity. Variants are UI state.
- * Section order follows the approved Figma frames (22:3 desktop / 55:7 mobile).
- * The persistent research-use band is rendered by the root layout above the footer.
+ * Section order follows the approved Figma frames (22:3 desktop / 55:7 mobile); Phase 6
+ * adds the indexed mono eyebrows, structural hairlines and the spec-table showpiece
+ * without changing that order. The persistent research-use band is rendered by the
+ * root layout above the footer.
  */
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
@@ -139,7 +143,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             <VariantPanel variants={variants} />
 
-            <Link href="/contact" prefetch={false} className={`type-label ${styles.cta}`}>
+            <Link href={CONTACT_LINK.href} className={`type-label ${styles.cta}`}>
               Contact us
             </Link>
 
@@ -155,9 +159,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
           data-reveal=""
           aria-labelledby="specifications-heading"
         >
-          <h2 id="specifications-heading" className={`type-h2 ${styles.sectionHeading}`}>
-            Specifications
-          </h2>
+          <SectionRule />
+          <SectionHeading
+            id="specifications-heading"
+            index="01"
+            eyebrow="Data"
+            title="Specifications"
+          />
           <SpecTable rows={specRows} />
         </Container>
       )}
@@ -169,9 +177,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
           data-reveal=""
           aria-labelledby="documentation-heading"
         >
-          <h2 id="documentation-heading" className={`type-h2 ${styles.sectionHeading}`}>
-            Documentation
-          </h2>
+          <SectionRule />
+          <SectionHeading
+            id="documentation-heading"
+            index="02"
+            eyebrow="Files"
+            title="Documentation"
+          />
           <DocumentationList documents={documents} />
         </Container>
       )}
@@ -183,9 +195,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
           data-reveal=""
           aria-labelledby="description-heading"
         >
-          <h2 id="description-heading" className={`type-h2 ${styles.sectionHeading}`}>
-            Description
-          </h2>
+          <SectionRule />
+          <SectionHeading id="description-heading" index="03" eyebrow="Notes" title="Description" />
           <div className={styles.description}>
             {paragraphs.map((paragraph, index) => (
               <p key={index} className="type-body">
@@ -203,9 +214,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
           aria-labelledby="collections-heading"
           data-reveal=""
         >
-          <p id="collections-heading" className={`type-label ${styles.eyebrow}`}>
+          <SectionRule />
+          <h2 id="collections-heading" className={`type-label ${styles.eyebrow}`}>
+            <span className={`numeric ${styles.eyebrowIndex}`}>04</span>{" "}
+            <span aria-hidden="true" className={styles.eyebrowSlash}>
+              /
+            </span>
             Part of
-          </p>
+          </h2>
           <ul className={styles.collectionList}>
             {collections.map((collection) => (
               <li key={collection.id}>
@@ -228,13 +244,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
           data-reveal=""
           aria-labelledby="related-heading"
         >
-          <h2 id="related-heading" className={`type-h2 ${styles.sectionHeading}`}>
-            Related products
-          </h2>
+          <SectionRule />
+          <SectionHeading
+            id="related-heading"
+            index="05"
+            eyebrow="Materials"
+            title="Related products"
+          />
           <ul className={styles.relatedGrid}>
-            {related.map((item) => (
+            {related.map((item, index) => (
               <li key={item.id} className={styles.relatedItem} data-reveal="">
-                <ProductCard product={item} />
+                <ProductCard product={item} index={index + 1} />
               </li>
             ))}
           </ul>

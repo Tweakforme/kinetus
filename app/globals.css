@@ -14,6 +14,8 @@
   --motion-duration: 200ms;
   --motion-reveal-duration: 450ms;
   --motion-reveal-distance: 14px;
+  /* Structural hairlines draw themselves as their section reveals. */
+  --motion-draw-duration: 700ms;
 }
 
 *,
@@ -29,10 +31,14 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/*
+ * `clip` (not `hidden`) so the body never becomes a scroll container: position: sticky
+ * (content-page contents lists) then resolves against the viewport.
+ */
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -201,7 +207,10 @@ h3 {
   text-wrap: pretty;
 }
 
+/* Labels are set in the mono face (Phase 6): eyebrows, nav, badges, buttons, indices. */
 .type-label {
+  font-family: var(--kinetus-font-mono);
+  font-synthesis: none;
   font-size: var(--kinetus-type-label-size);
   line-height: var(--kinetus-type-label-line-height);
   font-weight: var(--kinetus-type-label-weight);
@@ -209,12 +218,88 @@ h3 {
   text-transform: var(--kinetus-type-label-transform);
 }
 
-/* Prices, counts and numeric data line up on tabular figures. */
+/* Any data set in the mono face without changing its size. */
+.type-mono {
+  font-family: var(--kinetus-font-mono);
+  font-synthesis: none;
+}
+
+/* Prices, counts and numeric data: mono, lined up on tabular figures. */
 .numeric {
+  font-family: var(--kinetus-font-mono);
   font-variant-numeric: tabular-nums;
+  font-synthesis: none;
+}
+
+/*
+ * IBM Plex Mono is loaded at 400 and 500 only. Mono data set inside a heading style
+ * (a Semi Bold 600 class) uses the medium weight instead of a synthesised bold.
+ */
+.type-h1.numeric,
+.type-h2.numeric,
+.type-h3.numeric,
+.type-h2-xl.numeric,
+.type-display-xl.numeric,
+.type-h1.type-mono,
+.type-h2.type-mono,
+.type-h3.type-mono,
+.type-h2-xl.type-mono,
+.type-display-xl.type-mono {
+  font-weight: var(--kinetus-type-label-weight);
+}
+
+/* ---------- Phase 6 scale steps (additive; the Figma classes above are unchanged) ---------- */
+.type-display-xl {
+  font-size: var(--kinetus-type-mobile-display-xl-size);
+  line-height: var(--kinetus-type-mobile-display-xl-line-height);
+  font-weight: var(--kinetus-type-mobile-display-xl-weight);
+  letter-spacing: var(--kinetus-type-mobile-display-xl-letter-spacing);
+  text-wrap: balance;
+}
+
+.type-h2-xl {
+  font-size: var(--kinetus-type-mobile-h2-xl-size);
+  line-height: var(--kinetus-type-mobile-h2-xl-line-height);
+  font-weight: var(--kinetus-type-mobile-h2-xl-weight);
+  letter-spacing: var(--kinetus-type-mobile-h2-xl-letter-spacing);
+  text-wrap: balance;
+}
+
+/* ---------- Structural hairlines ----------
+ * An SVG line with pathLength="1" inside a revealing section: drawn while the section is
+ * visible or untouched by JavaScript, undrawn while pending, and it draws itself when
+ * the section flips to "in".
+ */
+.draw-rule line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--motion-draw-duration) var(--motion-ease);
+}
+
+[data-reveal="pending"] .draw-rule line {
+  stroke-dashoffset: 1;
 }
 
 @media (min-width: 768px) {
+  /* Fluid: Display (64) on tablets, 104 from 1440 up, 7.25vw between. */
+  .type-display-xl {
+    font-size: clamp(
+      var(--kinetus-type-display-size),
+      var(--kinetus-type-display-xl-fluid),
+      var(--kinetus-type-display-xl-size)
+    );
+    line-height: var(--kinetus-type-display-xl-line-height);
+    font-weight: var(--kinetus-type-display-xl-weight);
+    letter-spacing: var(--kinetus-type-display-xl-letter-spacing);
+  }
+
+  .type-h2-xl {
+    font-size: var(--kinetus-type-h2-xl-size);
+    line-height: var(--kinetus-type-h2-xl-line-height);
+    font-weight: var(--kinetus-type-h2-xl-weight);
+    letter-spacing: var(--kinetus-type-h2-xl-letter-spacing);
+  }
+
   .type-display {
     font-size: var(--kinetus-type-display-size);
     line-height: var(--kinetus-type-display-line-height);
@@ -253,6 +338,12 @@ h3 {
     --motion-duration: 0ms;
     --motion-reveal-duration: 0ms;
     --motion-reveal-distance: 0px;
+    --motion-draw-duration: 0ms;
+  }
+
+  /* Structural hairlines appear fully drawn. */
+  [data-reveal="pending"] .draw-rule line {
+    stroke-dashoffset: 0;
   }
 
   html {

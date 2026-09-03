@@ -6,6 +6,11 @@
   min-width: 0;
 }
 
+/* Registration marks sit just outside the panel's corners on this frame. */
+.primaryFrame {
+  position: relative;
+}
+
 /* Square media panel: bg/subtle, radius/lg, artwork inset by space-6 (Figma 68:170). */
 .primary {
   position: relative;

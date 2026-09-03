@@ -1,10 +1,15 @@
-/* Top rule, hairline rules between rows, no zebra striping (Figma 28:10 / 69:161). */
-.table {
-  margin: 0;
-  border-top: 1px solid var(--kinetus-border-subtle);
+/* Hairline frame on border/default with registration marks at its corners (Phase 6 A7). */
+.frame {
+  position: relative;
+  border: 1px solid var(--kinetus-border-default);
+  padding: var(--kinetus-space-2) var(--kinetus-space-4);
 }
 
-/* Mobile: stacked key above value, gap space-2, py space-4. */
+.table {
+  margin: 0;
+}
+
+/* Mobile (69:161): index + key on one line, value beneath; hairline between rows. */
 .row {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -13,25 +18,66 @@
   border-bottom: 1px solid var(--kinetus-border-subtle);
 }
 
+.row:last-child {
+  border-bottom: 0;
+}
+
+/* Index track is space-12 (48px) wide; the key sits beside it. */
 .key {
+  --spec-index-track: var(--kinetus-space-12);
+
+  display: grid;
+  grid-template-columns: var(--spec-index-track) minmax(0, 1fr);
+  align-items: baseline;
   margin: 0;
+}
+
+.index {
   color: var(--kinetus-text-secondary);
 }
 
+/* Keys stay in Inter: Label size and tracking, uppercase, secondary. */
+.keyText {
+  font-family: var(--kinetus-font-family);
+  font-size: var(--kinetus-type-label-size);
+  line-height: var(--kinetus-type-label-line-height);
+  font-weight: var(--kinetus-type-label-weight);
+  letter-spacing: var(--kinetus-type-label-letter-spacing);
+  text-transform: var(--kinetus-type-label-transform);
+  color: var(--kinetus-text-secondary);
+}
+
+/* Values in the mono face at Body size (mobile) / Body L (desktop), primary. */
 .value {
   margin: 0;
+  padding-left: var(--kinetus-space-12);
   color: var(--kinetus-text-primary);
+  font-size: var(--kinetus-type-body-size);
+  line-height: var(--kinetus-type-body-line-height);
+  font-weight: var(--kinetus-type-body-weight);
   overflow-wrap: anywhere;
 }
 
 @media (min-width: 768px) {
-  /* Desktop: key column 372 of 1240 (Figma 28:12), value fills, gap space-6, baseline aligned. */
+  .frame {
+    padding: var(--kinetus-space-4) var(--kinetus-space-8);
+  }
+
+  /* Desktop: key column 372 of 1240 (Figma 28:12), value fills, generous rows. */
   .row {
     --spec-key-track: 372fr;
     --spec-value-track: 844fr;
 
     grid-template-columns: minmax(0, var(--spec-key-track)) minmax(0, var(--spec-value-track));
     column-gap: var(--kinetus-space-6);
+    padding-block: var(--kinetus-space-6);
     align-items: baseline;
+  }
+
+  .value {
+    padding-left: 0;
+    font-size: var(--kinetus-type-body-l-size);
+    line-height: var(--kinetus-type-body-l-line-height);
+    font-weight: var(--kinetus-type-body-l-weight);
   }
 }

@@ -85,16 +85,15 @@
   background: var(--kinetus-brand-teal-light);
 }
 
-/* Generic section: heading + content, gap space-6 (mobile) / space-8 (desktop). */
+/*
+ * Generic section: heading + content, gap space-6 (mobile) / space-8 (desktop).
+ * Positioned so the structural hairline (SectionRule) can occupy the gap above it.
+ */
 .section {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-6);
-}
-
-.sectionHeading {
-  margin: 0;
-  color: var(--kinetus-text-primary);
 }
 
 /* Description body at the canonical 580px measure, secondary colour (Figma 29:65). */
@@ -110,8 +109,17 @@
   margin: 0;
 }
 
+.eyebrowIndex {
+  color: var(--kinetus-text-primary);
+}
+
+.eyebrowSlash {
+  margin-inline: var(--kinetus-space-2);
+}
+
 /* Collections (Figma 30:24 / 70:179): "Part of" label then tertiary link buttons, gap space-4. */
 .collections {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-4);

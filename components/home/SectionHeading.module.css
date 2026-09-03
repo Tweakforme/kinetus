@@ -10,6 +10,14 @@
   color: var(--kinetus-text-secondary);
 }
 
+.index {
+  color: var(--kinetus-text-primary);
+}
+
+.slash {
+  margin-inline: var(--kinetus-space-2);
+}
+
 .title {
   margin: 0;
   color: var(--kinetus-text-primary);

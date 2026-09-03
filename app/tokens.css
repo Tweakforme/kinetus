@@ -158,4 +158,36 @@
   --kinetus-grid-gutter-mobile: 16px;
   --kinetus-measure-body: 580px;
   --kinetus-tap-target: 48px;
+
+  /* ---------- Phase 6 additions (design elevation). No existing value above changed. ----------
+   * Monospace face for data and labels: IBM Plex Mono via next/font (--font-plex-mono).
+   */
+  --kinetus-font-mono:
+    var(--font-plex-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Display XL — editorial hero scale: Inter Semi Bold 104, line-height 1.0, -3%.
+   * Fluid between Display (64) and 104 across laptop widths via the vw step below. */
+  --kinetus-type-display-xl-size: 104px;
+  --kinetus-type-display-xl-fluid: 7.25vw;
+  --kinetus-type-display-xl-line-height: 1;
+  --kinetus-type-display-xl-weight: 600;
+  --kinetus-type-display-xl-letter-spacing: -0.03em;
+
+  /* Mobile/Display XL — Inter Semi Bold 46/48, -3% */
+  --kinetus-type-mobile-display-xl-size: 46px;
+  --kinetus-type-mobile-display-xl-line-height: 48px;
+  --kinetus-type-mobile-display-xl-weight: 600;
+  --kinetus-type-mobile-display-xl-letter-spacing: -0.03em;
+
+  /* H2 XL — section headings: Inter Semi Bold 48/54, -1.5% */
+  --kinetus-type-h2-xl-size: 48px;
+  --kinetus-type-h2-xl-line-height: 54px;
+  --kinetus-type-h2-xl-weight: 600;
+  --kinetus-type-h2-xl-letter-spacing: -0.015em;
+
+  /* Mobile/H2 XL — Inter Semi Bold 32/38, -1.5% */
+  --kinetus-type-mobile-h2-xl-size: 32px;
+  --kinetus-type-mobile-h2-xl-line-height: 38px;
+  --kinetus-type-mobile-h2-xl-weight: 600;
+  --kinetus-type-mobile-h2-xl-letter-spacing: -0.015em;
 }

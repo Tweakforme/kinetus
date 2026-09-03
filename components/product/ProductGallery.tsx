@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { RegistrationMarks } from "@/components/marks/RegistrationMarks";
 import { blurPlaceholder } from "@/lib/images";
 import styles from "./ProductGallery.module.css";
 
@@ -19,8 +20,8 @@ type ProductGalleryProps = {
 /**
  * Gallery — Figma 26:11 (desktop) / 68:170 + 68:172 (mobile).
  * Square media panel on bg/subtle with radius/lg, image contained and never cropped;
- * thumbnail row beneath (hidden when there is a single image). Client component only
- * for the active-thumbnail state.
+ * thumbnail row beneath (hidden when there is a single image). Registration marks frame
+ * the panel (Phase 6 A4). Client component only for the active-thumbnail state.
  */
 export function ProductGallery({ images, productName }: ProductGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -40,19 +41,22 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
 
   return (
     <div className={styles.gallery}>
-      <div className={styles.primary}>
-        <div className={styles.primaryInner}>
-          <Image
-            key={active.id}
-            src={active.url}
-            alt={active.altText}
-            fill
-            sizes="(min-width: 768px) 720px, calc(100vw - 40px)"
-            className={styles.image}
-            priority={activeIndex === 0}
-            placeholder={blurPlaceholder(active.url) ? "blur" : "empty"}
-            blurDataURL={blurPlaceholder(active.url)}
-          />
+      <div className={styles.primaryFrame}>
+        <RegistrationMarks outset />
+        <div className={styles.primary}>
+          <div className={styles.primaryInner}>
+            <Image
+              key={active.id}
+              src={active.url}
+              alt={active.altText}
+              fill
+              sizes="(min-width: 768px) 720px, calc(100vw - 40px)"
+              className={styles.image}
+              priority={activeIndex === 0}
+              placeholder={blurPlaceholder(active.url) ? "blur" : "empty"}
+              blurDataURL={blurPlaceholder(active.url)}
+            />
+          </div>
         </div>
       </div>
 

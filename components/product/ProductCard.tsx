@@ -8,6 +8,8 @@ type ProductCardProps = {
   product: ProductCardModel;
   /** Above-the-fold cards (first grid row) load eagerly with high fetch priority. */
   priority?: boolean;
+  /** 1-based position in its grid, shown as a mono index in the media corner. */
+  index?: number;
 };
 
 /**
@@ -16,12 +18,17 @@ type ProductCardProps = {
  * cannot lock an aspect ratio; here the media area is `aspect-ratio: 1` with the artwork
  * contained on bg/subtle. Hover: border/subtle → border/default, no lift, no shadow.
  */
-export function ProductCard({ product, priority = false }: ProductCardProps) {
+export function ProductCard({ product, priority = false, index }: ProductCardProps) {
   const blur = product.imageUrl ? blurPlaceholder(product.imageUrl) : undefined;
 
   return (
     <Link href={product.href} className={styles.card}>
       <span className={styles.media}>
+        {index !== undefined && (
+          <span className={`type-label numeric ${styles.index}`} aria-hidden="true">
+            {String(index).padStart(2, "0")}
+          </span>
+        )}
         {product.imageUrl && (
           <span className={styles.mediaInner}>
             {/* Decorative inside the link: the visible name already labels the target. */}
@@ -41,7 +48,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       <span className={styles.text}>
         <span className={`type-body-l ${styles.name}`}>{product.name}</span>
         {product.presentation && (
-          <span className={`type-caption ${styles.presentation}`}>{product.presentation}</span>
+          <span className={`type-caption type-mono ${styles.presentation}`}>
+            {product.presentation}
+          </span>
         )}
         {product.priceLabel && (
           <span className={`type-h3 numeric ${styles.price}`}>{product.priceLabel}</span>

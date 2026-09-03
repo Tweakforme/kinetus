@@ -1,32 +1,20 @@
 /* Full-bleed bg/subtle band: py space-12 (mobile, 65:94) / space-24 (desktop, 43:90). */
 .band {
+  position: relative;
   background: var(--kinetus-bg-subtle);
   padding-block: var(--kinetus-space-12);
 }
 
-/* Heading · divider · columns · action, gap space-6 (mobile) / space-8 (desktop). */
-.inner {
+/*
+ * Registration-marked frame (Phase 6 A4) holding heading · divider · columns · action,
+ * gap space-6 (mobile) / space-8 (desktop). Inner padding keeps content off the marks.
+ */
+.frame {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-6);
-}
-
-/* Diamond rule divider (43:95): rules on border/default, brand/teal diamond, gap space-4. */
-.divider {
-  display: flex;
-  align-items: center;
-  gap: var(--kinetus-space-4);
-}
-
-.rule {
-  flex: 1 0 0;
-  height: 1px;
-  background: var(--kinetus-border-default);
-}
-
-.diamond {
-  flex: 0 0 auto;
-  color: var(--kinetus-brand-teal);
+  padding: var(--kinetus-space-6) var(--kinetus-space-4);
 }
 
 /* Stacked blocks on mobile (65:103), three columns with space-8 gaps on desktop (43:100). */
@@ -39,7 +27,7 @@
   padding: 0;
 }
 
-/* Icon, Label title, Body S copy with space-4 between (43:101). */
+/* Icon + index, Label title, Body S copy with space-4 between (43:101). */
 .column {
   display: flex;
   flex-direction: column;
@@ -48,8 +36,18 @@
   min-width: 0;
 }
 
+.columnHead {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-3);
+}
+
 .icon {
   color: var(--kinetus-brand-teal);
+}
+
+.columnIndex {
+  color: var(--kinetus-text-secondary);
 }
 
 .title {
@@ -75,8 +73,9 @@
     padding-block: var(--kinetus-space-24);
   }
 
-  .inner {
+  .frame {
     gap: var(--kinetus-space-8);
+    padding: var(--kinetus-space-8);
   }
 
   .columns {

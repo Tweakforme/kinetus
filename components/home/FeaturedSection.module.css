@@ -7,6 +7,11 @@
   margin-top: var(--kinetus-space-6);
 }
 
+/* Positioned so the structural hairline can occupy the gap above it. */
+.heading {
+  position: relative;
+}
+
 /* Link left-aligned on mobile (58:74), right-aligned on desktop (42:98). */
 .actions {
   display: flex;

@@ -1,9 +1,14 @@
-/* Mobile (Figma 57:2): copy, actions, then the square product panel, all stacked. */
+/*
+ * Mobile and tablet (Figma 57:2): copy, actions, then the square product panel, all
+ * stacked inside the container margins. The hero is not a Container so that the desktop
+ * grid can place the panel beyond the container's right edge (Phase 6 A5).
+ */
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--kinetus-space-6);
   align-items: center;
+  padding-inline: var(--kinetus-container-margin-mobile);
 }
 
 /* Hero content (39:44): copy block and actions, gap space-8. */
@@ -27,6 +32,8 @@
 }
 
 .headline {
+  position: relative;
+  z-index: 1;
   margin: 0;
   overflow-wrap: anywhere;
 }
@@ -46,6 +53,12 @@
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-3);
+}
+
+/* Registration marks sit on this frame; the panel below clips its own contents. */
+.panelFrame {
+  position: relative;
+  min-width: 0;
 }
 
 /* Product panel (39:58 / 57:17): bg/subtle, radius/lg, square, render contained inside. */
@@ -70,15 +83,8 @@
 }
 
 @media (min-width: 768px) {
-  /* Figma 39:43: content 700 / panel 508 of 1240 with a space-8 gutter; row height 600. */
   .hero {
-    --hero-content-track: 700fr;
-    --hero-panel-track: 508fr;
-    --hero-min-height: 600px;
-
-    grid-template-columns: minmax(0, var(--hero-content-track)) minmax(0, var(--hero-panel-track));
-    gap: var(--kinetus-space-8);
-    min-height: var(--hero-min-height);
+    padding-inline: var(--kinetus-container-margin-desktop);
   }
 
   .paragraph {
@@ -95,5 +101,64 @@
 
   .imageWrap {
     inset: var(--kinetus-space-12);
+  }
+}
+
+@media (min-width: 1024px) {
+  /*
+   * Breakout grid: gutter | copy (48%) | panel (52%) | gutter. The gutter equals the
+   * Container's side margin at every width, so the copy column sits exactly on the site
+   * grid while the panel spans its own track plus the right gutter to the edge. The
+   * panel's edge starts under the headline's longest line, which runs over it (A5); the
+   * render is inset further on that side so type never crosses the artwork.
+   */
+  .hero {
+    --hero-gutter: max(
+      var(--kinetus-container-margin-desktop),
+      calc((100% - var(--kinetus-container-max)) / 2)
+    );
+    --hero-content-track: 48fr;
+    --hero-panel-track: 52fr;
+    --hero-min-height: 600px;
+    --hero-overlap: var(--kinetus-space-32);
+
+    grid-template-columns:
+      var(--hero-gutter) minmax(0, var(--hero-content-track))
+      minmax(0, var(--hero-panel-track)) var(--hero-gutter);
+    gap: 0;
+    min-height: var(--hero-min-height);
+    padding-inline: 0;
+  }
+
+  .copy {
+    grid-column: 2;
+    padding-right: var(--kinetus-space-8);
+  }
+
+  /* The headline runs past its column and over the panel's left edge (A5). */
+  .headline {
+    margin-right: calc(-1 * var(--hero-overlap));
+  }
+
+  /* The right-hand marks stay inside the viewport edge the panel bleeds to. */
+  .panelFrame {
+    --mark-inset-right: 0px;
+
+    grid-column: 3 / 5;
+    align-self: stretch;
+    display: flex;
+  }
+
+  /* Square-cornered against the viewport edge; height follows the row, never the width. */
+  .panel {
+    flex: 1 1 auto;
+    aspect-ratio: auto;
+    min-height: var(--hero-min-height);
+    border-radius: 0;
+  }
+
+  .imageWrap {
+    inset: var(--kinetus-space-12) var(--kinetus-space-12) var(--kinetus-space-12)
+      var(--kinetus-space-24);
   }
 }
