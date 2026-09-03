@@ -3,17 +3,28 @@ import Link from "next/link";
 import { Container } from "./Container";
 import { MobileNav } from "./MobileNav";
 import { ResearchUseStrip } from "./ResearchUseStrip";
-import { PRIMARY_NAV, SITE_NAME } from "@/lib/site";
+import { getNavCollections } from "@/lib/collections";
+import { buildPrimaryNav, SITE_NAME } from "@/lib/site";
 import styles from "./Header.module.css";
 
 /**
  * Site header.
- *  - Arrangement: client-confirmed deck (top research-use strip · logo left · nav right).
+ *  - Arrangement: client-confirmed deck (top research-use strip · logo left · nav right,
+ *    catalogue entries as top-level items).
  *  - Finish: approved Figma Header (38:45) / Mobile header (55:9) — tokens only.
- *  - Nav links point at routes built in later phases (they 404 until then).
- *  - The deck's search / account / cart icons are out of scope and not carried over.
+ *  - Nav = published collections (cached, display order) · View all products · About ·
+ *    FAQ · Contact. Static links to unbuilt routes carry prefetch={false}.
+ *  - The deck's search and account icons and its acquisition controls are out of scope.
  */
-export function Header() {
+export async function Header() {
+  const collections = await getNavCollections();
+  const nav = buildPrimaryNav(
+    collections.map((collection) => ({
+      label: collection.name,
+      href: `/collections/${collection.slug}`,
+    })),
+  );
+
   return (
     <header className={styles.header}>
       <ResearchUseStrip />
@@ -33,13 +44,11 @@ export function Header() {
 
           <nav className={styles.nav} aria-label="Primary">
             <ul className={styles.navList}>
-              {PRIMARY_NAV.map((link) => (
+              {nav.map((link) => (
                 <li key={link.href}>
-                  {/* prefetch={false}: target routes do not exist yet, so viewport prefetching
-                      would log 404s on every page load. TODO: remove once the routes are built. */}
                   <Link
                     href={link.href}
-                    prefetch={false}
+                    prefetch={link.prefetch === false ? false : undefined}
                     className={`type-label ${styles.navLink}`}
                   >
                     {link.label}
@@ -49,7 +58,7 @@ export function Header() {
             </ul>
           </nav>
 
-          <MobileNav links={PRIMARY_NAV} />
+          <MobileNav links={nav} />
         </Container>
       </div>
     </header>

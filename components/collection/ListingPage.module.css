@@ -1,0 +1,22 @@
+/*
+ * Listing rhythm (Figma 50:101 desktop / 55:5 mobile): top offset space-8; sections
+ * separated by space-12 (mobile) / space-32 (desktop). Block flow — never flex/grid here.
+ */
+.page {
+  display: block;
+  padding-block: var(--kinetus-space-8) var(--kinetus-space-12);
+}
+
+.page > * + * {
+  margin-top: var(--kinetus-space-12);
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding-block: var(--kinetus-space-8) var(--kinetus-space-32);
+  }
+
+  .page > * + * {
+    margin-top: var(--kinetus-space-32);
+  }
+}

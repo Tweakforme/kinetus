@@ -22,32 +22,55 @@ export const RESEARCH_USE_COPY = RESEARCH_USE_COPY_LINES.join(" ");
 export type NavLink = {
   label: string;
   href: string;
+  /**
+   * `false` for routes that do not exist yet (Phase 6): viewport prefetching would log
+   * 404s on every page load. Remove once the route is built.
+   */
+  prefetch?: boolean;
 };
 
+/** Canonical full listing, shown after the collection links in the catalogue nav. */
+export const ALL_PRODUCTS_LINK: NavLink = { label: "View all products", href: "/products" };
+
+/** Hub of every published collection. */
+export const ALL_COLLECTIONS_LINK: NavLink = { label: "All collections", href: "/collections" };
+
 /**
- * Primary navigation. These routes are built in later phases and will 404 until then.
- * Order follows the approved "Mobile Navigation — Open State" frame.
+ * Static site links that follow the catalogue entries in the primary nav.
+ * These routes are built in Phase 6 and will 404 until then.
  */
-export const PRIMARY_NAV: NavLink[] = [
-  { label: "Products", href: "/products" },
-  { label: "About", href: "/about" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Contact", href: "/contact" },
+export const SITE_NAV: NavLink[] = [
+  { label: "About", href: "/about", prefetch: false },
+  { label: "FAQ", href: "/faq", prefetch: false },
+  { label: "Contact", href: "/contact", prefetch: false },
 ];
 
+/**
+ * Primary navigation = published collections (database-driven, display order) as
+ * top-level items per the client-confirmed deck, then "View all products", then the
+ * static site links.
+ */
+export function buildPrimaryNav(collectionLinks: NavLink[]): NavLink[] {
+  return [...collectionLinks, ALL_PRODUCTS_LINK, ...SITE_NAV];
+}
+
+/** Footer "Catalogue" column = All products, each published collection, All collections. */
+export function buildCatalogueLinks(collectionLinks: NavLink[]): NavLink[] {
+  return [{ label: "All products", href: "/products" }, ...collectionLinks, ALL_COLLECTIONS_LINK];
+}
+
 export const FOOTER_COMPANY_LINKS: NavLink[] = [
-  { label: "Products", href: "/products" },
-  { label: "About", href: "/about" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Contact", href: "/contact" },
+  { label: "About", href: "/about", prefetch: false },
+  { label: "FAQ", href: "/faq", prefetch: false },
+  { label: "Contact", href: "/contact", prefetch: false },
 ];
 
 export const FOOTER_POLICY_LINKS: NavLink[] = [
-  { label: "Terms & conditions", href: "/terms" },
-  { label: "Privacy policy", href: "/privacy-policy" },
-  { label: "Shipping policy", href: "/shipping-policy" },
-  { label: "Returns & refund policy", href: "/returns-policy" },
-  { label: "Research use disclaimer", href: "/research-use" },
+  { label: "Terms & conditions", href: "/terms", prefetch: false },
+  { label: "Privacy policy", href: "/privacy-policy", prefetch: false },
+  { label: "Shipping policy", href: "/shipping-policy", prefetch: false },
+  { label: "Returns & refund policy", href: "/returns-policy", prefetch: false },
+  { label: "Research use disclaimer", href: "/research-use", prefetch: false },
 ];
 
 /** Static top-level routes listed in the sitemap. */

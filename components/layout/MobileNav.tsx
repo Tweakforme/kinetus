@@ -22,8 +22,9 @@ type MobileNavProps = {
  * close trigger in the same position, stacked nav items with subtle rules, and a
  * bottom block (rule · contact · research-use line).
  *
- * The Figma frame shows an expandable "Products" submenu listing MOCK collections;
- * no collections exist yet, so the submenu is deferred to the phase that builds them.
+ * Items come from the Header (published collections, then View all products, then the
+ * static site links) as top-level entries per the client-confirmed deck; the Figma
+ * frame's expandable "Products" submenu is not used.
  */
 export function MobileNav({ links }: MobileNavProps) {
   const [open, setOpen] = useState(false);
@@ -124,10 +125,9 @@ export function MobileNav({ links }: MobileNavProps) {
             <ul className={styles.list}>
               {links.map((link) => (
                 <li key={link.href} className={styles.item}>
-                  {/* prefetch={false}: target routes do not exist yet (see Header.tsx). */}
                   <Link
                     href={link.href}
-                    prefetch={false}
+                    prefetch={link.prefetch === false ? false : undefined}
                     className={`type-h3 ${styles.link}`}
                     onClick={close}
                   >
