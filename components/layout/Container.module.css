@@ -1,0 +1,12 @@
+.container {
+  box-sizing: content-box;
+  max-width: var(--kinetus-container-max);
+  margin-inline: auto;
+  padding-inline: var(--kinetus-container-margin-mobile);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: var(--kinetus-container-margin-desktop);
+  }
+}

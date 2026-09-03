@@ -1,0 +1,9 @@
+.strip {
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+  padding-block: var(--kinetus-space-2);
+}
+
+.text {
+  margin: 0;
+}

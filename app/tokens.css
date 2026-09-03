@@ -1,0 +1,161 @@
+/*
+ * Kinetus BioLabs — design tokens
+ *
+ * Generated from the approved Figma file 5b152nyjmEbijXyURBA5H0 ("Kinetus BioLabs — Web Design")
+ * via the Figma MCP on 2026-09-02.
+ *   - Variable collection "Kinetus" (mode: Value): 26 variables
+ *       13 colour · 10 spacing (scope: GAP) · 3 radius
+ *   - 13 local text styles (Display, H1, H2, H3, Body L, Body, Body S, Caption, Label, Mobile/*)
+ *   - 2 grid styles (Grid/Desktop, Grid/Mobile)
+ *
+ * Custom-property names match the WEB code syntax defined on each Figma variable
+ * (e.g. Figma "bg/base" → var(--kinetus-bg-base)). Text styles are kebab-cased
+ * ("Body S" → body-s, "Mobile/H3" → mobile-h3). Letter-spacing is converted from
+ * Figma percentages to em.
+ *
+ * Do not edit values by hand — change them in Figma and re-pull.
+ */
+
+:root {
+  /* ---------- Colour: bg/* ---------- */
+  --kinetus-bg-base: #ffffff;
+  --kinetus-bg-subtle: #f7f8f8;
+  --kinetus-bg-deep: #0e4453;
+
+  /* ---------- Colour: text/* ---------- */
+  --kinetus-text-primary: #14181a;
+  --kinetus-text-secondary: #5c6669;
+  --kinetus-text-inverse: #ffffff;
+
+  /* ---------- Colour: brand/* ---------- */
+  --kinetus-brand-teal: #125c6e;
+  --kinetus-brand-teal-dark: #0e4453;
+  --kinetus-brand-teal-light: #e6eef0;
+
+  /* ---------- Colour: border/* ---------- */
+  --kinetus-border-subtle: #eaeced;
+  --kinetus-border-default: #d3d8da;
+
+  /* ---------- Colour: state/* ---------- */
+  --kinetus-state-error: #b42318;
+  --kinetus-state-success: #1f7a4d;
+
+  /* ---------- Spacing: space/* (4px base; Figma scope: GAP) ---------- */
+  --kinetus-space-1: 4px;
+  --kinetus-space-2: 8px;
+  --kinetus-space-3: 12px;
+  --kinetus-space-4: 16px;
+  --kinetus-space-6: 24px;
+  --kinetus-space-8: 32px;
+  --kinetus-space-12: 48px;
+  --kinetus-space-16: 64px;
+  --kinetus-space-24: 96px;
+  --kinetus-space-32: 128px;
+
+  /* ---------- Radius: radius/* ---------- */
+  --kinetus-radius-sm: 4px;
+  --kinetus-radius-md: 8px;
+  --kinetus-radius-lg: 16px;
+
+  /* ---------- Typography: family ----------
+   * Inter is loaded with next/font in app/layout.tsx and exposed as --font-inter.
+   */
+  --kinetus-font-family:
+    var(--font-inter), "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+
+  /* ---------- Typography: text styles (size / line-height / weight / letter-spacing) ---------- */
+  /* Display — Inter Semi Bold 64/68, -2% */
+  --kinetus-type-display-size: 64px;
+  --kinetus-type-display-line-height: 68px;
+  --kinetus-type-display-weight: 600;
+  --kinetus-type-display-letter-spacing: -0.02em;
+
+  /* H1 — Inter Semi Bold 48/54, -1.5% */
+  --kinetus-type-h1-size: 48px;
+  --kinetus-type-h1-line-height: 54px;
+  --kinetus-type-h1-weight: 600;
+  --kinetus-type-h1-letter-spacing: -0.015em;
+
+  /* H2 — Inter Semi Bold 36/42, -1% */
+  --kinetus-type-h2-size: 36px;
+  --kinetus-type-h2-line-height: 42px;
+  --kinetus-type-h2-weight: 600;
+  --kinetus-type-h2-letter-spacing: -0.01em;
+
+  /* H3 — Inter Semi Bold 24/32, -0.5% */
+  --kinetus-type-h3-size: 24px;
+  --kinetus-type-h3-line-height: 32px;
+  --kinetus-type-h3-weight: 600;
+  --kinetus-type-h3-letter-spacing: -0.005em;
+
+  /* Body L — Inter Regular 18/30, 0 */
+  --kinetus-type-body-l-size: 18px;
+  --kinetus-type-body-l-line-height: 30px;
+  --kinetus-type-body-l-weight: 400;
+  --kinetus-type-body-l-letter-spacing: 0;
+
+  /* Body — Inter Regular 16/26, 0 */
+  --kinetus-type-body-size: 16px;
+  --kinetus-type-body-line-height: 26px;
+  --kinetus-type-body-weight: 400;
+  --kinetus-type-body-letter-spacing: 0;
+
+  /* Body S — Inter Regular 14/22, 0 */
+  --kinetus-type-body-s-size: 14px;
+  --kinetus-type-body-s-line-height: 22px;
+  --kinetus-type-body-s-weight: 400;
+  --kinetus-type-body-s-letter-spacing: 0;
+
+  /* Caption — Inter Regular 13/18, 0 */
+  --kinetus-type-caption-size: 13px;
+  --kinetus-type-caption-line-height: 18px;
+  --kinetus-type-caption-weight: 400;
+  --kinetus-type-caption-letter-spacing: 0;
+
+  /* Label — Inter Medium 12/16, +10%, uppercase */
+  --kinetus-type-label-size: 12px;
+  --kinetus-type-label-line-height: 16px;
+  --kinetus-type-label-weight: 500;
+  --kinetus-type-label-letter-spacing: 0.1em;
+  --kinetus-type-label-transform: uppercase;
+
+  /* Mobile/Display — Inter Semi Bold 40/44, -2% */
+  --kinetus-type-mobile-display-size: 40px;
+  --kinetus-type-mobile-display-line-height: 44px;
+  --kinetus-type-mobile-display-weight: 600;
+  --kinetus-type-mobile-display-letter-spacing: -0.02em;
+
+  /* Mobile/H1 — Inter Semi Bold 32/38, -1.5% */
+  --kinetus-type-mobile-h1-size: 32px;
+  --kinetus-type-mobile-h1-line-height: 38px;
+  --kinetus-type-mobile-h1-weight: 600;
+  --kinetus-type-mobile-h1-letter-spacing: -0.015em;
+
+  /* Mobile/H2 — Inter Semi Bold 26/32, -1% */
+  --kinetus-type-mobile-h2-size: 26px;
+  --kinetus-type-mobile-h2-line-height: 32px;
+  --kinetus-type-mobile-h2-weight: 600;
+  --kinetus-type-mobile-h2-letter-spacing: -0.01em;
+
+  /* Mobile/H3 — Inter Semi Bold 20/28, -0.5% */
+  --kinetus-type-mobile-h3-size: 20px;
+  --kinetus-type-mobile-h3-line-height: 28px;
+  --kinetus-type-mobile-h3-weight: 600;
+  --kinetus-type-mobile-h3-letter-spacing: -0.005em;
+
+  /* ---------- Layout (from Figma grid styles + approved container spec) ----------
+   * Grid/Desktop: 12 columns, 24px gutter, 80px offset, centred 1240px section
+   * Grid/Mobile:   4 columns, 16px gutter, 20px offset
+   * Canonical body measure: 580px (approved design spec)
+   * Tap target: 48px (Figma "Menu trigger (48x48 tap)")
+   * Breakpoint used in media queries (cannot be a custom property): 768px
+   */
+  --kinetus-container-max: 1240px;
+  --kinetus-container-margin-desktop: 80px;
+  --kinetus-container-margin-mobile: 20px;
+  --kinetus-grid-gutter-desktop: 24px;
+  --kinetus-grid-gutter-mobile: 16px;
+  --kinetus-measure-body: 580px;
+  --kinetus-tap-target: 48px;
+}

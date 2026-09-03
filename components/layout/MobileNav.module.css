@@ -1,0 +1,135 @@
+/* Figma Mobile header (55:9): 48×48 menu trigger, 20px icon, flush with the container edge. */
+.toggle,
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--kinetus-tap-target);
+  height: var(--kinetus-tap-target);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--kinetus-text-primary);
+  border-radius: var(--kinetus-radius-sm);
+  cursor: pointer;
+}
+
+/* Full-screen drawer (Figma 55:8). Hidden state keeps it out of layout and the tab order. */
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--kinetus-bg-base);
+  color: var(--kinetus-text-primary);
+  overflow-y: auto;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--kinetus-space-2)));
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0s linear 0.2s;
+}
+
+.drawerOpen {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer,
+  .drawerOpen {
+    transition: none;
+  }
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Drawer top bar mirrors the header bar: py space-2, 48px row, 1px border/subtle. */
+.topBar {
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+  padding-block: var(--kinetus-space-2);
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kinetus-space-4);
+}
+
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--kinetus-radius-sm);
+}
+
+.logo {
+  height: var(--kinetus-tap-target);
+  width: auto;
+}
+
+/* Main navigation (71:205): pt space-4; each item py space-4 with a 1px border/subtle rule. */
+.body {
+  padding-top: var(--kinetus-space-4);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+}
+
+.link {
+  display: block;
+  padding-block: var(--kinetus-space-4);
+  color: var(--kinetus-text-primary);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--kinetus-brand-teal);
+}
+
+/* Drawer bottom (71:225): pb space-8; rule · contact · research-use line, gap space-4. */
+.bottom {
+  padding-block: var(--kinetus-space-8);
+}
+
+.bottomInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+}
+
+.rule {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+.caption {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+@media (min-width: 768px) {
+  .toggle,
+  .drawer {
+    display: none;
+  }
+}

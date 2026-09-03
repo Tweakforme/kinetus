@@ -1,0 +1,230 @@
+// Kinetus BioLabs — Prisma schema (Phase 2 scaffold)
+//
+// Source of truth: the Phase 2 reference schema, plus the confirmed corrections:
+//   #3  Product specification fields (form … displayOrder) — all nullable, unpopulated
+//   #4  ProductVariant.sku is optional (the client price list carries no SKUs)
+//   #5  Documentation.batchLot is optional (not every document is batch-specific)
+//
+// Prices are integers in minor units (cents). Never floats.
+//
+// Additions beyond the reference schema (reported in the Phase 2 hand-off):
+//   - @@index on every foreign-key column (Postgres does not index FKs automatically).
+//
+// Recommended CHECK constraint (NOT applied — no DATABASE_URL was available, so no
+// migration has been generated yet). Add this to the initial migration SQL so a
+// Documentation row always points at exactly one of Product / ProductVariant:
+//
+//   ALTER TABLE "Documentation"
+//     ADD CONSTRAINT "Documentation_exactly_one_owner"
+//     CHECK (num_nonnulls("productId", "variantId") = 1);
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum VariantStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum CollectionStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum OrderRequestStatus {
+  NEW
+  AWAITING_PAYMENT
+  PAID
+  SHIPPED
+  CANCELLED
+}
+
+enum RedirectEntityType {
+  PRODUCT
+  COLLECTION
+}
+
+model Product {
+  id               String        @id @default(cuid())
+  slug             String        @unique
+  name             String
+  shortDescription String?
+  description      String?
+  status           ProductStatus @default(DRAFT)
+  metaTitle        String?
+  metaDescription  String?
+
+  // Specification table fields (Phase 2 correction #3). All nullable — no values
+  // have been confirmed by the client. Do not populate.
+  form              String?
+  appearance        String?
+  storageConditions String?
+  casNumber         String?
+  molecularFormula  String?
+  molecularWeight   String?
+  purityMethod      String?
+  featured          Boolean @default(false)
+  displayOrder      Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  variants      ProductVariant[]
+  images        ProductImage[]
+  collections   ProductCollection[]
+  documentation Documentation[]
+  orderItems    OrderRequestItem[]
+}
+
+model ProductVariant {
+  id             String        @id @default(cuid())
+  productId      String
+  product        Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label          String
+  sku            String?       @unique
+  price          Int
+  salePrice      Int?
+  saleStartsAt   DateTime?
+  saleEndsAt     DateTime?
+  stock          Int?
+  trackInventory Boolean       @default(false)
+  status         VariantStatus @default(ACTIVE)
+  displayOrder   Int           @default(0)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  documentation Documentation[]
+  orderItems    OrderRequestItem[]
+
+  @@index([productId])
+}
+
+model Collection {
+  id              String           @id @default(cuid())
+  slug            String           @unique
+  name            String
+  description     String?
+  status          CollectionStatus @default(DRAFT)
+  displayOrder    Int              @default(0)
+  metaTitle       String?
+  metaDescription String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  products ProductCollection[]
+}
+
+model ProductCollection {
+  productId    String
+  collectionId String
+  displayOrder Int    @default(0)
+
+  product    Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@id([productId, collectionId])
+  @@index([collectionId])
+}
+
+model ProductImage {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url          String
+  altText      String
+  displayOrder Int      @default(0)
+  isPrimary    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([productId])
+}
+
+model Documentation {
+  id        String          @id @default(cuid())
+  productId String?
+  product   Product?        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variantId String?
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  batchLot  String?
+  title     String
+  fileUrl   String
+  createdAt DateTime        @default(now())
+
+  @@index([productId])
+  @@index([variantId])
+}
+
+model SlugRedirect {
+  id         String             @id @default(cuid())
+  fromSlug   String             @unique
+  toSlug     String
+  entityType RedirectEntityType
+  createdAt  DateTime           @default(now())
+}
+
+// Table only — no admin UI or authentication logic exists in this phase (Phase 7).
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         String    @default("ADMIN")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastLoginAt  DateTime?
+}
+
+// Tables only — no request form, submission handling or notifications in this phase (Phase 8).
+model OrderRequest {
+  id                      String             @id @default(cuid())
+  referenceNumber         String             @unique
+  status                  OrderRequestStatus @default(NEW)
+  customerName            String
+  customerEmail           String
+  customerPhone           String
+  shippingLine1           String
+  shippingLine2           String?
+  shippingCity            String
+  shippingProvince        String
+  shippingPostalCode      String
+  shippingCountry         String             @default("CA")
+  note                    String?
+  researchUseAcknowledged Boolean            @default(false)
+  internalNotes           String?
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+
+  items OrderRequestItem[]
+}
+
+// Snapshot fields are the permanent record. productId / variantId are admin
+// convenience only (SetNull) so deleting a product never breaks order history.
+model OrderRequestItem {
+  id                   String          @id @default(cuid())
+  orderRequestId       String
+  orderRequest         OrderRequest    @relation(fields: [orderRequestId], references: [id], onDelete: Cascade)
+  productId            String?
+  product              Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variantId            String?
+  variant              ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  productNameSnapshot  String
+  variantLabelSnapshot String
+  skuSnapshot          String
+  unitPriceSnapshot    Int
+  quantity             Int
+
+  @@index([orderRequestId])
+  @@index([productId])
+  @@index([variantId])
+}
