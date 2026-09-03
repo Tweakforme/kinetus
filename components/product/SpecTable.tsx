@@ -19,7 +19,7 @@ export function SpecTable({ rows }: SpecTableProps) {
       {rows.map((row) => (
         <div key={row.key} className={styles.row}>
           <dt className={`type-label ${styles.key}`}>{row.key}</dt>
-          <dd className={`type-body ${styles.value}`}>{row.value}</dd>
+          <dd className={`type-body numeric ${styles.value}`}>{row.value}</dd>
         </div>
       ))}
     </dl>

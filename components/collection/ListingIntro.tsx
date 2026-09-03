@@ -19,7 +19,7 @@ type ListingIntroProps = {
  */
 export function ListingIntro({ breadcrumb, eyebrow, title, intro }: ListingIntroProps) {
   return (
-    <Container className={styles.intro}>
+    <Container className={styles.intro} data-reveal="">
       {breadcrumb}
 
       <div className={styles.copy}>

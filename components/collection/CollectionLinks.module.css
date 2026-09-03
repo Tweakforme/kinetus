@@ -28,9 +28,10 @@
   border-radius: var(--kinetus-radius-sm);
   color: var(--kinetus-text-primary);
   text-decoration: none;
-  transition: background-color 0.15s ease;
+  transition: background-color var(--motion-duration) var(--motion-ease);
 }
 
-.link:hover {
+.link:hover,
+.link:active {
   background: var(--kinetus-bg-subtle);
 }

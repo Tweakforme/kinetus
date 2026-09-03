@@ -29,9 +29,9 @@
   opacity: 0;
   transform: translateY(calc(-1 * var(--kinetus-space-2)));
   transition:
-    opacity 0.2s ease,
-    transform 0.2s ease,
-    visibility 0s linear 0.2s;
+    opacity var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease),
+    visibility 0s linear var(--motion-duration);
 }
 
 .drawerOpen {
@@ -39,8 +39,8 @@
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+    opacity var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease);
 }
 
 @media (prefers-reduced-motion: reduce) {

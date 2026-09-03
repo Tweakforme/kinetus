@@ -11,11 +11,12 @@
   border-radius: var(--kinetus-radius-md);
   color: var(--kinetus-text-primary);
   text-decoration: none;
-  transition: border-color 0.15s ease;
+  transition: border-color var(--motion-duration) var(--motion-ease);
 }
 
 .card:hover,
-.card:focus-visible {
+.card:focus-visible,
+.card:active {
   border-color: var(--kinetus-border-default);
 }
 

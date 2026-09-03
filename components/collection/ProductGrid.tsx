@@ -19,6 +19,9 @@ export function resultCountLabel(count: number): string {
   return `Showing ${count} ${count === 1 ? "product" : "products"}`;
 }
 
+/** Cards in the first desktop row load eagerly (4 columns at 1240px). */
+const FIRST_ROW_SIZE = 4;
+
 /**
  * Result count + product grid, reusing the single ProductCard. 4 columns on desktop
  * (292px cards, 24px column / 32px row gaps), 2 columns on mobile (Figma 51:108 / 67:91).
@@ -26,14 +29,14 @@ export function resultCountLabel(count: number): string {
  */
 export function ProductGrid({ products, label, emptyMessage, emptyLink }: ProductGridProps) {
   return (
-    <Container as="section" className={styles.section} aria-label={label}>
-      <p className={`type-body-s ${styles.count}`}>{resultCountLabel(products.length)}</p>
+    <Container as="section" className={styles.section} aria-label={label} data-reveal="">
+      <p className={`type-body-s numeric ${styles.count}`}>{resultCountLabel(products.length)}</p>
 
       {products.length > 0 ? (
         <ul className={styles.grid}>
-          {products.map((product) => (
-            <li key={product.id} className={styles.item}>
-              <ProductCard product={product} />
+          {products.map((product, index) => (
+            <li key={product.id} className={styles.item} data-reveal="">
+              <ProductCard product={product} priority={index < FIRST_ROW_SIZE} />
             </li>
           ))}
         </ul>

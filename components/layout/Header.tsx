@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "./Container";
 import { MobileNav } from "./MobileNav";
 import { ResearchUseStrip } from "./ResearchUseStrip";
+import logo from "@/public/kinetus-logo.png";
 import { getNavCollections } from "@/lib/collections";
 import { buildPrimaryNav, SITE_NAME } from "@/lib/site";
 import styles from "./Header.module.css";
@@ -12,8 +13,8 @@ import styles from "./Header.module.css";
  *  - Arrangement: client-confirmed deck (top research-use strip · logo left · nav right,
  *    catalogue entries as top-level items).
  *  - Finish: approved Figma Header (38:45) / Mobile header (55:9) — tokens only.
- *  - Nav = published collections (cached, display order) · View all products · About ·
- *    FAQ · Contact. Static links to unbuilt routes carry prefetch={false}.
+ *  - Nav = published collections (cached, display order) · Contact. View all products,
+ *    About and FAQ live in the footer. Links to unbuilt routes carry prefetch={false}.
  *  - The deck's search and account icons and its acquisition controls are out of scope.
  */
 export async function Header() {
@@ -32,12 +33,11 @@ export async function Header() {
         <Container className={styles.row}>
           <Link href="/" className={styles.logoLink} aria-label={`${SITE_NAME} home`}>
             <Image
-              src="/kinetus-logo.png"
+              src={logo}
               alt={SITE_NAME}
-              width={1515}
-              height={1038}
               sizes="(min-width: 768px) 94px, 70px"
               className={styles.logo}
+              placeholder="blur"
               priority
             />
           </Link>
