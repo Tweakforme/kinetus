@@ -1,0 +1,99 @@
+.intro {
+  position: relative;
+}
+
+/* Intro paragraphs: Body L at the measure. */
+.introBlocks {
+  max-width: var(--kinetus-measure-body);
+}
+
+.introBlocks p {
+  font-size: var(--kinetus-type-body-l-size);
+  line-height: var(--kinetus-type-body-l-line-height);
+  font-weight: var(--kinetus-type-body-l-weight);
+}
+
+.section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-6);
+}
+
+.measure {
+  max-width: var(--kinetus-measure-body);
+}
+
+/* The principle line as indexed statements inside a registration-marked frame. */
+.principles {
+  position: relative;
+  padding: var(--kinetus-space-6);
+  border: 1px solid var(--kinetus-border-default);
+}
+
+.principleList {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-6);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.principle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+  min-width: 0;
+}
+
+.principleIndex {
+  color: var(--kinetus-text-secondary);
+}
+
+.principleText {
+  color: var(--kinetus-text-primary);
+}
+
+.exploreLine {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+.exploreLinks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.exploreLinks > li > a {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .section {
+    gap: var(--kinetus-space-8);
+  }
+
+  .principles {
+    padding: var(--kinetus-space-8);
+  }
+
+  .principleList {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--kinetus-space-8);
+  }
+
+  .exploreLinks {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--kinetus-space-4);
+  }
+
+  .exploreLinks > li > a {
+    width: auto;
+  }
+}

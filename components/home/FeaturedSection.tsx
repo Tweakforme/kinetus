@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ProductGrid } from "@/components/collection/ProductGrid";
 import { Container } from "@/components/layout/Container";
+import { SectionRule } from "@/components/marks/SectionRule";
 import type { ProductCardModel } from "@/lib/products";
 import { ALL_COLLECTIONS_LINK, ALL_PRODUCTS_LINK } from "@/lib/site";
 import { SectionHeading } from "./SectionHeading";
@@ -14,13 +15,20 @@ type FeaturedSectionProps = {
 /**
  * Featured products — Figma 42:60 / 58:30: heading, the shared ProductGrid (4 / 2
  * columns), then a tertiary "View all products" link. Block flow between the three
- * blocks so the grid's Container is never a flex child (shrink-wrap trap).
+ * blocks so the grid's Container is never a flex child (shrink-wrap trap). The grid is
+ * the labelled region; this wrapper carries no name so landmarks are not duplicated.
  */
 export function FeaturedSection({ products }: FeaturedSectionProps) {
   return (
-    <section className={styles.section} aria-labelledby="home-featured-heading">
-      <Container data-reveal="">
-        <SectionHeading id="home-featured-heading" eyebrow="Featured" title="Featured products" />
+    <section className={styles.section}>
+      <Container className={styles.heading} data-reveal="">
+        <SectionRule />
+        <SectionHeading
+          id="home-featured-heading"
+          index="02"
+          eyebrow="Materials"
+          title="Featured products"
+        />
       </Container>
 
       <ProductGrid

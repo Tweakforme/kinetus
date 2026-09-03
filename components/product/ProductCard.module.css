@@ -38,6 +38,15 @@
   inset: var(--kinetus-space-3);
 }
 
+/* Mono index in the media corner (Phase 6 A3), above the artwork. */
+.index {
+  position: absolute;
+  top: var(--kinetus-space-3);
+  left: var(--kinetus-space-3);
+  z-index: 1;
+  color: var(--kinetus-text-secondary);
+}
+
 /* Contained, never cropped; darken-blend hides the renders' opaque near-white backgrounds. */
 .image {
   object-fit: contain;

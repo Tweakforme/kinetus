@@ -1,5 +1,6 @@
 /* Heading → cards: space-6 (mobile) / space-8 (desktop, Figma 41:46: 70 → 102). */
 .section {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-6);

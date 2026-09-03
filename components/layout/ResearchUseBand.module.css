@@ -1,15 +1,18 @@
 /* Figma Research-use notice: bg/deep, text/inverse, py space-8 (mobile) / space-16 (desktop). */
 .band {
   position: relative;
-  overflow: hidden;
   background: var(--kinetus-bg-deep);
   color: var(--kinetus-text-inverse);
   padding-block: var(--kinetus-space-8);
 }
 
-.statement {
+/* Registration marks (Phase 6 A4) frame the statement on the content column. */
+.frame {
   position: relative;
-  z-index: 1;
+  padding: var(--kinetus-space-6) var(--kinetus-space-4);
+}
+
+.statement {
   margin: 0;
   max-width: var(--kinetus-measure-body);
 }
@@ -19,62 +22,12 @@
   white-space: nowrap;
 }
 
-/*
- * Decorative molecular linework at 5% opacity, exported from the approved frame
- * (node 43:130 desktop / 65:327 mobile). Geometry below is the frame's own placement:
- * 360×360 box; mobile at left 15px / top -70px; desktop at top -40px, right-aligned to
- * the container margin.
- */
-.decor {
-  --decor-size: 360px;
-  --decor-top-mobile: -70px;
-  --decor-left-mobile: 15px;
-  --decor-top-desktop: -40px;
-
-  position: absolute;
-  top: var(--decor-top-mobile);
-  left: var(--decor-left-mobile);
-  width: var(--decor-size);
-  height: var(--decor-size);
-  opacity: 0.05;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.decorHex,
-.decorNodes {
-  position: absolute;
-  display: block;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
-
-/* Hex outlines: inset 11.11% 22.22% 5.56% 22.22% of the 360px box. */
-.decorHex {
-  top: 11.11%;
-  left: 22.22%;
-  width: 55.56%;
-  height: 83.33%;
-  background-image: url("/decor/molecular-linework-hex.svg");
-}
-
-/* Node dots: inset 10% 21.11% 4.44% 21.11% of the 360px box. */
-.decorNodes {
-  top: 10%;
-  left: 21.11%;
-  width: 57.78%;
-  height: 85.56%;
-  background-image: url("/decor/molecular-linework-nodes.svg");
-}
-
 @media (min-width: 768px) {
   .band {
     padding-block: var(--kinetus-space-16);
   }
 
-  .decor {
-    top: var(--decor-top-desktop);
-    left: auto;
-    right: var(--kinetus-container-margin-desktop);
+  .frame {
+    padding: var(--kinetus-space-8);
   }
 }

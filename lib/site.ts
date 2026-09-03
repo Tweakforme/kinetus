@@ -28,10 +28,7 @@ export const TAGLINE = "PRECISION SCIENCE. PEAK POTENTIAL.";
 export type NavLink = {
   label: string;
   href: string;
-  /**
-   * `false` for routes that do not exist yet (Phase 6): viewport prefetching would log
-   * 404s on every page load. Remove once the route is built.
-   */
+  /** `false` opts a link out of viewport prefetching. Every current route exists. */
   prefetch?: boolean;
 };
 
@@ -53,8 +50,7 @@ export const ALL_PRODUCTS_LINK: NavLink = { label: "View all products", href: "/
 /** Hub of every published collection. */
 export const ALL_COLLECTIONS_LINK: NavLink = { label: "All collections", href: "/collections" };
 
-/** Contact route is built in Phase 6 and will 404 until then. */
-export const CONTACT_LINK: NavLink = { label: "Contact", href: "/contact", prefetch: false };
+export const CONTACT_LINK: NavLink = { label: "Contact", href: "/contact" };
 
 /**
  * Primary navigation, per the client-confirmed deck: each published collection is a
@@ -84,17 +80,17 @@ export function buildCatalogueLinks(collectionLinks: NavLink[]): NavLink[] {
 }
 
 export const FOOTER_COMPANY_LINKS: NavLink[] = [
-  { label: "About", href: "/about", prefetch: false },
-  { label: "FAQ", href: "/faq", prefetch: false },
-  { label: "Contact", href: "/contact", prefetch: false },
+  { label: "About", href: "/about" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const FOOTER_POLICY_LINKS: NavLink[] = [
-  { label: "Terms & conditions", href: "/terms", prefetch: false },
-  { label: "Privacy policy", href: "/privacy-policy", prefetch: false },
-  { label: "Shipping policy", href: "/shipping-policy", prefetch: false },
-  { label: "Returns & refund policy", href: "/returns-policy", prefetch: false },
-  { label: "Research use disclaimer", href: "/research-use", prefetch: false },
+  { label: "Terms & conditions", href: "/terms" },
+  { label: "Privacy policy", href: "/privacy-policy" },
+  { label: "Shipping policy", href: "/shipping-policy" },
+  { label: "Returns & refund policy", href: "/returns-policy" },
+  { label: "Research use disclaimer", href: "/research-use" },
 ];
 
 /** Static top-level routes listed in the sitemap. */

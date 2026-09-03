@@ -1,0 +1,155 @@
+/*
+ * Content page rhythm: block flow with margins (never a flex/grid parent for the
+ * Containers), top offset space-8, sections separated by space-12 / space-32.
+ */
+.page {
+  display: block;
+  padding-block: var(--kinetus-space-8) var(--kinetus-space-12);
+}
+
+.page > * + * {
+  margin-top: var(--kinetus-space-12);
+}
+
+/* Contents list above the prose on mobile; two columns on desktop. */
+.body {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-8);
+  align-items: start;
+}
+
+.contents {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+  min-width: 0;
+}
+
+.contentsLabel {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+.contentsList {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+.contentsItem {
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+}
+
+/* Mono entries: index track space-12, ≥48px rows, hover brand/teal. */
+.contentsLink {
+  display: grid;
+  grid-template-columns: var(--kinetus-space-12) minmax(0, 1fr);
+  align-items: baseline;
+  min-height: var(--kinetus-tap-target);
+  padding-block: var(--kinetus-space-3);
+  color: var(--kinetus-text-primary);
+  font-family: var(--kinetus-font-mono);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+  font-weight: var(--kinetus-type-body-s-weight);
+  text-decoration: none;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.contentsLink:hover,
+.contentsLink:active {
+  color: var(--kinetus-brand-teal);
+}
+
+.contentsNumber {
+  color: var(--kinetus-text-secondary);
+}
+
+/* Prose column at the canonical 580px measure. */
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-12);
+  max-width: var(--kinetus-measure-body);
+  min-width: 0;
+}
+
+.blocks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+  scroll-margin-top: var(--kinetus-space-8);
+}
+
+/* Section heading: mono number in the index track, H3 text beside it. */
+.sectionHeading {
+  display: grid;
+  grid-template-columns: var(--kinetus-space-12) minmax(0, 1fr);
+  align-items: baseline;
+  margin: 0;
+  color: var(--kinetus-text-primary);
+}
+
+.sectionNumber {
+  color: var(--kinetus-text-secondary);
+}
+
+/* Closing block (sign-off, notices): hairline frame with registration marks. */
+.closing {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+  padding: var(--kinetus-space-6);
+  border: 1px solid var(--kinetus-border-default);
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding-block: var(--kinetus-space-8) var(--kinetus-space-32);
+  }
+
+  .page > * + * {
+    margin-top: var(--kinetus-space-32);
+  }
+
+  /* Contents 300px, sticky; prose at the measure; the right third stays open. */
+  .body {
+    --contents-track: 300px;
+
+    grid-template-columns: var(--contents-track) minmax(0, var(--kinetus-measure-body));
+    column-gap: var(--kinetus-space-16);
+  }
+
+  /* Long documents (Terms: 18 entries) scroll inside the sticky block. */
+  .contents {
+    position: sticky;
+    top: var(--kinetus-space-8);
+    max-height: calc(100vh - var(--kinetus-space-8) * 2);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .prose {
+    gap: var(--kinetus-space-16);
+  }
+
+  .section {
+    gap: var(--kinetus-space-6);
+  }
+
+  .closing {
+    padding: var(--kinetus-space-8);
+  }
+}

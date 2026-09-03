@@ -1,0 +1,20 @@
+/* Inline route and mailto links inside client text: brand/teal, underlined. */
+.link {
+  color: var(--kinetus-brand-teal);
+  text-decoration: underline;
+  text-underline-offset: var(--kinetus-space-1);
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.link:hover,
+.link:active {
+  color: var(--kinetus-brand-teal-dark);
+}
+
+/* A bracketed placeholder the client still has to complete, e.g. "[INSERT WEBSITE]". */
+.placeholder {
+  padding-inline: var(--kinetus-space-1);
+  background: var(--kinetus-bg-subtle);
+  border-radius: var(--kinetus-radius-sm);
+  color: var(--kinetus-text-secondary);
+}

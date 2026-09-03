@@ -1,5 +1,6 @@
 import { CollectionCard } from "@/components/collection/CollectionCard";
 import { Container } from "@/components/layout/Container";
+import { SectionRule } from "@/components/marks/SectionRule";
 import type { CollectionSummary } from "@/lib/collections";
 import { SectionHeading } from "./SectionHeading";
 import styles from "./CollectionsSection.module.css";
@@ -25,7 +26,13 @@ export function CollectionsSection({ collections }: CollectionsSectionProps) {
       aria-labelledby="home-collections-heading"
       data-reveal=""
     >
-      <SectionHeading id="home-collections-heading" eyebrow="Catalogue" title="Collections" />
+      <SectionRule />
+      <SectionHeading
+        id="home-collections-heading"
+        index="01"
+        eyebrow="Catalogue"
+        title="Collections"
+      />
       <ul className={styles.grid}>
         {collections.map((collection) => (
           <li key={collection.id} className={styles.item} data-reveal="">

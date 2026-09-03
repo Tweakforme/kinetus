@@ -1,0 +1,35 @@
+.paragraph {
+  margin: 0;
+  color: var(--kinetus-text-primary);
+}
+
+/* Bold in the source document (and "Important:" notices): <strong> at medium weight. */
+.emphasis {
+  font-weight: var(--kinetus-type-label-weight);
+}
+
+/* Lists keep their markers, tinted brand/teal, indented by space-6. */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+  margin: 0;
+  padding-left: var(--kinetus-space-6);
+  color: var(--kinetus-text-primary);
+}
+
+.list li::marker {
+  color: var(--kinetus-brand-teal);
+}
+
+/* Hard-wrapped blocks (addresses, sign-offs) keep their line breaks. */
+.lines {
+  margin: 0;
+  color: var(--kinetus-text-primary);
+}
+
+/* The client's sign-off line, set in the mono face. */
+.tagline {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}

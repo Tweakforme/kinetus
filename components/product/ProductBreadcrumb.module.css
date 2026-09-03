@@ -1,6 +1,7 @@
-/* Figma 68:164 (mobile: Caption) / 26:4 (desktop: Body S), gap space-2, secondary text. */
+/* Figma 68:164 (mobile: Caption) / 26:4 (desktop: Body S) sizes in the mono face, secondary. */
 .breadcrumb {
   color: var(--kinetus-text-secondary);
+  font-family: var(--kinetus-font-mono);
   font-size: var(--kinetus-type-caption-size);
   line-height: var(--kinetus-type-caption-line-height);
   font-weight: var(--kinetus-type-caption-weight);

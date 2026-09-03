@@ -1,0 +1,112 @@
+.body {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-8);
+  align-items: start;
+}
+
+/* Channels inside a registration-marked hairline frame. */
+.channels {
+  position: relative;
+  padding: var(--kinetus-space-6);
+  border: 1px solid var(--kinetus-border-default);
+}
+
+.channelList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-6);
+  margin: 0;
+}
+
+.channel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+  min-width: 0;
+}
+
+.channelLabel {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+.channelIndex {
+  color: var(--kinetus-text-primary);
+}
+
+.channelSlash {
+  margin-inline: var(--kinetus-space-2);
+}
+
+.channelValue {
+  margin: 0;
+  color: var(--kinetus-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.email {
+  color: var(--kinetus-brand-teal);
+  text-decoration: none;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.email:hover,
+.email:active {
+  color: var(--kinetus-brand-teal-dark);
+  text-decoration: underline;
+}
+
+.related {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+  max-width: var(--kinetus-measure-body);
+}
+
+.relatedLabel {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+.relatedCopy {
+  margin: 0;
+  color: var(--kinetus-text-primary);
+}
+
+.relatedLinks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.relatedLinks > li > a {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  /* Channels 580 / related copy beside, on the site grid. */
+  .body {
+    grid-template-columns: minmax(0, var(--kinetus-measure-body)) minmax(0, 1fr);
+    column-gap: var(--kinetus-space-16);
+  }
+
+  .channels {
+    padding: var(--kinetus-space-8);
+  }
+
+  .relatedLinks {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kinetus-space-4);
+  }
+
+  .relatedLinks > li > a {
+    width: auto;
+  }
+}

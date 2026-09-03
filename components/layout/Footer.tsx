@@ -43,7 +43,6 @@ function FooterColumn({ heading, links }: FooterColumnProps) {
  *  - Finish: approved Figma Footer (43:143) / Mobile footer (64:55) — tokens only.
  *  - Catalogue column is database-driven (published collections, cached) per Figma
  *    column order: Catalogue · Company · Policies · Contact.
- *  - Links to Phase 6 routes carry prefetch={false} until those routes exist.
  *  - No business address, phone number or email is rendered — none is confirmed.
  */
 export async function Footer() {

@@ -46,7 +46,7 @@ export function ProductGrid({
         <ul className={styles.grid}>
           {products.map((product, index) => (
             <li key={product.id} className={styles.item} data-reveal="">
-              <ProductCard product={product} priority={index < FIRST_ROW_SIZE} />
+              <ProductCard product={product} priority={index < FIRST_ROW_SIZE} index={index + 1} />
             </li>
           ))}
         </ul>
