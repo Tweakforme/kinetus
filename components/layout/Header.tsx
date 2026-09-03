@@ -35,7 +35,13 @@ export function Header() {
             <ul className={styles.navList}>
               {PRIMARY_NAV.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className={`type-label ${styles.navLink}`}>
+                  {/* prefetch={false}: target routes do not exist yet, so viewport prefetching
+                      would log 404s on every page load. TODO: remove once the routes are built. */}
+                  <Link
+                    href={link.href}
+                    prefetch={false}
+                    className={`type-label ${styles.navLink}`}
+                  >
                     {link.label}
                   </Link>
                 </li>

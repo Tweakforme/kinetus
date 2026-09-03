@@ -105,6 +105,7 @@ export function MobileNav({ links }: MobileNavProps) {
                   height={1038}
                   sizes="70px"
                   className={styles.logo}
+                  loading="eager"
                 />
               </Link>
               <button
@@ -123,7 +124,13 @@ export function MobileNav({ links }: MobileNavProps) {
             <ul className={styles.list}>
               {links.map((link) => (
                 <li key={link.href} className={styles.item}>
-                  <Link href={link.href} className={`type-h3 ${styles.link}`} onClick={close}>
+                  {/* prefetch={false}: target routes do not exist yet (see Header.tsx). */}
+                  <Link
+                    href={link.href}
+                    prefetch={false}
+                    className={`type-h3 ${styles.link}`}
+                    onClick={close}
+                  >
                     {link.label}
                   </Link>
                 </li>

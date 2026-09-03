@@ -1,5 +1,6 @@
+import { Fragment } from "react";
 import { Container } from "./Container";
-import { RESEARCH_USE_COPY } from "@/lib/site";
+import { RESEARCH_USE_COPY_LINES } from "@/lib/site";
 import styles from "./ResearchUseBand.module.css";
 
 /**
@@ -12,7 +13,14 @@ export function ResearchUseBand() {
   return (
     <section className={styles.band} aria-label="Research use notice">
       <Container>
-        <p className={`type-h3 ${styles.statement}`}>{RESEARCH_USE_COPY}</p>
+        <p className={`type-h3 ${styles.statement}`}>
+          {RESEARCH_USE_COPY_LINES.map((line, index) => (
+            <Fragment key={line}>
+              {index > 0 ? " " : null}
+              <span className={styles.line}>{line}</span>
+            </Fragment>
+          ))}
+        </p>
       </Container>
       <div className={styles.decor} aria-hidden="true">
         <span className={styles.decorHex} />
