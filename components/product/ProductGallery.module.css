@@ -1,0 +1,93 @@
+/* Figma gallery: column, gap space-2 (mobile) / space-4 (desktop). */
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+  min-width: 0;
+}
+
+/* Square media panel: bg/subtle, radius/lg, artwork inset by space-6 (Figma 68:170). */
+.primary {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--kinetus-bg-subtle);
+  border-radius: var(--kinetus-radius-lg);
+  overflow: hidden;
+}
+
+.primaryInner {
+  position: absolute;
+  inset: var(--kinetus-space-6);
+}
+
+/*
+ * The client renders are opaque with near-white backgrounds. Darken-blending them onto
+ * the subtle panel clamps those backgrounds to the panel colour (the product itself is
+ * darker and unaffected) without editing the client's files.
+ */
+.image {
+  object-fit: contain;
+  mix-blend-mode: darken;
+}
+
+/* Thumbnail row: 4 across, gap space-2 (mobile) / space-4 (desktop). */
+.thumbs {
+  --thumb-columns: 4;
+
+  display: grid;
+  grid-template-columns: repeat(var(--thumb-columns), minmax(0, 1fr));
+  gap: var(--kinetus-space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.thumbItem {
+  min-width: 0;
+}
+
+/* Figma thumb: bg/subtle, radius/md, 1px border/subtle; active 2px brand/teal. ≥44px tall. */
+.thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: var(--kinetus-tap-target);
+  padding: 0;
+  background: var(--kinetus-bg-subtle);
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.thumb:hover {
+  border-color: var(--kinetus-border-default);
+}
+
+.thumbActive,
+.thumbActive:hover {
+  border: 2px solid var(--kinetus-brand-teal);
+}
+
+.thumbInner {
+  position: absolute;
+  inset: var(--kinetus-space-2);
+}
+
+@media (min-width: 768px) {
+  .gallery {
+    gap: var(--kinetus-space-4);
+  }
+
+  .thumbs {
+    gap: var(--kinetus-space-4);
+  }
+
+  /* Figma 26:14: 168×128 thumbnails on desktop. */
+  .thumb {
+    aspect-ratio: 21 / 16;
+  }
+}

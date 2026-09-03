@@ -1,0 +1,37 @@
+/* Top rule, hairline rules between rows, no zebra striping (Figma 28:10 / 69:161). */
+.table {
+  margin: 0;
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+/* Mobile: stacked key above value, gap space-2, py space-4. */
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-2);
+  padding-block: var(--kinetus-space-4);
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+}
+
+.key {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+.value {
+  margin: 0;
+  color: var(--kinetus-text-primary);
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 768px) {
+  /* Desktop: key column 372 of 1240 (Figma 28:12), value fills, gap space-6, baseline aligned. */
+  .row {
+    --spec-key-track: 372fr;
+    --spec-value-track: 844fr;
+
+    grid-template-columns: minmax(0, var(--spec-key-track)) minmax(0, var(--spec-value-track));
+    column-gap: var(--kinetus-space-6);
+    align-items: baseline;
+  }
+}

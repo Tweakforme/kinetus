@@ -1,15 +1,24 @@
 import type { MetadataRoute } from "next";
+import { getProductsForSitemap } from "@/lib/products";
 import { canonicalUrl } from "@/lib/seo";
 import { STATIC_ROUTES } from "@/lib/site";
 
 /**
- * Sitemap — static top-level routes only for now.
+ * Sitemap — static top-level routes plus every PUBLISHED product with its real
+ * last-modified date.
  *
- * TODO (later phases): extend with dynamic product and collection slugs
- * (`/products/[slug]`, `/collections/[slug]`) pulled from the database, PUBLISHED only.
+ * TODO (Phase 4): add published collection slugs (`/collections/[slug]`).
  */
-export default function sitemap(): MetadataRoute.Sitemap {
-  return STATIC_ROUTES.map((path) => ({
-    url: canonicalUrl(path),
-  }));
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const products = await getProductsForSitemap();
+
+  return [
+    ...STATIC_ROUTES.map((path) => ({
+      url: canonicalUrl(path),
+    })),
+    ...products.map((product) => ({
+      url: canonicalUrl(`/products/${product.slug}`),
+      lastModified: product.updatedAt,
+    })),
+  ];
 }

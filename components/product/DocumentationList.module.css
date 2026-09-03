@@ -1,0 +1,83 @@
+/* Top rule, one hairline per row (Figma 29:10 / 69:186). */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+/* icon · info · download; mobile py space-3, desktop py space-4. */
+.row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--kinetus-space-3);
+  padding-block: var(--kinetus-space-3);
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+}
+
+.docIcon {
+  flex: 0 0 auto;
+  color: var(--kinetus-brand-teal);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-1);
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kinetus-space-3);
+}
+
+.title {
+  color: var(--kinetus-text-primary);
+}
+
+/* Badge (Figma 29:19): bg brand/teal-light, brand/teal label, px space-2, py space-1, radius/sm. */
+.badge {
+  display: inline-block;
+  padding: var(--kinetus-space-1) var(--kinetus-space-2);
+  background: var(--kinetus-brand-teal-light);
+  color: var(--kinetus-brand-teal);
+  border-radius: var(--kinetus-radius-sm);
+}
+
+.meta {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+.metaSeparator {
+  margin-inline: var(--kinetus-space-3);
+}
+
+/* Download: 44×44 tap target (Figma 69:194), brand/teal icon. */
+.download {
+  --download-target: 44px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--download-target);
+  height: var(--download-target);
+  color: var(--kinetus-brand-teal);
+  border-radius: var(--kinetus-radius-sm);
+  transition: background-color 0.15s ease;
+}
+
+.download:hover {
+  background: var(--kinetus-brand-teal-light);
+}
+
+@media (min-width: 768px) {
+  .row {
+    column-gap: var(--kinetus-space-4);
+    padding-block: var(--kinetus-space-4);
+  }
+}
