@@ -50,9 +50,9 @@
   }
 }
 
+/* Block, not flex: the Container's auto side margins would otherwise shrink-wrap it. */
 .top {
-  display: flex;
-  flex-direction: column;
+  flex: 0 0 auto;
 }
 
 /* Drawer top bar mirrors the header bar: py space-2, 48px row, 1px border/subtle. */

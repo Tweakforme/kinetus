@@ -12,7 +12,8 @@ import styles from "./Footer.module.css";
  * Site footer.
  *  - Arrangement: client-confirmed deck (legal/policy link list; company links).
  *  - Finish: approved Figma Footer (43:143) / Mobile footer (64:55) — tokens only.
- *  - Links point at routes built in later phases (they 404 until then).
+ *  - Links point at routes built in later phases (they 404 until then); prefetch={false}
+ *    keeps viewport prefetching from logging 404s. TODO: remove once the routes exist.
  *  - No business address, phone number or email is rendered — none is confirmed.
  */
 export function Footer() {
@@ -28,7 +29,7 @@ export function Footer() {
             <ul className={styles.list}>
               {FOOTER_COMPANY_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className={`type-body-s ${styles.link}`}>
+                  <Link href={link.href} prefetch={false} className={`type-body-s ${styles.link}`}>
                     {link.label}
                   </Link>
                 </li>
@@ -41,7 +42,7 @@ export function Footer() {
             <ul className={styles.list}>
               {FOOTER_POLICY_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className={`type-body-s ${styles.link}`}>
+                  <Link href={link.href} prefetch={false} className={`type-body-s ${styles.link}`}>
                     {link.label}
                   </Link>
                 </li>

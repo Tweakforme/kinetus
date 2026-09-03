@@ -1,5 +1,6 @@
+import { Fragment } from "react";
 import { Container } from "./Container";
-import { RESEARCH_USE_COPY } from "@/lib/site";
+import { RESEARCH_USE_COPY_LINES } from "@/lib/site";
 import styles from "./ResearchUseStrip.module.css";
 
 /**
@@ -13,7 +14,14 @@ export function ResearchUseStrip() {
   return (
     <div className={styles.strip}>
       <Container>
-        <p className={`type-label ${styles.text}`}>{RESEARCH_USE_COPY}</p>
+        <p className={`type-label ${styles.text}`}>
+          {RESEARCH_USE_COPY_LINES.map((line, index) => (
+            <Fragment key={line}>
+              {index > 0 ? " " : null}
+              <span className={styles.line}>{line}</span>
+            </Fragment>
+          ))}
+        </p>
       </Container>
     </div>
   );

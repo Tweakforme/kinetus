@@ -8,8 +8,16 @@ export const SITE_NAME = "Kinetus BioLabs";
 /**
  * Research-use disclaimer. Exact copy sourced from the client's packaging and the
  * "Kinetus RESEARCH USE - PRODUCT DISCLAIMER" document. Do not paraphrase.
+ *
+ * Kept as its two sentences so narrow layouts can wrap at the sentence boundary;
+ * RESEARCH_USE_COPY is the joined, exact approved wording.
  */
-export const RESEARCH_USE_COPY = "For Research Use Only. Not for Human or Animal Use.";
+export const RESEARCH_USE_COPY_LINES = [
+  "For Research Use Only.",
+  "Not for Human or Animal Use.",
+] as const;
+
+export const RESEARCH_USE_COPY = RESEARCH_USE_COPY_LINES.join(" ");
 
 export type NavLink = {
   label: string;

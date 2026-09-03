@@ -14,6 +14,11 @@
   max-width: var(--kinetus-measure-body);
 }
 
+/* Wrap only at the sentence boundary. */
+.line {
+  white-space: nowrap;
+}
+
 /*
  * Decorative molecular linework at 5% opacity, exported from the approved frame
  * (node 43:130 desktop / 65:327 mobile). Geometry below is the frame's own placement:
