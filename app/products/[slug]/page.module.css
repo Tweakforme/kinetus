@@ -1,0 +1,203 @@
+/*
+ * Product detail page rhythm (Figma 22:3 desktop / 55:7 mobile):
+ * top offset space-8; sections separated by space-12 (mobile) / space-32 (desktop).
+ */
+/*
+ * Block flow (not flex/grid): the Container's auto side margins would shrink-wrap each
+ * section inside a flex or grid parent. Section spacing is applied as margin instead.
+ */
+.page {
+  display: block;
+  padding-block: var(--kinetus-space-8) var(--kinetus-space-12);
+}
+
+.page > * + * {
+  margin-top: var(--kinetus-space-12);
+}
+
+/* Breadcrumb + hero row, gap space-6 (mobile) / space-8 (desktop). */
+.heroBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-6);
+}
+
+/* Mobile: stacked. Desktop: gallery 720 / details 456 of 1240 with a space-16 gutter. */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-6);
+  align-items: start;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-6);
+  min-width: 0;
+}
+
+/* Identity (Figma 27:3): eyebrow, name, short description, gap space-4. */
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+.name {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Short description: Body (mobile) / Body L (desktop), secondary. */
+.shortDescription {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-body-size);
+  line-height: var(--kinetus-type-body-line-height);
+  font-weight: var(--kinetus-type-body-weight);
+}
+
+/*
+ * CTA — Figma Button / Secondary (5:19): 1px brand/teal border, brand/teal label,
+ * px space-6, py space-4, radius/sm. Full width on mobile, content width on desktop.
+ */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--kinetus-tap-target);
+  padding: var(--kinetus-space-4) var(--kinetus-space-6);
+  border: 1px solid var(--kinetus-brand-teal);
+  border-radius: var(--kinetus-radius-sm);
+  color: var(--kinetus-brand-teal);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.cta:hover {
+  background: var(--kinetus-brand-teal-light);
+}
+
+/* Generic section: heading + content, gap space-6 (mobile) / space-8 (desktop). */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-6);
+}
+
+.sectionHeading {
+  margin: 0;
+  color: var(--kinetus-text-primary);
+}
+
+/* Description body at the canonical 580px measure, secondary colour (Figma 29:65). */
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-6);
+  max-width: var(--kinetus-measure-body);
+  color: var(--kinetus-text-secondary);
+}
+
+.description p {
+  margin: 0;
+}
+
+/* Collections (Figma 30:24 / 70:179): "Part of" label then tertiary link buttons, gap space-4. */
+.collections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+}
+
+.collectionList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kinetus-space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Button / Tertiary (5:36): px space-6, py space-4, radius/sm, primary text; hover bg/subtle. */
+.collectionLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--kinetus-tap-target);
+  padding: var(--kinetus-space-4) var(--kinetus-space-6);
+  border-radius: var(--kinetus-radius-sm);
+  color: var(--kinetus-text-primary);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.collectionLink:hover {
+  background: var(--kinetus-bg-subtle);
+}
+
+/* Related products: 2 columns gap space-4 (mobile); auto-fill from the 260px card media on desktop. */
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--kinetus-space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.relatedItem {
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding-block: var(--kinetus-space-8) var(--kinetus-space-32);
+  }
+
+  .page > * + * {
+    margin-top: var(--kinetus-space-32);
+  }
+
+  .heroBlock {
+    gap: var(--kinetus-space-8);
+  }
+
+  .hero {
+    --hero-gallery-track: 720fr;
+    --hero-details-track: 456fr;
+
+    grid-template-columns: minmax(0, var(--hero-gallery-track)) minmax(0, var(--hero-details-track));
+    gap: var(--kinetus-space-16);
+  }
+
+  .details {
+    gap: var(--kinetus-space-8);
+  }
+
+  .shortDescription {
+    font-size: var(--kinetus-type-body-l-size);
+    line-height: var(--kinetus-type-body-l-line-height);
+    font-weight: var(--kinetus-type-body-l-weight);
+  }
+
+  .cta {
+    align-self: flex-start;
+  }
+
+  .section {
+    gap: var(--kinetus-space-8);
+  }
+
+  .relatedGrid {
+    --card-min-width: 260px;
+
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    gap: var(--kinetus-space-6);
+  }
+}

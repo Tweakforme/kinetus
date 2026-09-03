@@ -1,0 +1,50 @@
+/* Figma 68:164 (mobile: Caption) / 26:4 (desktop: Body S), gap space-2, secondary text. */
+.breadcrumb {
+  color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-caption-size);
+  line-height: var(--kinetus-type-caption-line-height);
+  font-weight: var(--kinetus-type-caption-weight);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kinetus-space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kinetus-space-2);
+  min-width: 0;
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.link:hover {
+  color: var(--kinetus-brand-teal);
+}
+
+.separator {
+  color: var(--kinetus-text-secondary);
+}
+
+.current {
+  color: var(--kinetus-text-primary);
+}
+
+@media (min-width: 768px) {
+  .breadcrumb {
+    font-size: var(--kinetus-type-body-s-size);
+    line-height: var(--kinetus-type-body-s-line-height);
+    font-weight: var(--kinetus-type-body-s-weight);
+  }
+}

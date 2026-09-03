@@ -1,0 +1,79 @@
+/*
+ * Product Card (Figma 24:18 / 63:73): bg/base, 1px border/subtle, radius/md, padding space-4,
+ * stack gap space-3 (mobile) / space-4 (desktop). Hover: border/default only.
+ */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  height: 100%;
+  padding: var(--kinetus-space-4);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-md);
+  color: var(--kinetus-text-primary);
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  border-color: var(--kinetus-border-default);
+}
+
+/* Square media on bg/subtle, radius/md, artwork inset space-3 (mobile) / space-6 (desktop). */
+.media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--kinetus-bg-subtle);
+  border-radius: var(--kinetus-radius-md);
+  overflow: hidden;
+}
+
+.mediaInner {
+  position: absolute;
+  inset: var(--kinetus-space-3);
+}
+
+/* Contained, never cropped; darken-blend hides the renders' opaque near-white backgrounds. */
+.image {
+  object-fit: contain;
+  mix-blend-mode: darken;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  min-width: 0;
+}
+
+/* Name wraps to at most two lines. */
+.name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  color: var(--kinetus-text-primary);
+}
+
+.presentation {
+  color: var(--kinetus-text-secondary);
+}
+
+.price {
+  color: var(--kinetus-text-primary);
+}
+
+@media (min-width: 768px) {
+  .card {
+    gap: var(--kinetus-space-4);
+  }
+
+  .mediaInner {
+    inset: var(--kinetus-space-6);
+  }
+}
