@@ -168,11 +168,18 @@
     gap: var(--kinetus-space-8);
   }
 
+  /*
+   * Figma 26:2 proportions (720 / 456 of 1240). The details floor keeps the H1 and price
+   * readable at tablet widths, where the container is only 608px (no tablet frame exists).
+   */
   .hero {
     --hero-gallery-track: 720fr;
     --hero-details-track: 456fr;
+    --hero-details-min: 300px;
 
-    grid-template-columns: minmax(0, var(--hero-gallery-track)) minmax(0, var(--hero-details-track));
+    grid-template-columns:
+      minmax(0, var(--hero-gallery-track))
+      minmax(min(100%, var(--hero-details-min)), var(--hero-details-track));
     gap: var(--kinetus-space-16);
   }
 

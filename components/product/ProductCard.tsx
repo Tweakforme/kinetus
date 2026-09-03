@@ -19,9 +19,10 @@ export function ProductCard({ product }: ProductCardProps) {
       <span className={styles.media}>
         {product.imageUrl && (
           <span className={styles.mediaInner}>
+            {/* Decorative inside the link: the visible name already labels the target. */}
             <Image
               src={product.imageUrl}
-              alt={product.imageAlt}
+              alt=""
               fill
               sizes="(min-width: 768px) 260px, 45vw"
               className={styles.image}
