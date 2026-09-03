@@ -39,12 +39,17 @@
   border-radius: var(--kinetus-radius-sm);
   cursor: pointer;
   transition:
-    border-color 0.15s ease,
-    background-color 0.15s ease;
+    border-color var(--motion-duration) var(--motion-ease),
+    background-color var(--motion-duration) var(--motion-ease);
 }
 
 .chip:hover {
   border-color: var(--kinetus-brand-teal);
+}
+
+.chip:active {
+  border-color: var(--kinetus-brand-teal);
+  background: var(--kinetus-brand-teal-light);
 }
 
 .chipSelected,

@@ -68,10 +68,11 @@
   height: var(--download-target);
   color: var(--kinetus-brand-teal);
   border-radius: var(--kinetus-radius-sm);
-  transition: background-color 0.15s ease;
+  transition: background-color var(--motion-duration) var(--motion-ease);
 }
 
-.download:hover {
+.download:hover,
+.download:active {
   background: var(--kinetus-brand-teal-light);
 }
 

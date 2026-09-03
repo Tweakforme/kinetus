@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { blurPlaceholder } from "@/lib/images";
 import styles from "./ProductGallery.module.css";
 
 export type GalleryImage = {
@@ -49,6 +50,8 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
             sizes="(min-width: 768px) 720px, calc(100vw - 40px)"
             className={styles.image}
             priority={activeIndex === 0}
+            placeholder={blurPlaceholder(active.url) ? "blur" : "empty"}
+            blurDataURL={blurPlaceholder(active.url)}
           />
         </div>
       </div>
@@ -73,6 +76,8 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                       fill
                       sizes="(min-width: 768px) 168px, 25vw"
                       className={styles.image}
+                      placeholder={blurPlaceholder(image.url) ? "blur" : "empty"}
+                      blurDataURL={blurPlaceholder(image.url)}
                     />
                   </span>
                 </button>

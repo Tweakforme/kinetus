@@ -3,7 +3,18 @@
 /*
  * Global base styles. All colour, spacing, radius and type values come from
  * app/tokens.css. Breakpoint: 768px (mobile-first).
+ *
+ * Motion (Phase 4.5 craft pass): one shared curve and duration for every interactive
+ * state, a scroll reveal for content sections, and a single reduced-motion guard that
+ * neutralises all of it.
  */
+
+:root {
+  --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-duration: 200ms;
+  --motion-reveal-duration: 450ms;
+  --motion-reveal-distance: 14px;
+}
 
 *,
 *::before,
@@ -14,6 +25,7 @@
 html {
   height: 100%;
   color-scheme: light;
+  scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -36,6 +48,7 @@ body {
   font-weight: var(--kinetus-type-body-weight);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Lock page scroll while the mobile navigation drawer is open. */
@@ -62,9 +75,26 @@ button {
   color: inherit;
 }
 
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+::selection {
+  background: var(--kinetus-brand-teal-light);
+  color: var(--kinetus-text-primary);
+}
+
+/* One focus treatment sitewide: brand ring, never the browser default. */
 :focus-visible {
   outline: 2px solid var(--kinetus-brand-teal);
   outline-offset: 2px;
+  border-radius: var(--kinetus-radius-sm);
 }
 
 /* Skip link: visually hidden until focused. */
@@ -79,11 +109,29 @@ button {
   border: 1px solid var(--kinetus-border-default);
   border-radius: var(--kinetus-radius-sm);
   transform: translateY(-200%);
-  transition: transform 0.15s ease;
+  transition: transform var(--motion-duration) var(--motion-ease);
 }
 
 .skip-link:focus {
   transform: none;
+}
+
+/* ---------- Scroll reveal ----------
+ * Server-rendered as data-reveal="" (visible). RevealObserver marks elements that are
+ * below the fold "pending" (hidden) and flips them to "in" as they enter the viewport,
+ * staggering siblings that arrive together. Without JavaScript nothing is hidden.
+ */
+[data-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(var(--motion-reveal-distance));
+}
+
+[data-reveal="in"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--motion-reveal-duration) var(--motion-ease),
+    transform var(--motion-reveal-duration) var(--motion-ease);
 }
 
 /* ---------- Typography classes (map 1:1 to the Figma text styles) ----------
@@ -94,6 +142,7 @@ button {
   line-height: var(--kinetus-type-mobile-display-line-height);
   font-weight: var(--kinetus-type-mobile-display-weight);
   letter-spacing: var(--kinetus-type-mobile-display-letter-spacing);
+  text-wrap: balance;
 }
 
 .type-h1 {
@@ -101,6 +150,7 @@ button {
   line-height: var(--kinetus-type-mobile-h1-line-height);
   font-weight: var(--kinetus-type-mobile-h1-weight);
   letter-spacing: var(--kinetus-type-mobile-h1-letter-spacing);
+  text-wrap: balance;
 }
 
 .type-h2 {
@@ -108,6 +158,7 @@ button {
   line-height: var(--kinetus-type-mobile-h2-line-height);
   font-weight: var(--kinetus-type-mobile-h2-weight);
   letter-spacing: var(--kinetus-type-mobile-h2-letter-spacing);
+  text-wrap: balance;
 }
 
 .type-h3 {
@@ -115,6 +166,7 @@ button {
   line-height: var(--kinetus-type-mobile-h3-line-height);
   font-weight: var(--kinetus-type-mobile-h3-weight);
   letter-spacing: var(--kinetus-type-mobile-h3-letter-spacing);
+  text-wrap: balance;
 }
 
 .type-body-l {
@@ -122,6 +174,7 @@ button {
   line-height: var(--kinetus-type-body-l-line-height);
   font-weight: var(--kinetus-type-body-l-weight);
   letter-spacing: var(--kinetus-type-body-l-letter-spacing);
+  text-wrap: pretty;
 }
 
 .type-body {
@@ -129,6 +182,7 @@ button {
   line-height: var(--kinetus-type-body-line-height);
   font-weight: var(--kinetus-type-body-weight);
   letter-spacing: var(--kinetus-type-body-letter-spacing);
+  text-wrap: pretty;
 }
 
 .type-body-s {
@@ -136,6 +190,7 @@ button {
   line-height: var(--kinetus-type-body-s-line-height);
   font-weight: var(--kinetus-type-body-s-weight);
   letter-spacing: var(--kinetus-type-body-s-letter-spacing);
+  text-wrap: pretty;
 }
 
 .type-caption {
@@ -143,6 +198,7 @@ button {
   line-height: var(--kinetus-type-caption-line-height);
   font-weight: var(--kinetus-type-caption-weight);
   letter-spacing: var(--kinetus-type-caption-letter-spacing);
+  text-wrap: pretty;
 }
 
 .type-label {
@@ -151,6 +207,11 @@ button {
   font-weight: var(--kinetus-type-label-weight);
   letter-spacing: var(--kinetus-type-label-letter-spacing);
   text-transform: var(--kinetus-type-label-transform);
+}
+
+/* Prices, counts and numeric data line up on tabular figures. */
+.numeric {
+  font-variant-numeric: tabular-nums;
 }
 
 @media (min-width: 768px) {
@@ -180,5 +241,35 @@ button {
     line-height: var(--kinetus-type-h3-line-height);
     font-weight: var(--kinetus-type-h3-weight);
     letter-spacing: var(--kinetus-type-h3-letter-spacing);
+  }
+}
+
+/* ---------- Reduced motion: everything stops ----------
+ * Covers every module transition (they all use --motion-*), the scroll reveal, and
+ * smooth scrolling. Elements pending reveal are shown immediately.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration: 0ms;
+    --motion-reveal-duration: 0ms;
+    --motion-reveal-distance: 0px;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  [data-reveal="pending"] {
+    opacity: 1;
+    transform: none;
   }
 }

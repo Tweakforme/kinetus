@@ -51,15 +51,20 @@ export default async function CollectionsPage() {
     <ListingPage>
       <ListingIntro eyebrow="Catalogue" title={TITLE} intro={INTRO} />
 
-      <Container as="section" className={styles.section} aria-label="All collections">
-        <p className={`type-body-s ${styles.count}`}>
+      <Container
+        as="section"
+        className={styles.section}
+        aria-label="All collections"
+        data-reveal=""
+      >
+        <p className={`type-body-s numeric ${styles.count}`}>
           Showing {count} {count === 1 ? "collection" : "collections"}
         </p>
 
         {count > 0 ? (
           <ul className={styles.grid}>
             {collections.map((collection) => (
-              <li key={collection.id} className={styles.item}>
+              <li key={collection.id} className={styles.item} data-reveal="">
                 <CollectionCard collection={collection} />
               </li>
             ))}

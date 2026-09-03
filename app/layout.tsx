@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { ResearchUseBand } from "@/components/layout/ResearchUseBand";
 import { Footer } from "@/components/layout/Footer";
+import { RevealObserver } from "@/components/motion/RevealObserver";
 import { SiteJsonLd } from "@/components/seo/SiteJsonLd";
 import { DEFAULT_DESCRIPTION, getSiteUrl } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ResearchUseBand />
         <Footer />
         <SiteJsonLd />
+        <RevealObserver />
       </body>
     </html>
   );

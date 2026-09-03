@@ -97,9 +97,11 @@ export function VariantPanel({ variants }: VariantPanelProps) {
 
       <div className={styles.price} aria-live="polite" aria-atomic="true">
         <p className={styles.priceRow}>
-          <span className={`type-h2 ${styles.priceValue}`}>{formatCad(selected.priceCents)}</span>
+          <span className={`type-h2 numeric ${styles.priceValue}`}>
+            {formatCad(selected.priceCents)}
+          </span>
           {selected.compareAtCents !== null && (
-            <s className={styles.wasPrice}>
+            <s className={`numeric ${styles.wasPrice}`}>
               <span className={styles.visuallyHidden}>Previously </span>
               {formatCad(selected.compareAtCents)}
             </s>

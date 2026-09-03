@@ -19,8 +19,7 @@ export function ProductBreadcrumb({ productName }: ProductBreadcrumbProps) {
           <span aria-hidden="true" className={styles.separator}>
             ›
           </span>
-          {/* /products is built in Phase 4; prefetch={false} avoids 404 prefetches until then. */}
-          <Link href="/products" prefetch={false} className={styles.link}>
+          <Link href="/products" className={styles.link}>
             Products
           </Link>
         </li>

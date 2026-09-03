@@ -77,10 +77,11 @@
   border-radius: var(--kinetus-radius-sm);
   color: var(--kinetus-brand-teal);
   text-decoration: none;
-  transition: background-color 0.15s ease;
+  transition: background-color var(--motion-duration) var(--motion-ease);
 }
 
-.cta:hover {
+.cta:hover,
+.cta:active {
   background: var(--kinetus-brand-teal-light);
 }
 
@@ -134,10 +135,11 @@
   border-radius: var(--kinetus-radius-sm);
   color: var(--kinetus-text-primary);
   text-decoration: none;
-  transition: background-color 0.15s ease;
+  transition: background-color var(--motion-duration) var(--motion-ease);
 }
 
-.collectionLink:hover {
+.collectionLink:hover,
+.collectionLink:active {
   background: var(--kinetus-bg-subtle);
 }
 

@@ -49,7 +49,7 @@
   border-radius: var(--kinetus-radius-sm);
   color: var(--kinetus-brand-teal);
   text-decoration: none;
-  transition: background-color 0.15s ease;
+  transition: background-color var(--motion-duration) var(--motion-ease);
 }
 
 .emptyLink:hover {

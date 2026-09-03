@@ -20,7 +20,7 @@ export function CollectionLinks({ heading, links, headingId }: CollectionLinksPr
   }
 
   return (
-    <Container as="section" className={styles.section} aria-labelledby={headingId}>
+    <Container as="section" className={styles.section} aria-labelledby={headingId} data-reveal="">
       <p id={headingId} className={`type-label ${styles.heading}`}>
         {heading}
       </p>

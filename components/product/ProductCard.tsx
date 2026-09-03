@@ -1,10 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
+import { blurPlaceholder } from "@/lib/images";
 import type { ProductCardModel } from "@/lib/products";
 import styles from "./ProductCard.module.css";
 
 type ProductCardProps = {
   product: ProductCardModel;
+  /** Above-the-fold cards (first grid row) load eagerly with high fetch priority. */
+  priority?: boolean;
 };
 
 /**
@@ -13,7 +16,9 @@ type ProductCardProps = {
  * cannot lock an aspect ratio; here the media area is `aspect-ratio: 1` with the artwork
  * contained on bg/subtle. Hover: border/subtle → border/default, no lift, no shadow.
  */
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
+  const blur = product.imageUrl ? blurPlaceholder(product.imageUrl) : undefined;
+
   return (
     <Link href={product.href} className={styles.card}>
       <span className={styles.media}>
@@ -26,6 +31,9 @@ export function ProductCard({ product }: ProductCardProps) {
               fill
               sizes="(min-width: 768px) 260px, 45vw"
               className={styles.image}
+              priority={priority}
+              placeholder={blur ? "blur" : "empty"}
+              blurDataURL={blur}
             />
           </span>
         )}
@@ -36,7 +44,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <span className={`type-caption ${styles.presentation}`}>{product.presentation}</span>
         )}
         {product.priceLabel && (
-          <span className={`type-h3 ${styles.price}`}>{product.priceLabel}</span>
+          <span className={`type-h3 numeric ${styles.price}`}>{product.priceLabel}</span>
         )}
       </span>
     </Link>

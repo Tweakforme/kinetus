@@ -44,10 +44,11 @@
   padding-block: var(--kinetus-space-3);
   color: var(--kinetus-text-secondary);
   text-decoration: none;
-  transition: color 0.15s ease;
+  transition: color var(--motion-duration) var(--motion-ease);
 }
 
-.link:hover {
+.link:hover,
+.link:active {
   color: var(--kinetus-brand-teal);
 }
 

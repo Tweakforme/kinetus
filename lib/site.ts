@@ -35,23 +35,16 @@ export const ALL_PRODUCTS_LINK: NavLink = { label: "View all products", href: "/
 /** Hub of every published collection. */
 export const ALL_COLLECTIONS_LINK: NavLink = { label: "All collections", href: "/collections" };
 
-/**
- * Static site links that follow the catalogue entries in the primary nav.
- * These routes are built in Phase 6 and will 404 until then.
- */
-export const SITE_NAV: NavLink[] = [
-  { label: "About", href: "/about", prefetch: false },
-  { label: "FAQ", href: "/faq", prefetch: false },
-  { label: "Contact", href: "/contact", prefetch: false },
-];
+/** Contact route is built in Phase 6 and will 404 until then. */
+export const CONTACT_LINK: NavLink = { label: "Contact", href: "/contact", prefetch: false };
 
 /**
  * Primary navigation = published collections (database-driven, display order) as
- * top-level items per the client-confirmed deck, then "View all products", then the
- * static site links.
+ * top-level items per the client-confirmed deck, then Contact. "View all products",
+ * About and FAQ live in the footer (Phase 4.5 craft pass) so the nav fits one line.
  */
 export function buildPrimaryNav(collectionLinks: NavLink[]): NavLink[] {
-  return [...collectionLinks, ALL_PRODUCTS_LINK, ...SITE_NAV];
+  return [...collectionLinks, CONTACT_LINK];
 }
 
 /** Footer "Catalogue" column = All products, each published collection, All collections. */

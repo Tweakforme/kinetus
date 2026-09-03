@@ -115,7 +115,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <article className={styles.page}>
-      <Container className={styles.heroBlock}>
+      <Container className={styles.heroBlock} data-reveal="">
         <ProductBreadcrumb productName={product.name} />
 
         <div className={styles.hero}>
@@ -149,7 +149,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </Container>
 
       {specRows.length > 0 && (
-        <Container as="section" className={styles.section} aria-labelledby="specifications-heading">
+        <Container
+          as="section"
+          className={styles.section}
+          data-reveal=""
+          aria-labelledby="specifications-heading"
+        >
           <h2 id="specifications-heading" className={`type-h2 ${styles.sectionHeading}`}>
             Specifications
           </h2>
@@ -158,7 +163,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
       )}
 
       {documents.length > 0 && (
-        <Container as="section" className={styles.section} aria-labelledby="documentation-heading">
+        <Container
+          as="section"
+          className={styles.section}
+          data-reveal=""
+          aria-labelledby="documentation-heading"
+        >
           <h2 id="documentation-heading" className={`type-h2 ${styles.sectionHeading}`}>
             Documentation
           </h2>
@@ -167,7 +177,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
       )}
 
       {paragraphs.length > 0 && (
-        <Container as="section" className={styles.section} aria-labelledby="description-heading">
+        <Container
+          as="section"
+          className={styles.section}
+          data-reveal=""
+          aria-labelledby="description-heading"
+        >
           <h2 id="description-heading" className={`type-h2 ${styles.sectionHeading}`}>
             Description
           </h2>
@@ -186,6 +201,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           as="section"
           className={styles.collections}
           aria-labelledby="collections-heading"
+          data-reveal=""
         >
           <p id="collections-heading" className={`type-label ${styles.eyebrow}`}>
             Part of
@@ -193,10 +209,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <ul className={styles.collectionList}>
             {collections.map((collection) => (
               <li key={collection.id}>
-                {/* /collections/[slug] is built in Phase 4; prefetch={false} until then. */}
                 <Link
                   href={`/collections/${collection.slug}`}
-                  prefetch={false}
                   className={`type-label ${styles.collectionLink}`}
                 >
                   {collection.name}
@@ -208,13 +222,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
       )}
 
       {related.length > 0 && (
-        <Container as="section" className={styles.section} aria-labelledby="related-heading">
+        <Container
+          as="section"
+          className={styles.section}
+          data-reveal=""
+          aria-labelledby="related-heading"
+        >
           <h2 id="related-heading" className={`type-h2 ${styles.sectionHeading}`}>
             Related products
           </h2>
           <ul className={styles.relatedGrid}>
             {related.map((item) => (
-              <li key={item.id} className={styles.relatedItem}>
+              <li key={item.id} className={styles.relatedItem} data-reveal="">
                 <ProductCard product={item} />
               </li>
             ))}

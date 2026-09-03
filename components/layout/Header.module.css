@@ -52,10 +52,11 @@
   padding-block: var(--kinetus-space-2);
   color: var(--kinetus-text-primary);
   text-decoration: none;
-  transition: color 0.15s ease;
+  transition: color var(--motion-duration) var(--motion-ease);
 }
 
-.navLink:hover {
+.navLink:hover,
+.navLink:active {
   color: var(--kinetus-brand-teal);
 }
 

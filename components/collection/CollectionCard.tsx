@@ -23,7 +23,7 @@ export function CollectionCard({ collection }: CollectionCardProps) {
         {collection.description && (
           <span className={`type-body-s ${styles.description}`}>{collection.description}</span>
         )}
-        <span className={`type-caption ${styles.count}`}>{countLabel}</span>
+        <span className={`type-caption numeric ${styles.count}`}>{countLabel}</span>
       </span>
       <span className={`type-label ${styles.cta}`}>View collection</span>
     </Link>

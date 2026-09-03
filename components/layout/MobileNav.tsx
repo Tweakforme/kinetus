@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Container } from "./Container";
 import { ResearchUseStrip } from "./ResearchUseStrip";
+import logo from "@/public/kinetus-logo.png";
 import { CloseIcon } from "@/components/icons/CloseIcon";
 import { MenuIcon } from "@/components/icons/MenuIcon";
 import { RESEARCH_USE_COPY, SITE_NAME, type NavLink } from "@/lib/site";
@@ -100,12 +101,11 @@ export function MobileNav({ links }: MobileNavProps) {
                 onClick={close}
               >
                 <Image
-                  src="/kinetus-logo.png"
+                  src={logo}
                   alt={SITE_NAME}
-                  width={1515}
-                  height={1038}
                   sizes="70px"
                   className={styles.logo}
+                  placeholder="blur"
                   loading="eager"
                 />
               </Link>
