@@ -1,0 +1,44 @@
+/* Figma Collection Card (40:57): bg/base, 1px border/subtle, radius/md, padding space-4, gap space-4. */
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--kinetus-space-4);
+  height: 100%;
+  padding: var(--kinetus-space-6) var(--kinetus-space-4);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-md);
+  color: var(--kinetus-text-primary);
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  border-color: var(--kinetus-border-default);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  min-width: 0;
+}
+
+.name {
+  color: var(--kinetus-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.description {
+  color: var(--kinetus-text-secondary);
+}
+
+.count {
+  color: var(--kinetus-text-secondary);
+}
+
+.cta {
+  color: var(--kinetus-brand-teal);
+}

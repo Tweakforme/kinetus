@@ -40,8 +40,8 @@ const productDetailInclude = {
 
 export type ProductDetail = Prisma.ProductGetPayload<{ include: typeof productDetailInclude }>;
 
-/** What a product card needs. */
-const productSummaryInclude = {
+/** What a product card needs. Shared with lib/collections.ts. */
+export const productSummaryInclude = {
   variants: {
     where: { status: VariantStatus.ACTIVE },
     orderBy: variantOrder,
@@ -101,6 +101,15 @@ export async function getRelatedProducts(
     include: productSummaryInclude,
     orderBy: [{ featured: "desc" }, { displayOrder: "asc" }, { name: "asc" }],
     take: limit,
+  });
+}
+
+/** Every published product with primary image and active variants — for /products. */
+export async function getAllProducts(): Promise<ProductSummary[]> {
+  return prisma.product.findMany({
+    where: { status: ProductStatus.PUBLISHED },
+    include: productSummaryInclude,
+    orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
   });
 }
 

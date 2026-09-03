@@ -34,10 +34,14 @@
   display: none;
 }
 
+/* Database-driven item count: wrap onto a second line rather than overflow. */
 .navList {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
-  gap: var(--kinetus-space-8);
+  column-gap: var(--kinetus-space-8);
+  row-gap: var(--kinetus-space-2);
   list-style: none;
   margin: 0;
   padding: 0;

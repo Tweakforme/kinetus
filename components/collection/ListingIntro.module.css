@@ -1,0 +1,54 @@
+/* Intro container: breadcrumb · copy · divider, gap space-6 (mobile) / space-8 (desktop). */
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-6);
+}
+
+/* Intro copy (Figma 50:125): eyebrow, name, paragraph, gap space-4. */
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+.title {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Body, secondary, at the canonical 580px measure. */
+.paragraph {
+  margin: 0;
+  max-width: var(--kinetus-measure-body);
+  color: var(--kinetus-text-secondary);
+}
+
+/* Diamond rule divider (Figma 50:129): rules on border/default, gap space-4. */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-4);
+}
+
+.rule {
+  flex: 1 0 0;
+  height: 1px;
+  background: var(--kinetus-border-default);
+}
+
+.diamond {
+  flex: 0 0 auto;
+  color: var(--kinetus-brand-teal);
+}
+
+@media (min-width: 768px) {
+  .intro {
+    gap: var(--kinetus-space-8);
+  }
+}

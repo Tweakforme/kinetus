@@ -1,22 +1,60 @@
 import Link from "next/link";
 import { Container } from "./Container";
+import { getNavCollections } from "@/lib/collections";
 import {
+  buildCatalogueLinks,
   FOOTER_COMPANY_LINKS,
   FOOTER_POLICY_LINKS,
   RESEARCH_USE_COPY,
   SITE_NAME,
+  type NavLink,
 } from "@/lib/site";
 import styles from "./Footer.module.css";
+
+type FooterColumnProps = {
+  heading: string;
+  links: NavLink[];
+};
+
+function FooterColumn({ heading, links }: FooterColumnProps) {
+  return (
+    <div className={styles.column}>
+      <h2 className={`type-label ${styles.heading}`}>{heading}</h2>
+      <ul className={styles.list}>
+        {links.map((link) => (
+          <li key={link.href}>
+            <Link
+              href={link.href}
+              prefetch={link.prefetch === false ? false : undefined}
+              className={`type-body-s ${styles.link}`}
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 /**
  * Site footer.
  *  - Arrangement: client-confirmed deck (legal/policy link list; company links).
  *  - Finish: approved Figma Footer (43:143) / Mobile footer (64:55) — tokens only.
- *  - Links point at routes built in later phases (they 404 until then); prefetch={false}
- *    keeps viewport prefetching from logging 404s. TODO: remove once the routes exist.
+ *  - Catalogue column is database-driven (published collections, cached) per Figma
+ *    column order: Catalogue · Company · Policies · Contact.
+ *  - Links to Phase 6 routes carry prefetch={false} until those routes exist.
  *  - No business address, phone number or email is rendered — none is confirmed.
  */
-export function Footer() {
+export async function Footer() {
+  const collections = await getNavCollections();
+  const catalogueLinks = buildCatalogueLinks(
+    collections.map((collection) => ({
+      label: collection.name,
+      href: `/collections/${collection.slug}`,
+    })),
+  );
+
   // TODO: confirm legal entity name for the copyright line with AJ/Mike before launch.
   const year = new Date().getFullYear();
 
@@ -24,31 +62,9 @@ export function Footer() {
     <footer className={styles.footer}>
       <Container className={styles.inner}>
         <div className={styles.columns}>
-          <div className={styles.column}>
-            <h2 className={`type-label ${styles.heading}`}>Company</h2>
-            <ul className={styles.list}>
-              {FOOTER_COMPANY_LINKS.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} prefetch={false} className={`type-body-s ${styles.link}`}>
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className={styles.column}>
-            <h2 className={`type-label ${styles.heading}`}>Policies</h2>
-            <ul className={styles.list}>
-              {FOOTER_POLICY_LINKS.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} prefetch={false} className={`type-body-s ${styles.link}`}>
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <FooterColumn heading="Catalogue" links={catalogueLinks} />
+          <FooterColumn heading="Company" links={FOOTER_COMPANY_LINKS} />
+          <FooterColumn heading="Policies" links={FOOTER_POLICY_LINKS} />
 
           {/* TODO: confirm public contact info with AJ/Mike — the approved frames show a
               "Contact" column (email · phone · location). Internal contact details must not
