@@ -13,6 +13,8 @@ import styles from "./ProductHero.module.css";
 
 type ProductHeroProps = {
   product: ProductDetail;
+  /** Images the page may show (product level plus active variants'), primary first. */
+  images: ProductDetail["images"];
   variants: SelectableVariant[];
   /** Slugs of the product's published collections, used for the eyebrow. */
   collectionSlugs: string[];
@@ -26,11 +28,17 @@ const HANDLING_COPY = `Supplied in a sealed glass vial and labelled with a batch
 /**
  * Product hero (deck slides 9 and 13): white ground, ghosted hex lattice behind the
  * render and a ghosted DNA helix at the page's right edge, three columns at desktop
- * (copy / render / sticky panel). The selected size drives both the size line here and
- * the price in the panel through ProductSelectionProvider; the heading, copy and render
- * stay server-rendered.
+ * (copy / render / sticky panel). The selected size drives the size line here, the price
+ * in the panel and the render (each strength shows its own render, or the product-level
+ * fallback) through ProductSelectionProvider; the heading and copy stay server-rendered.
  */
-export function ProductHero({ product, variants, collectionSlugs, headingId }: ProductHeroProps) {
+export function ProductHero({
+  product,
+  images,
+  variants,
+  collectionSlugs,
+  headingId,
+}: ProductHeroProps) {
   const isBlend = collectionSlugs.includes(COLLECTION_SLUGS.blends);
   const subhead = product.form ? `Research material · ${product.form}` : "Research material";
 
@@ -59,10 +67,11 @@ export function ProductHero({ product, variants, collectionSlugs, headingId }: P
 
             <div className={styles.render}>
               <ProductGallery
-                images={product.images.map((image) => ({
+                images={images.map((image) => ({
                   id: image.id,
                   url: image.url,
                   altText: image.altText,
+                  variantId: image.variantId,
                 }))}
                 productName={product.name}
               />

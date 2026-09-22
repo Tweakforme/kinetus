@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Inter, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { ResearchUseBand } from "@/components/layout/ResearchUseBand";
-import { Footer } from "@/components/layout/Footer";
-import { RevealObserver } from "@/components/motion/RevealObserver";
-import { SiteJsonLd } from "@/components/seo/SiteJsonLd";
 import { DEFAULT_DESCRIPTION, getSiteUrl } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 
@@ -62,6 +57,11 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Document shell only: fonts, global styles and the skip link. The public site's chrome
+ * lives in app/(site)/layout.tsx and the admin's in app/admin/layout.tsx; both render the
+ * <main id="main-content"> the skip link targets.
+ */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -72,12 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
-        <Header />
-        <main id="main-content">{children}</main>
-        <ResearchUseBand />
-        <Footer />
-        <SiteJsonLd />
-        <RevealObserver />
+        {children}
       </body>
     </html>
   );

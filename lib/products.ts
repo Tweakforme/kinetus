@@ -6,10 +6,16 @@ import {
   VariantStatus,
 } from "@prisma/client";
 import { cache } from "react";
+import { CACHE_TAGS, cachedQuery, regenerateAt } from "@/lib/cache";
 import { prisma } from "@/lib/db";
+import { imagesForVariant } from "@/lib/product-images";
 
 /* -------------------------------------------------------------------------- */
 /*  Queries                                                                   */
+/*                                                                            */
+/*  Catalogue reads go through cachedQuery (lib/cache.ts): cached until an    */
+/*  admin save expires their tags. Build-time helpers (static params) and the */
+/*  request-time search are not cached.                                       */
 /* -------------------------------------------------------------------------- */
 
 const variantOrder = [
@@ -54,64 +60,110 @@ export const productSummaryInclude = {
       saleEndsAt: true,
     },
   },
-  images: { orderBy: imageOrder, take: 1, select: { url: true, altText: true } },
+  // Every image with its variant: the card shows what the product page shows on load.
+  images: { orderBy: imageOrder, select: { url: true, altText: true, variantId: true } },
 } satisfies Prisma.ProductInclude;
 
 export type ProductSummary = Prisma.ProductGetPayload<{ include: typeof productSummaryInclude }>;
 
+const productBySlug = cachedQuery(
+  "product-by-slug",
+  (slug: string) =>
+    prisma.product.findFirst({
+      where: { slug, status: ProductStatus.PUBLISHED },
+      include: productDetailInclude,
+    }),
+  (slug) => [CACHE_TAGS.products, CACHE_TAGS.product(slug), CACHE_TAGS.collections],
+);
+
 /**
  * Published product by slug, with active variants (ordered), images (primary first),
  * product-level and variant-level documentation, and published collections.
- * Cached per request so generateMetadata and the page share one query.
+ * Deduplicated per request so generateMetadata and the page share one read.
  */
-export const getProductBySlug = cache(async (slug: string): Promise<ProductDetail | null> => {
-  return prisma.product.findFirst({
-    where: { slug, status: ProductStatus.PUBLISHED },
-    include: productDetailInclude,
-  });
-});
+export const getProductBySlug = cache((slug: string): Promise<ProductDetail | null> =>
+  productBySlug(slug),
+);
+
+const productRedirectTarget = cachedQuery(
+  "product-redirect",
+  async (fromSlug: string) => {
+    const redirect = await prisma.slugRedirect.findFirst({
+      where: { fromSlug, entityType: RedirectEntityType.PRODUCT },
+      select: { toSlug: true },
+    });
+    return redirect?.toSlug ?? null;
+  },
+  (fromSlug) => [CACHE_TAGS.products, CACHE_TAGS.product(fromSlug)],
+);
 
 /** Target slug for a renamed product, or null when no redirect is recorded. */
-export async function getProductRedirectTarget(fromSlug: string): Promise<string | null> {
-  const redirect = await prisma.slugRedirect.findFirst({
-    where: { fromSlug, entityType: RedirectEntityType.PRODUCT },
-    select: { toSlug: true },
-  });
-  return redirect?.toSlug ?? null;
+export function getProductRedirectTarget(fromSlug: string): Promise<string | null> {
+  return productRedirectTarget(fromSlug);
 }
 
 /** Published products sharing at least one published collection with the given product. */
-export async function getRelatedProducts(
-  productId: string,
-  limit: number,
-): Promise<ProductSummary[]> {
-  return prisma.product.findMany({
-    where: {
-      status: ProductStatus.PUBLISHED,
-      id: { not: productId },
-      collections: {
-        some: {
-          collection: {
-            status: CollectionStatus.PUBLISHED,
-            products: { some: { productId } },
+export const getRelatedProducts = cachedQuery(
+  "related-products",
+  (productId: string, limit: number): Promise<ProductSummary[]> =>
+    prisma.product.findMany({
+      where: {
+        status: ProductStatus.PUBLISHED,
+        id: { not: productId },
+        collections: {
+          some: {
+            collection: {
+              status: CollectionStatus.PUBLISHED,
+              products: { some: { productId } },
+            },
           },
         },
       },
-    },
-    include: productSummaryInclude,
-    orderBy: [{ featured: "desc" }, { displayOrder: "asc" }, { name: "asc" }],
-    take: limit,
-  });
-}
+      include: productSummaryInclude,
+      orderBy: [{ featured: "desc" }, { displayOrder: "asc" }, { name: "asc" }],
+      take: limit,
+    }),
+  () => [CACHE_TAGS.products, CACHE_TAGS.collections],
+);
 
-/** Every published product with primary image and active variants — for /products. */
-export async function getAllProducts(): Promise<ProductSummary[]> {
-  return prisma.product.findMany({
-    where: { status: ProductStatus.PUBLISHED },
-    include: productSummaryInclude,
-    orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
-  });
-}
+/** Every published product with its images and active variants, for /products. */
+export const getAllProducts = cachedQuery(
+  "all-products",
+  (): Promise<ProductSummary[]> =>
+    prisma.product.findMany({
+      where: { status: ProductStatus.PUBLISHED },
+      include: productSummaryInclude,
+      orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
+    }),
+  () => [CACHE_TAGS.products],
+);
+
+/**
+ * Featured products (featured = true) for the homepage. If none are flagged, the most
+ * recently created published products stand in, and the server log notes it.
+ */
+export const getFeaturedProducts = cachedQuery(
+  "featured-products",
+  async (limit: number): Promise<ProductSummary[]> => {
+    const featured = await prisma.product.findMany({
+      where: { status: ProductStatus.PUBLISHED, featured: true },
+      include: productSummaryInclude,
+      orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
+      take: limit,
+    });
+    if (featured.length > 0) {
+      return featured;
+    }
+    console.warn("[home] No featured products are published; showing the most recent instead.");
+    return prisma.product.findMany({
+      where: { status: ProductStatus.PUBLISHED },
+      include: productSummaryInclude,
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+  },
+  () => [CACHE_TAGS.products],
+);
 
 /** Slugs of every published product — for generateStaticParams. */
 export async function getAllProductSlugs(): Promise<string[]> {
@@ -123,14 +175,17 @@ export async function getAllProductSlugs(): Promise<string[]> {
   return rows.map((row) => row.slug);
 }
 
-/** Slug + last update of every published product — for the sitemap. */
-export async function getProductsForSitemap(): Promise<{ slug: string; updatedAt: Date }[]> {
-  return prisma.product.findMany({
-    where: { status: ProductStatus.PUBLISHED },
-    select: { slug: true, updatedAt: true },
-    orderBy: { slug: "asc" },
-  });
-}
+/** Slug + last update of every published product, for the sitemap. */
+export const getProductsForSitemap = cachedQuery(
+  "products-for-sitemap",
+  (): Promise<{ slug: string; updatedAt: Date }[]> =>
+    prisma.product.findMany({
+      where: { status: ProductStatus.PUBLISHED },
+      select: { slug: true, updatedAt: true },
+      orderBy: { slug: "asc" },
+    }),
+  () => [CACHE_TAGS.products],
+);
 
 /* -------------------------------------------------------------------------- */
 /*  Pricing (integer cents, CAD)                                              */
@@ -175,6 +230,30 @@ export function effectivePriceCents(variant: SaleFields, now: Date): number {
   return isSaleActive(variant, now) && variant.salePrice !== null
     ? variant.salePrice
     : variant.price;
+}
+
+/** The next moment after `now` at which any of these variants' sale starts or ends. */
+export function nextSaleBoundary(variants: SaleFields[], now: Date): Date | null {
+  let next: Date | null = null;
+  for (const variant of variants) {
+    if (variant.salePrice === null || variant.salePrice >= variant.price) {
+      continue;
+    }
+    for (const moment of [variant.saleStartsAt, variant.saleEndsAt]) {
+      if (moment && moment > now && (next === null || moment < next)) {
+        next = moment;
+      }
+    }
+  }
+  return next;
+}
+
+/**
+ * Statically generated pages evaluate sale windows when they render. Call this with every
+ * variant a page prices, so the page regenerates when the next sale starts or ends.
+ */
+export function revalidateAtNextPriceChange(variants: SaleFields[], now: Date): Promise<void> {
+  return regenerateAt(nextSaleBoundary(variants, now), now);
 }
 
 /** Serialisable variant model for the client-side selector. */
@@ -235,7 +314,9 @@ export function toProductCardModel(product: ProductSummary, now: Date): ProductC
     sublineParts.push(product.form);
   }
 
-  const image = product.images[0] ?? null;
+  // The subline names the first variant, so the card shows that variant's render (or the
+  // product-level fallback): exactly what the product page shows on load.
+  const image = imagesForVariant(product.images, product.variants[0]?.id ?? null)[0] ?? null;
 
   return {
     id: product.id,
@@ -248,6 +329,20 @@ export function toProductCardModel(product: ProductSummary, now: Date): ProductC
     fromPrice: lowest !== null && highest !== null && highest > lowest,
     variantCount,
   };
+}
+
+/**
+ * Images the product page may show: product-level images plus those of active variants.
+ * An archived strength's render is never shipped to the page.
+ */
+export function pageImages(product: ProductDetail): ProductDetail["images"] {
+  const active = new Set(product.variants.map((variant) => variant.id));
+  return product.images.filter((image) => image.variantId === null || active.has(image.variantId));
+}
+
+/** What the product page shows on load (the first variant's images, else product level). */
+export function defaultImages(product: ProductDetail): ProductDetail["images"] {
+  return imagesForVariant(product.images, product.variants[0]?.id ?? null);
 }
 
 /**

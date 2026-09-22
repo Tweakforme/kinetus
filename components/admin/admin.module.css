@@ -1,0 +1,1014 @@
+/*
+ * Admin: deliberately plain. Tokens from app/tokens.css so it matches the site: Roboto
+ * Condensed headlines and buttons, Inter for text and fields, IBM Plex Mono for data
+ * (prices, slugs, codes) and small labels. Every control is at least 44px tall, focus
+ * rings are always visible, and every layout stacks to one column at phone width.
+ */
+
+/* ---------- Shell ---------- */
+
+.topbar {
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+}
+
+.topbarInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "brand account"
+    "nav nav";
+  align-items: center;
+  gap: 4px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8px 16px;
+}
+
+@media (min-width: 960px) {
+  .topbarInner {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "brand nav account";
+    padding: 8px 32px;
+  }
+}
+
+.brand {
+  grid-area: brand;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 0;
+  color: var(--kinetus-text-inverse);
+  font-family: var(--kinetus-font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.brandTag {
+  font-family: var(--kinetus-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--kinetus-brand-cyan-bright);
+}
+
+.nav {
+  grid-area: nav;
+}
+
+.navList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-bottom: 3px solid transparent;
+  color: var(--kinetus-text-inverse-muted);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--kinetus-text-inverse);
+}
+
+.navLink[aria-current="page"] {
+  color: var(--kinetus-text-inverse);
+  border-bottom-color: var(--kinetus-brand-cyan-bright);
+}
+
+.account {
+  grid-area: account;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px 8px;
+}
+
+.accountEmail {
+  display: none;
+  color: var(--kinetus-text-inverse-muted);
+  font-size: 14px;
+}
+
+@media (min-width: 1200px) {
+  .accountEmail {
+    display: inline;
+  }
+}
+
+.topbarLink,
+.topbarButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--kinetus-border-on-dark);
+  border-radius: var(--kinetus-radius-button);
+  background: transparent;
+  color: var(--kinetus-text-inverse);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.topbarLink:hover,
+.topbarButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.topbar :focus-visible {
+  outline: 3px solid var(--kinetus-brand-cyan-bright);
+  outline-offset: 2px;
+}
+
+.main {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px 96px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding: 32px 32px 120px;
+  }
+}
+
+/* ---------- Page header ---------- */
+
+.pageHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 16px;
+  margin-bottom: 24px;
+}
+
+.pageHeaderText {
+  min-width: 0;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--kinetus-brand-teal-dark);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pageTitle {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-family: var(--kinetus-font-display);
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.pageIntro {
+  margin: 6px 0 0;
+  max-width: 70ch;
+  color: var(--kinetus-text-secondary);
+}
+
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Panels ---------- */
+
+.panel {
+  margin: 0 0 20px;
+  padding: 20px 16px;
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+}
+
+@media (min-width: 768px) {
+  .panel {
+    padding: 24px 28px;
+  }
+}
+
+.panelTitle {
+  margin: 0 0 4px;
+  color: var(--kinetus-text-heading);
+  font-family: var(--kinetus-font-display);
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 700;
+}
+
+.panelIntro {
+  margin: 0 0 20px;
+  max-width: 75ch;
+  color: var(--kinetus-text-secondary);
+  font-size: 15px;
+  line-height: 23px;
+}
+
+.subTitle {
+  margin: 24px 0 8px;
+  color: var(--kinetus-text-heading);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* ---------- Fields ---------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px 20px;
+}
+
+@media (min-width: 768px) {
+  .grid2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .grid4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .span2 {
+    grid-column: span 2;
+  }
+
+  .spanAll {
+    grid-column: 1 / -1;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.label {
+  color: var(--kinetus-text-heading);
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.labelNote {
+  color: var(--kinetus-text-secondary);
+  font-weight: 400;
+}
+
+.hint {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-button);
+  color: var(--kinetus-text-primary);
+  font: inherit;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+
+.textareaShort {
+  min-height: 96px;
+}
+
+.input:focus-visible,
+.select:focus-visible,
+.textarea:focus-visible {
+  outline: 3px solid var(--kinetus-brand-cyan);
+  outline-offset: 1px;
+  border-color: var(--kinetus-brand-teal);
+  border-radius: var(--kinetus-radius-button);
+}
+
+.input[readonly] {
+  background: var(--kinetus-bg-subtle);
+  color: var(--kinetus-text-secondary);
+}
+
+.invalid {
+  border-color: var(--kinetus-state-error);
+  box-shadow: 0 0 0 1px var(--kinetus-state-error);
+}
+
+.error {
+  margin: 0;
+  color: var(--kinetus-state-error);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.mono {
+  font-family: var(--kinetus-font-mono);
+}
+
+.prefixed {
+  display: flex;
+  align-items: stretch;
+}
+
+.prefix {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border: 1px solid var(--kinetus-border-default);
+  border-right: 0;
+  border-radius: var(--kinetus-radius-button) 0 0 var(--kinetus-radius-button);
+  background: var(--kinetus-bg-subtle);
+  color: var(--kinetus-text-secondary);
+  font-family: var(--kinetus-font-mono);
+  font-size: 15px;
+}
+
+.prefixed .input {
+  border-radius: 0 var(--kinetus-radius-button) var(--kinetus-radius-button) 0;
+}
+
+.count {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+  font-family: var(--kinetus-font-mono);
+  font-size: 13px;
+}
+
+.countOver {
+  color: var(--kinetus-state-error);
+  font-weight: 500;
+}
+
+/* Checkbox and radio rows: the whole label is the 44px target. */
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 0;
+  color: var(--kinetus-text-primary);
+  font-size: 16px;
+  line-height: 22px;
+  cursor: pointer;
+}
+
+.checkInput {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--kinetus-brand-teal);
+  cursor: pointer;
+}
+
+.checkInput:focus-visible {
+  outline: 3px solid var(--kinetus-brand-cyan);
+  outline-offset: 2px;
+}
+
+.checkText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.checkTitle {
+  font-weight: 600;
+}
+
+.checkList {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .checkList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Buttons ---------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: var(--kinetus-radius-button);
+  font-family: var(--kinetus-font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--motion-duration) var(--motion-ease);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.primary {
+  background: var(--kinetus-brand-teal);
+  color: var(--kinetus-text-inverse);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--kinetus-brand-teal-dark);
+}
+
+.secondary {
+  background: var(--kinetus-bg-base);
+  border-color: var(--kinetus-brand-teal);
+  color: var(--kinetus-brand-teal-dark);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--kinetus-brand-teal-light);
+}
+
+.danger {
+  background: var(--kinetus-bg-base);
+  border-color: var(--kinetus-state-error);
+  color: var(--kinetus-state-error);
+}
+
+.danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--kinetus-state-error) 8%, white);
+}
+
+.textButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--kinetus-brand-teal-dark);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* The save bar sticks to the bottom of the screen while the form is in view. */
+.saveBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 8px 0 20px;
+  padding: 12px 16px;
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-panel);
+}
+
+.saveBarText {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+@media (max-width: 767px) {
+  .saveBar .button {
+    flex: 1 1 100%;
+  }
+}
+
+/* ---------- Notices ---------- */
+
+.notice {
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  border: 1px solid;
+  border-radius: var(--kinetus-radius-md);
+  font-size: 15px;
+  line-height: 23px;
+}
+
+.notice p {
+  margin: 0;
+}
+
+.notice p + p,
+.notice p + ul,
+.notice ul + p {
+  margin-top: 8px;
+}
+
+.noticeSuccess {
+  background: color-mix(in srgb, var(--kinetus-state-success) 9%, white);
+  border-color: var(--kinetus-state-success);
+  color: var(--kinetus-text-primary);
+}
+
+.noticeError {
+  background: color-mix(in srgb, var(--kinetus-state-error) 7%, white);
+  border-color: var(--kinetus-state-error);
+  color: var(--kinetus-text-primary);
+}
+
+.noticeInfo {
+  background: var(--kinetus-brand-teal-light);
+  border-color: var(--kinetus-border-chip);
+  color: var(--kinetus-text-primary);
+}
+
+.noticeTitle {
+  font-weight: 700;
+}
+
+.noticeList {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.noticeList a {
+  color: inherit;
+  font-weight: 600;
+}
+
+/* The content rule shown on every description field. */
+.rule {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 4px solid var(--kinetus-brand-teal);
+  background: var(--kinetus-bg-subtle);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.rule p {
+  margin: 0;
+}
+
+.rule p + p {
+  margin-top: 8px;
+}
+
+.rule strong {
+  color: var(--kinetus-text-heading);
+}
+
+.stringList {
+  margin: 4px 0 0;
+  padding-left: 20px;
+  font-family: var(--kinetus-font-mono);
+  font-size: 13px;
+}
+
+/* ---------- Badges ---------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--kinetus-radius-pill);
+  font-family: var(--kinetus-font-mono);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badgeLive {
+  background: var(--kinetus-brand-teal-light);
+  border-color: var(--kinetus-border-chip);
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.badgeDraft {
+  background: var(--kinetus-bg-subtle);
+  border-color: var(--kinetus-border-default);
+  color: var(--kinetus-text-secondary);
+}
+
+.badgeArchived {
+  background: var(--kinetus-bg-base);
+  border-color: var(--kinetus-border-default);
+  border-style: dashed;
+  color: var(--kinetus-text-secondary);
+}
+
+.badgeOn {
+  background: color-mix(in srgb, var(--kinetus-state-success) 12%, white);
+  border-color: var(--kinetus-state-success);
+  color: var(--kinetus-state-success);
+}
+
+/* ---------- Filters ---------- */
+
+.filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px 16px;
+  align-items: end;
+  margin: 0 0 16px;
+  padding: 16px;
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+}
+
+@media (min-width: 768px) {
+  .filters {
+    grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)) auto;
+  }
+}
+
+.resultCount {
+  margin: 0 0 12px;
+  color: var(--kinetus-text-secondary);
+  font-size: 15px;
+}
+
+/* ---------- Record lists (products, collections) ---------- */
+
+.records {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  overflow: hidden;
+}
+
+.recordsHead {
+  display: none;
+}
+
+.record {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 6px 14px;
+  align-items: start;
+  padding: 14px 16px;
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+.record:first-child {
+  border-top: 0;
+}
+
+.recordThumb {
+  grid-row: span 3;
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--kinetus-radius-sm);
+  background: var(--kinetus-bg-subtle);
+  overflow: hidden;
+}
+
+.recordThumbImage {
+  object-fit: contain;
+  mix-blend-mode: darken;
+}
+
+.recordName {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--kinetus-brand-blue);
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.recordSlug {
+  display: block;
+  color: var(--kinetus-text-secondary);
+  font-family: var(--kinetus-font-mono);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.recordMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  color: var(--kinetus-text-primary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.recordCell {
+  min-width: 0;
+}
+
+.recordLabel {
+  color: var(--kinetus-text-secondary);
+}
+
+/* Collections have no thumbnail column; one column until the desktop grid below. */
+.collectionRecords .record {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 1024px) {
+  .recordsHead,
+  .record {
+    display: grid;
+    grid-template-columns:
+      56px minmax(0, 2.2fr) 112px 72px minmax(0, 1.4fr) minmax(0, 1.3fr)
+      110px;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .recordsHead {
+    padding: 10px 16px;
+    background: var(--kinetus-bg-subtle);
+    border-bottom: 1px solid var(--kinetus-border-card);
+    color: var(--kinetus-text-secondary);
+    font-family: var(--kinetus-font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .recordThumb {
+    grid-row: auto;
+    width: 56px;
+    height: 56px;
+  }
+
+  .recordMeta {
+    display: contents;
+  }
+
+  .recordLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .collectionRecords .recordsHead,
+  .collectionRecords .record {
+    grid-template-columns: minmax(0, 2.2fr) 120px 120px 130px 70px 120px;
+  }
+}
+
+.empty {
+  padding: 24px 16px;
+  color: var(--kinetus-text-secondary);
+}
+
+/* ---------- Repeating cards (sizes, images, codes, tiers, tax rates) ---------- */
+
+.cards {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  min-width: 0;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-md);
+  background: var(--kinetus-bg-base);
+}
+
+.cardMuted {
+  background: var(--kinetus-bg-subtle);
+  border-style: dashed;
+}
+
+.cardLegend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px;
+  color: var(--kinetus-text-heading);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.cardHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cardNote {
+  margin: 12px 0 0;
+  color: var(--kinetus-text-secondary);
+  font-size: 14px;
+}
+
+.imageCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .imageCard {
+    grid-template-columns: 160px minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.imagePreview {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1;
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-sm);
+  background: var(--kinetus-bg-subtle);
+  overflow: hidden;
+}
+
+.imagePreviewImage {
+  object-fit: contain;
+  mix-blend-mode: darken;
+}
+
+.sizeSummary {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  list-style: none;
+  border-radius: var(--kinetus-radius-md);
+  background: var(--kinetus-bg-subtle);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.sizeSummaryWarn {
+  color: var(--kinetus-state-error);
+  font-weight: 600;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table th {
+  color: var(--kinetus-text-secondary);
+  font-family: var(--kinetus-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dangerZone {
+  border-color: color-mix(in srgb, var(--kinetus-state-error) 45%, white);
+}
+
+/* ---------- Sign-in ---------- */
+
+.loginMain {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 32px 16px;
+  background: var(--kinetus-bg-deep);
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 420px;
+  padding: 28px 20px;
+  background: var(--kinetus-bg-base);
+  border-radius: var(--kinetus-radius-lg);
+  box-shadow: var(--kinetus-shadow-panel);
+}
+
+@media (min-width: 480px) {
+  .loginCard {
+    padding: 36px 32px;
+  }
+}
+
+.loginLogo {
+  width: 220px;
+  height: auto;
+  margin: 0 0 20px;
+}
+
+.loginTitle {
+  margin: 0 0 4px;
+  color: var(--kinetus-text-heading);
+  font-family: var(--kinetus-font-display);
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 700;
+}
+
+.loginIntro {
+  margin: 0 0 20px;
+  color: var(--kinetus-text-secondary);
+  font-size: 15px;
+}
+
+.loginForm {
+  display: grid;
+  gap: 18px;
+}
+
+.loginForm .button {
+  width: 100%;
+}
+
+.loginFoot {
+  margin: 20px 0 0;
+  color: var(--kinetus-text-secondary);
+  font-size: 14px;
+}

@@ -17,6 +17,12 @@
 //   ALTER TABLE "Documentation"
 //     ADD CONSTRAINT "Documentation_exactly_one_owner"
 //     CHECK (num_nonnulls("productId", "variantId") = 1);
+//
+// Phase 7A (migration admin_and_catalogue_fields, additive only): variant-level images,
+// variant test report links, collection kind and artwork fields, a reserved product
+// information sheet link, the discount / volume tier / tax / store setting tables (admin
+// configuration only; nothing consumes them yet), and AdminSession + AdminLoginAttempt
+// for server-side sessions and login rate limiting.
 
 generator client {
   provider = "prisma-client-js"
@@ -57,6 +63,14 @@ enum RedirectEntityType {
   COLLECTION
 }
 
+/// RANGE: the four navigation ranges (Peptides, Blends, Lab Supplies, Research).
+/// CATEGORY: the Shop by Category groupings. A product belongs to one range and to any
+/// number of categories.
+enum CollectionKind {
+  RANGE
+  CATEGORY
+}
+
 model Product {
   id               String        @id @default(cuid())
   slug             String        @unique
@@ -79,6 +93,9 @@ model Product {
   featured          Boolean @default(false)
   displayOrder      Int     @default(0)
 
+  // Reserved for a future product information sheet. Nothing publishes it yet.
+  informationSheetUrl String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -90,24 +107,28 @@ model Product {
 }
 
 model ProductVariant {
-  id             String        @id @default(cuid())
-  productId      String
-  product        Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
-  label          String
-  sku            String?       @unique
-  price          Int
-  salePrice      Int?
-  saleStartsAt   DateTime?
-  saleEndsAt     DateTime?
-  stock          Int?
-  trackInventory Boolean       @default(false)
-  status         VariantStatus @default(ACTIVE)
-  displayOrder   Int           @default(0)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id                  String        @id @default(cuid())
+  productId           String
+  product             Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label               String
+  sku                 String?       @unique
+  price               Int
+  salePrice           Int?
+  saleStartsAt        DateTime?
+  saleEndsAt          DateTime?
+  stock               Int?
+  trackInventory      Boolean       @default(false)
+  status              VariantStatus @default(ACTIVE)
+  displayOrder        Int           @default(0)
+  // Third-party test report link for this product at this strength, set by the client.
+  testReportUrl       String?
+  testReportUpdatedAt DateTime?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
 
   documentation Documentation[]
   orderItems    OrderRequestItem[]
+  images        ProductImage[]
 
   @@index([productId])
 }
@@ -121,6 +142,10 @@ model Collection {
   displayOrder    Int              @default(0)
   metaTitle       String?
   metaDescription String?
+  kind            CollectionKind   @default(RANGE)
+  imageUrl        String?
+  iconUrl         String?
+  subtitle        String?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
@@ -149,7 +174,14 @@ model ProductImage {
   isPrimary    Boolean  @default(false)
   createdAt    DateTime @default(now())
 
+  // A render printed with a strength belongs to that variant. Null = product level
+  // (shown for any variant without images of its own). Deleting a variant deletes its
+  // renders: a strength-labelled image must never fall back to product level.
+  variantId String?
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
   @@index([productId])
+  @@index([variantId])
 }
 
 model Documentation {
@@ -175,7 +207,7 @@ model SlugRedirect {
   createdAt  DateTime           @default(now())
 }
 
-// Table only — no admin UI or authentication logic exists in this phase (Phase 7).
+// The single admin account (Phase 7A). Created or reset with `npm run admin:create`.
 model AdminUser {
   id           String    @id @default(cuid())
   email        String    @unique
@@ -184,6 +216,92 @@ model AdminUser {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   lastLoginAt  DateTime?
+
+  sessions AdminSession[]
+}
+
+// Server-side admin sessions. The cookie carries the id plus an HMAC signature, so the
+// proxy can reject forged cookies without a query; pages and server actions then look
+// the row up, which makes logout and password resets revoke access immediately.
+model AdminSession {
+  id          String    @id
+  adminUserId String
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+
+  @@index([adminUserId])
+  @@index([expiresAt])
+}
+
+// Login attempts, for rate limiting the sign-in form by network address and by email.
+model AdminLoginAttempt {
+  id        String   @id @default(cuid())
+  ip        String
+  email     String
+  success   Boolean
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+  @@index([email, createdAt])
+}
+
+// ---------------------------------------------------------------------------------------
+// Commerce configuration (Phase 7A). Edited in the admin only. Nothing consumes these
+// tables yet: they exist so the client can configure them before checkout is built.
+// ---------------------------------------------------------------------------------------
+
+/// Codes are stored exactly as the client wrote them and match case-insensitively at
+/// redemption. By default a code never combines with the volume discount; the customer
+/// receives whichever is larger. `stacksWithVolume` overrides that per code.
+model DiscountCode {
+  id               String    @id @default(cuid())
+  code             String    @unique
+  percentOff       Int
+  isActive         Boolean   @default(false)
+  startsAt         DateTime?
+  endsAt           DateTime?
+  maxRedemptions   Int?
+  timesRedeemed    Int       @default(0)
+  stacksWithVolume Boolean   @default(false)
+  note             String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model VolumeDiscountTier {
+  id          String   @id @default(cuid())
+  minQuantity Int
+  percentOff  Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// Combined sales tax per province or territory, in basis points (5% = 500).
+model TaxRate {
+  id        String   @id @default(cuid())
+  province  String   @unique
+  label     String
+  rateBps   Int
+  isActive  Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Single-row store settings: the fixed primary key allows exactly one row.
+/// `taxEnabled` stays false until the business confirms it is registered to collect
+/// GST/HST.
+model StoreSetting {
+  id                         String   @id @default("store")
+  taxEnabled                 Boolean  @default(false)
+  gstNumber                  String?
+  shippingFlatCents          Int      @default(2000)
+  freeShippingThresholdCents Int      @default(19900)
+  localFreeCity              String?  @default("Calgary")
+  shipsInternationally       Boolean  @default(false)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
 }
 
 // Tables only — no request form, submission handling or notifications in this phase (Phase 8).
