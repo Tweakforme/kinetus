@@ -1,33 +1,36 @@
-/* Figma Research-use notice: bg/deep, text/inverse, py space-8 (mobile) / space-16 (desktop). */
+/* Teal gradient strip, ~72px tall, white condensed uppercase statement with a flask icon. */
 .band {
-  position: relative;
-  background: var(--kinetus-bg-deep);
+  background: linear-gradient(90deg, var(--kinetus-brand-teal), var(--kinetus-brand-cyan));
   color: var(--kinetus-text-inverse);
-  padding-block: var(--kinetus-space-8);
 }
 
-/* Registration marks (Phase 6 A4) frame the statement on the content column. */
-.frame {
-  position: relative;
-  padding: var(--kinetus-space-6) var(--kinetus-space-4);
+/* The Container is the flex box here; its parent stays in block flow. */
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kinetus-space-3) var(--kinetus-space-4);
+  min-height: 72px;
+  padding-block: var(--kinetus-space-3);
+  text-align: center;
+}
+
+.icon {
+  flex: 0 0 auto;
 }
 
 .statement {
   margin: 0;
-  max-width: var(--kinetus-measure-body);
+  font-family: var(--kinetus-font-display);
+  font-size: var(--kinetus-type-nav-size);
+  line-height: 1.25;
+  font-weight: var(--kinetus-type-nav-weight);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 /* Wrap only at the sentence boundary. */
 .line {
   white-space: nowrap;
-}
-
-@media (min-width: 768px) {
-  .band {
-    padding-block: var(--kinetus-space-16);
-  }
-
-  .frame {
-    padding: var(--kinetus-space-8);
-  }
 }

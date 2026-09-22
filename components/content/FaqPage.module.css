@@ -1,27 +1,43 @@
-/* Accordions may run wider than prose: the measure is relaxed to the column width. */
+/* Accordions run wider than prose: the column is capped at 820px instead of the measure. */
 .prose {
-  max-width: none;
+  max-width: 820px;
+}
+
+.groupHeading {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  text-transform: uppercase;
 }
 
 .entries {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--kinetus-border-subtle);
+  gap: var(--kinetus-space-3);
 }
 
+/* Each question is a white card; open cards lift slightly. */
 .entry {
-  border-bottom: 1px solid var(--kinetus-border-subtle);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
+  transition: box-shadow var(--motion-duration) var(--motion-ease);
 }
 
-/* index · question · chevron; ≥48px rows; the native marker is hidden. */
+.entry[open] {
+  box-shadow: var(--kinetus-shadow-card-hover);
+}
+
+/* question · chevron; >=56px rows; the native marker is hidden. */
 .summary {
   display: grid;
-  grid-template-columns: var(--kinetus-space-12) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  column-gap: var(--kinetus-space-3);
-  min-height: var(--kinetus-tap-target);
-  padding-block: var(--kinetus-space-4);
-  color: var(--kinetus-text-primary);
+  column-gap: var(--kinetus-space-4);
+  min-height: 56px;
+  padding: var(--kinetus-space-4) var(--kinetus-space-5);
+  border-radius: var(--kinetus-radius-card);
+  color: var(--kinetus-text-heading);
   cursor: pointer;
   list-style: none;
 }
@@ -35,21 +51,16 @@
   color: var(--kinetus-brand-teal);
 }
 
-.entryIndex {
-  color: var(--kinetus-text-secondary);
-}
-
-/* Question: Body (mobile) / Body L (desktop) at medium weight. */
 .question {
   font-size: var(--kinetus-type-body-size);
-  line-height: var(--kinetus-type-body-line-height);
-  font-weight: var(--kinetus-type-label-weight);
+  line-height: 1.4;
+  font-weight: 600;
   transition: color var(--motion-duration) var(--motion-ease);
 }
 
 .chevron {
   flex: 0 0 auto;
-  color: var(--kinetus-text-secondary);
+  color: var(--kinetus-brand-teal-deep);
   transition: transform var(--motion-duration) var(--motion-ease);
 }
 
@@ -57,17 +68,23 @@
   transform: rotate(180deg);
 }
 
-/* Answer text at the measure, indented to the question column. */
+/* Answer at 15px, indented to the card padding. */
 .answer {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-4);
-  max-width: var(--kinetus-measure-body);
-  padding: 0 0 var(--kinetus-space-6) var(--kinetus-space-12);
+  gap: var(--kinetus-space-3);
+  padding: 0 var(--kinetus-space-5) var(--kinetus-space-5);
+}
+
+.answer p,
+.answer li {
+  font-size: 15px;
+  line-height: 24px;
 }
 
 .closingAction {
   display: flex;
+  margin-top: var(--kinetus-space-2);
 }
 
 .closingAction > a {
@@ -75,13 +92,12 @@
 }
 
 @media (min-width: 768px) {
-  .prose {
-    max-width: var(--kinetus-measure-body);
+  .summary {
+    padding: var(--kinetus-space-5) var(--kinetus-space-6);
   }
 
-  .question {
-    font-size: var(--kinetus-type-body-l-size);
-    line-height: var(--kinetus-type-body-l-line-height);
+  .answer {
+    padding: 0 var(--kinetus-space-6) var(--kinetus-space-6);
   }
 
   .closingAction > a {

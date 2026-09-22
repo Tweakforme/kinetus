@@ -1,0 +1,23 @@
+/*
+ * Homepage rhythm. Block flow on purpose: the shared Container has auto side margins and
+ * shrink-wraps inside a flex or grid parent. Sections are separated by 40px on mobile and
+ * 56px from tablet up; the same space closes the page above the research-use band.
+ * 56px is not a single step on the 4px token scale, so it is composed from two tokens.
+ */
+.page {
+  --home-section-gap: var(--kinetus-space-10);
+
+  display: block;
+  padding-bottom: var(--home-section-gap);
+  background: var(--kinetus-bg-page);
+}
+
+.page > * + * {
+  margin-top: var(--home-section-gap);
+}
+
+@media (min-width: 768px) {
+  .page {
+    --home-section-gap: calc(var(--kinetus-space-12) + var(--kinetus-space-2));
+  }
+}

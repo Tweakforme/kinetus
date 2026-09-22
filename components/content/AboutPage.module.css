@@ -1,90 +1,385 @@
-.intro {
-  position: relative;
+/* ---------- Our story (deck slide 19) ---------- */
+.story {
+  display: block;
 }
 
-/* Intro paragraphs: Body L at the measure. */
-.introBlocks {
-  max-width: var(--kinetus-measure-body);
+.storyInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-10);
 }
 
-.introBlocks p {
-  font-size: var(--kinetus-type-body-l-size);
-  line-height: var(--kinetus-type-body-l-line-height);
-  font-weight: var(--kinetus-type-body-l-weight);
-}
-
-.section {
-  position: relative;
+.storyCopy {
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-6);
+  min-width: 0;
 }
 
-.measure {
-  max-width: var(--kinetus-measure-body);
+.lockup {
+  width: 240px;
+  height: auto;
 }
 
-/* The principle line as indexed statements inside a registration-marked frame. */
-.principles {
-  position: relative;
-  padding: var(--kinetus-space-6);
-  border: 1px solid var(--kinetus-border-default);
+/* Welcome copy: Inter, heading navy, generous leading. */
+.welcome {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-size: 17px;
+  line-height: 1.6;
 }
 
-.principleList {
+/* The deck's thin cyan rule between the welcome and the research notice. */
+.rule {
+  width: 100%;
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: var(--kinetus-brand-cyan);
+}
+
+.notice {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--kinetus-space-6);
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: var(--kinetus-space-5);
+  align-items: start;
+}
+
+.flask {
+  color: var(--kinetus-brand-teal);
+}
+
+.noticeText {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.emailRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kinetus-space-3) var(--kinetus-space-4);
+  margin: 0;
+}
+
+/* Circle-bordered envelope, as the deck. */
+.emailIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 1.5px solid var(--kinetus-brand-teal);
+  border-radius: 50%;
+  color: var(--kinetus-brand-teal);
+}
+
+.emailLabel {
+  color: var(--kinetus-brand-cyan);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.emailLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--kinetus-text-heading);
+  font-size: 18px;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.emailLink:hover,
+.emailLink:active {
+  color: var(--kinetus-brand-teal);
+  text-decoration: underline;
+}
+
+/* Right column: ghosted mesh (desktop only) with the icon row pinned to its foot. */
+.storyAside {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.storyMesh {
+  display: none;
+}
+
+.pillars {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--kinetus-space-6) var(--kinetus-space-4);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.principle {
+.pillar {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-2);
+  align-items: center;
+  gap: var(--kinetus-space-3);
+  padding-inline: var(--kinetus-space-2);
+  text-align: center;
+}
+
+.pillarIcon {
+  color: var(--kinetus-brand-cyan);
+}
+
+.pillarLabel {
+  max-width: 9em;
+  color: var(--kinetus-text-heading);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+/* ---------- Quality standards (the client's "Quality Over Hype") ---------- */
+.quality {
+  display: block;
+}
+
+.qualityInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-8);
+}
+
+/* Centred paragraphs under the divider, at the body measure. */
+.centred {
+  width: 100%;
+  max-width: var(--kinetus-measure-body);
+  margin-inline: auto;
+  text-align: center;
+}
+
+.centred p {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--kinetus-text-heading);
+}
+
+/* The four principles as numbered white cards, two by two. */
+.principles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-5);
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.principle {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-5);
   min-width: 0;
+  padding: var(--kinetus-space-5) var(--kinetus-space-6);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
 }
 
 .principleIndex {
-  color: var(--kinetus-text-secondary);
+  flex: 0 0 auto;
+  color: var(--kinetus-brand-teal-deep);
+  font-family: var(--kinetus-font-display);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .principleText {
-  color: var(--kinetus-text-primary);
+  color: var(--kinetus-text-heading);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ---------- Why choose Kinetus ---------- */
+.why {
+  display: block;
+}
+
+.whyInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-8);
+}
+
+.whyGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-8);
+  align-items: start;
+}
+
+.whyCopy {
+  min-width: 0;
+}
+
+.whyCopy p {
+  color: var(--kinetus-text-heading);
+  font-size: var(--kinetus-type-body-l-size);
+  line-height: var(--kinetus-type-body-l-line-height);
+}
+
+/* Explore card: heading, the client's line, three route buttons. */
+.explore {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+  min-width: 0;
+  padding: var(--kinetus-space-6);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
+}
+
+.exploreHeading {
+  margin: 0;
+  color: var(--kinetus-text-heading);
 }
 
 .exploreLine {
   margin: 0;
   color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+  letter-spacing: 0.02em;
 }
 
 .exploreLinks {
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-3);
-  list-style: none;
-  margin: 0;
+  margin: var(--kinetus-space-2) 0 0;
   padding: 0;
+  list-style: none;
 }
 
 .exploreLinks > li > a {
   width: 100%;
 }
 
+/* ---------- Proudly Canadian: navy band ---------- */
+.canada {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+}
+
+.canadaBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.canadaMesh {
+  position: absolute;
+  top: -20%;
+  right: -4%;
+  width: 60%;
+  height: 140%;
+  color: var(--kinetus-text-inverse);
+  opacity: 0.09;
+  mask-image: radial-gradient(ellipse 60% 80% at 78% 40%, #000 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 80% at 78% 40%, #000 20%, transparent 100%);
+}
+
+.canadaInner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kinetus-space-4);
+  padding-block: var(--kinetus-space-12);
+  text-align: center;
+}
+
+.canadaLeaf {
+  color: var(--kinetus-brand-red);
+}
+
+.canadaTitle {
+  margin: 0;
+  color: var(--kinetus-text-inverse);
+}
+
+.canadaLocation {
+  margin: 0;
+  color: var(--kinetus-brand-cyan-bright);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.canadaCopy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  max-width: 40em;
+}
+
+.canadaCopy p {
+  color: var(--kinetus-text-inverse);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* The page ends on a full-bleed band, so no trailing padding above the research-use strip. */
+.page {
+  padding-bottom: 0;
+}
+
 @media (min-width: 768px) {
-  .section {
-    gap: var(--kinetus-space-8);
+  .pillars {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .pillar {
+    padding-inline: var(--kinetus-space-3);
+    border-left: 1px solid var(--kinetus-border-default);
+  }
+
+  .pillar:first-child {
+    border-left: 0;
   }
 
   .principles {
-    padding: var(--kinetus-space-8);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--kinetus-space-6);
   }
 
-  .principleList {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--kinetus-space-8);
+  .principle {
+    padding: var(--kinetus-space-6) var(--kinetus-space-8);
+  }
+
+  .explore {
+    padding: var(--kinetus-space-8);
   }
 
   .exploreLinks {
@@ -95,5 +390,54 @@
 
   .exploreLinks > li > a {
     width: auto;
+  }
+
+  .canadaInner {
+    padding-block: var(--kinetus-space-16);
+  }
+}
+
+@media (min-width: 1024px) {
+  .storyInner {
+    grid-template-columns: minmax(0, 52fr) minmax(0, 48fr);
+    gap: var(--kinetus-space-16);
+    align-items: stretch;
+  }
+
+  .lockup {
+    width: 320px;
+  }
+
+  .welcome {
+    font-size: 19px;
+  }
+
+  .noticeText {
+    font-size: 17px;
+  }
+
+  .storyAside {
+    min-height: 480px;
+  }
+
+  /* Ghosted honeycomb fading out towards the copy column and the foot. */
+  .storyMesh {
+    position: absolute;
+    top: -8%;
+    right: -6%;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 106%;
+    height: 108%;
+    color: var(--kinetus-decor-hex-strong);
+    mask-image: radial-gradient(ellipse 72% 68% at 68% 34%, #000 25%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 72% 68% at 68% 34%, #000 25%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .whyGrid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--kinetus-space-16);
   }
 }

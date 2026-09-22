@@ -1,18 +1,23 @@
+/*
+ * Deck header (slide 4): #fefefe bar, 96px tall on desktop, sticky at the top once the
+ * utility bar has scrolled away. It must never clip: the dropdown panels and the search
+ * panel hang below it, and the drawer is fixed inside it.
+ */
 .header {
-  background: var(--kinetus-bg-base);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: var(--kinetus-bg-header);
+  box-shadow: var(--kinetus-shadow-header);
 }
 
-/* Figma Mobile header (55:9): py space-2, 48px row, 1px border/subtle. */
-.bar {
-  border-bottom: 1px solid var(--kinetus-border-subtle);
-  padding-block: var(--kinetus-space-2);
-}
-
+/* Logo left, navigation slot, icon cluster, hamburger. 72px tall below the desktop breakpoint. */
 .row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--kinetus-space-4);
+  min-height: 72px;
 }
 
 .logoLink {
@@ -22,19 +27,16 @@
   border-radius: var(--kinetus-radius-sm);
 }
 
-/*
- * Approved stacked logo. Rendered at 48px (mobile) / 64px (desktop) height so the
- * wordmark stays legible — see hand-off note on header height vs. the 52px Figma lockup.
- */
+/* Horizontal logo: 44px tall on mobile, 64px on desktop; the width follows the aspect ratio. */
 .logo {
-  height: var(--kinetus-tap-target);
+  height: 44px;
   width: auto;
 }
 
-@media (min-width: 768px) {
-  /* Figma Header (38:45): py space-4. */
-  .bar {
-    padding-block: var(--kinetus-space-4);
+@media (min-width: 1024px) {
+  .row {
+    gap: var(--kinetus-space-6);
+    min-height: var(--kinetus-header-height);
   }
 
   .logo {

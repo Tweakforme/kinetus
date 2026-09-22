@@ -1,0 +1,27 @@
+/* Size line (slide 13 "80 MG BLEND"): condensed uppercase teal-deep with a short rule. */
+.sizeLine {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+}
+
+.label {
+  font-family: var(--kinetus-font-display);
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--kinetus-brand-teal-deep);
+}
+
+/* The deck's underline: 72 x 3, teal-deep. */
+.rule {
+  display: block;
+  width: 72px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--kinetus-brand-teal-deep);
+}

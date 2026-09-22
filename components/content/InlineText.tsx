@@ -20,7 +20,7 @@ const PLACEHOLDER_PATTERN = /\[[^\]]+\]/g;
 /**
  * Renders verbatim client text with three presentational enrichments, none of which
  * alter the characters: route links on named phrases (first occurrence), mailto links
- * on email addresses, and a mono treatment on bracketed placeholders such as
+ * on email addresses, and a highlighted treatment on bracketed placeholders such as
  * "[INSERT WEBSITE]" that the client still has to fill in.
  */
 export function InlineText({ text, links = [] }: InlineTextProps) {
@@ -53,7 +53,7 @@ export function InlineText({ text, links = [] }: InlineTextProps) {
       end,
       node: (
         // TODO: confirm mailbox is live before launch.
-        <a key={`mail-${start}`} href={`mailto:${match[0]}`} className={`type-mono ${styles.link}`}>
+        <a key={`mail-${start}`} href={`mailto:${match[0]}`} className={styles.link}>
           {match[0]}
         </a>
       ),
@@ -68,7 +68,7 @@ export function InlineText({ text, links = [] }: InlineTextProps) {
       start,
       end,
       node: (
-        <span key={`placeholder-${start}`} className={`type-mono ${styles.placeholder}`}>
+        <span key={`placeholder-${start}`} className={styles.placeholder}>
           {match[0]}
         </span>
       ),

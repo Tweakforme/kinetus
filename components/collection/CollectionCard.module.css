@@ -1,45 +1,103 @@
-/* Figma Collection Card (40:57): bg/base, 1px border/subtle, radius/md, padding space-4, gap space-4. */
+/* Hub category card: pale card, 12px radius, render left and copy right. */
 .card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 42fr) minmax(0, 58fr);
   gap: var(--kinetus-space-4);
   height: 100%;
-  padding: var(--kinetus-space-6) var(--kinetus-space-4);
-  background: var(--kinetus-bg-base);
+  padding: var(--kinetus-space-4);
+  background: var(--kinetus-bg-subtle);
   border: 1px solid var(--kinetus-border-subtle);
-  border-radius: var(--kinetus-radius-md);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
   color: var(--kinetus-text-primary);
   text-decoration: none;
-  transition: border-color var(--motion-duration) var(--motion-ease);
+  transition:
+    box-shadow var(--motion-duration) var(--motion-ease),
+    border-color var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease);
 }
 
 .card:hover,
 .card:focus-visible,
 .card:active {
   border-color: var(--kinetus-border-default);
+  box-shadow: var(--kinetus-shadow-card-hover);
+  transform: translateY(-2px);
 }
 
-.text {
+.media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  overflow: hidden;
+  border-radius: var(--kinetus-radius-md);
+}
+
+.image {
+  object-fit: contain;
+  object-position: center bottom;
+  padding: var(--kinetus-space-2);
+  filter: drop-shadow(0 10px 12px rgba(7, 27, 52, 0.12));
+  transition: transform var(--motion-duration) var(--motion-ease);
+}
+
+.card:hover .image {
+  transform: scale(1.02);
+}
+
+.icon {
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.body {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-3);
+  gap: var(--kinetus-space-2);
   min-width: 0;
+  padding-block: var(--kinetus-space-2);
 }
 
+/* Royal-blue condensed uppercase name (slide 4 card titles). */
 .name {
-  color: var(--kinetus-text-primary);
+  color: var(--kinetus-brand-blue);
+  font-family: var(--kinetus-font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  text-transform: uppercase;
   overflow-wrap: anywhere;
 }
 
 .description {
-  color: var(--kinetus-text-secondary);
+  color: var(--kinetus-text-heading);
+  font-size: 14.5px;
+  line-height: 1.5;
 }
 
 .count {
   color: var(--kinetus-text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .cta {
-  color: var(--kinetus-brand-teal);
+  margin-top: auto;
+}
+
+@media (min-width: 768px) {
+  .card {
+    gap: var(--kinetus-space-5);
+    padding: var(--kinetus-space-5);
+  }
+
+  .media {
+    min-height: 200px;
+  }
+
+  .name {
+    font-size: 24px;
+  }
 }

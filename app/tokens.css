@@ -1,54 +1,92 @@
 /*
- * Kinetus BioLabs — design tokens
+ * Kinetus BioLabs: design tokens
  *
- * Generated from the approved Figma file 5b152nyjmEbijXyURBA5H0 ("Kinetus BioLabs — Web Design")
- * via the Figma MCP on 2026-09-02.
- *   - Variable collection "Kinetus" (mode: Value): 26 variables
- *       13 colour · 10 spacing (scope: GAP) · 3 radius
- *   - 13 local text styles (Display, H1, H2, H3, Body L, Body, Body S, Caption, Label, Mobile/*)
- *   - 2 grid styles (Grid/Desktop, Grid/Mobile)
+ * Redesign (2026-09-03): values are sampled from the client-approved design deck
+ * ("Kinetus Bio Labs Website design.pptx", slides 4, 7, 9, 12, 13, 19). Where the deck and
+ * the earlier Figma variables disagreed, the deck wins. Sampling method: mode of flat
+ * regions (backgrounds, fills) and the highest-chroma core of anti-aliased text.
  *
- * Custom-property names match the WEB code syntax defined on each Figma variable
- * (e.g. Figma "bg/base" → var(--kinetus-bg-base)). Text styles are kebab-cased
- * ("Body S" → body-s, "Mobile/H3" → mobile-h3). Letter-spacing is converted from
- * Figma percentages to em.
+ *   bg/deep        #001324  hero base + utility bar (slide 12 mode, slide 4 reads #00101e)
+ *   brand/teal     #017288  solid button fill (slide 12 "SHOP RESEARCH PEPTIDES")
+ *   brand/cyan     #008499  accent text on light grounds (slide 19 reads #048c96)
+ *   cyan/bright    #00b8d4  the same accent as it reads over navy (slide 4/12 eyebrow)
+ *   brand/blue     #08309c  royal blue card titles, VIEW ALL links, trust titles (slide 4)
+ *   blue/soft      #1f4f97  product-page subhead + icon labels (slide 9)
+ *   teal/deep      #17536f  product-page eyebrow, size chip text (slide 9)
+ *   teal/dark      #005f82  active pagination, VIEW PRODUCT link core (#134b6b) (slide 7)
+ *   brand/red      #b30202  maple leaf accents (slides 4, 12: #a50100–#ba0301)
+ *   heading        #071b34  section heading navy (slides 4, 12)
+ *   secondary      #49586c  card subline grey (slide 7)
+ *   bg/page        #fafbfb  page ground (slide 12); header #fefefe; cards #f7f7f8
+ *   decor          #e5eaf1 hex lattice, #d9e3ea DNA helix (slide 9)
  *
- * Do not edit values by hand — change them in Figma and re-pull.
+ * Spacing, radius and the Inter text styles are unchanged from the Figma variables.
  */
 
 :root {
   /* ---------- Colour: bg/* ---------- */
   --kinetus-bg-base: #ffffff;
-  --kinetus-bg-subtle: #f7f8f8;
-  --kinetus-bg-deep: #0e4453;
+  --kinetus-bg-page: #fafbfb;
+  --kinetus-bg-subtle: #f7f7f8;
+  --kinetus-bg-header: #fefefe;
+  --kinetus-bg-deep: #001324;
+  --kinetus-bg-deep-2: #00101e;
 
   /* ---------- Colour: text/* ---------- */
-  --kinetus-text-primary: #14181a;
-  --kinetus-text-secondary: #5c6669;
+  --kinetus-text-primary: #0d1622;
+  --kinetus-text-secondary: #49586c;
+  --kinetus-text-heading: #071b34;
   --kinetus-text-inverse: #ffffff;
+  --kinetus-text-inverse-muted: rgba(255, 255, 255, 0.8);
 
   /* ---------- Colour: brand/* ---------- */
-  --kinetus-brand-teal: #125c6e;
-  --kinetus-brand-teal-dark: #0e4453;
-  --kinetus-brand-teal-light: #e6eef0;
+  --kinetus-brand-teal: #017288;
+  --kinetus-brand-teal-dark: #005f82;
+  --kinetus-brand-teal-deep: #17536f;
+  --kinetus-brand-teal-light: #e3f1f4;
+  --kinetus-brand-cyan: #008499;
+  --kinetus-brand-cyan-bright: #00b8d4;
+  --kinetus-brand-blue: #08309c;
+  --kinetus-brand-blue-soft: #1f4f97;
+  --kinetus-brand-red: #b30202;
 
   /* ---------- Colour: border/* ---------- */
-  --kinetus-border-subtle: #eaeced;
-  --kinetus-border-default: #d3d8da;
+  --kinetus-border-subtle: #eceef1;
+  --kinetus-border-default: #d5dbe0;
+  --kinetus-border-card: #e8ebef;
+  --kinetus-border-chip: #6fa2ae;
+  --kinetus-border-on-dark: rgba(255, 255, 255, 0.22);
+
+  /* ---------- Colour: decor/* ---------- */
+  --kinetus-decor-hex: #e5eaf1;
+  /* Same motif on a light page ground, where the faint value disappears. */
+  --kinetus-decor-hex-strong: #ccd9e6;
+  --kinetus-decor-helix: #d9e3ea;
+  --kinetus-decor-rule-blue: rgba(8, 48, 156, 0.35);
+  --kinetus-decor-hex-on-dark: rgba(255, 255, 255, 0.09);
 
   /* ---------- Colour: state/* ---------- */
   --kinetus-state-error: #b42318;
   --kinetus-state-success: #1f7a4d;
 
-  /* ---------- Spacing: space/* (4px base; Figma scope: GAP) ---------- */
+  /* ---------- Elevation ---------- */
+  --kinetus-shadow-card: 0 1px 2px rgba(7, 27, 52, 0.04), 0 10px 28px rgba(7, 27, 52, 0.06);
+  --kinetus-shadow-card-hover: 0 2px 4px rgba(7, 27, 52, 0.06), 0 18px 40px rgba(7, 27, 52, 0.1);
+  --kinetus-shadow-panel: 0 14px 36px rgba(7, 27, 52, 0.1);
+  --kinetus-shadow-header: 0 1px 0 rgba(7, 27, 52, 0.08), 0 6px 18px rgba(7, 27, 52, 0.05);
+
+  /* ---------- Spacing: space/* (4px base) ---------- */
   --kinetus-space-1: 4px;
   --kinetus-space-2: 8px;
   --kinetus-space-3: 12px;
   --kinetus-space-4: 16px;
+  --kinetus-space-5: 20px;
   --kinetus-space-6: 24px;
   --kinetus-space-8: 32px;
+  --kinetus-space-10: 40px;
   --kinetus-space-12: 48px;
   --kinetus-space-16: 64px;
+  --kinetus-space-20: 80px;
   --kinetus-space-24: 96px;
   --kinetus-space-32: 128px;
 
@@ -56,138 +94,175 @@
   --kinetus-radius-sm: 4px;
   --kinetus-radius-md: 8px;
   --kinetus-radius-lg: 16px;
+  --kinetus-radius-card: 12px;
+  --kinetus-radius-button: 6px;
+  --kinetus-radius-pill: 999px;
 
-  /* ---------- Typography: family ----------
-   * Inter is loaded with next/font in app/layout.tsx and exposed as --font-inter.
+  /* ---------- Typography: families ----------
+   * Inter (body, labels, product names) and Roboto Condensed (hero, section and page
+   * headlines, navigation, buttons) are loaded with next/font in app/layout.tsx.
+   * IBM Plex Mono is kept for the .type-mono treatment on content pages only.
    */
   --kinetus-font-family:
     var(--font-inter), "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
+  --kinetus-font-display:
+    var(--font-roboto-condensed), "Roboto Condensed", "Arial Narrow", "Helvetica Neue", Arial,
+    sans-serif;
+  --kinetus-font-mono:
+    var(--font-plex-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* ---------- Typography: text styles (size / line-height / weight / letter-spacing) ---------- */
-  /* Display — Inter Semi Bold 64/68, -2% */
+  /* ---------- Typography: deck scale (condensed display face) ---------- */
+  /* Homepage hero headline: uppercase, two lines, huge (slide 4). */
+  --kinetus-type-hero-size: clamp(44px, 5.1vw, 74px);
+  --kinetus-type-hero-line-height: 0.96;
+  --kinetus-type-hero-weight: 700;
+  --kinetus-type-hero-letter-spacing: -0.005em;
+
+  /* Category-page hero headline: mixed case (slide 12). */
+  --kinetus-type-hero-mixed-size: clamp(38px, 4vw, 58px);
+  --kinetus-type-hero-mixed-line-height: 1.02;
+  --kinetus-type-hero-mixed-weight: 700;
+  --kinetus-type-hero-mixed-letter-spacing: -0.005em;
+
+  /* Section divider heading: uppercase (slide 4 "RESEARCH MATERIALS"). */
+  --kinetus-type-section-size: clamp(26px, 2.6vw, 38px);
+  --kinetus-type-section-line-height: 1.05;
+  --kinetus-type-section-weight: 700;
+  --kinetus-type-section-letter-spacing: 0;
+
+  /* Product-page name: enormous (slide 9 "AHK-cu", slide 13 "KLOW"). */
+  --kinetus-type-product-name-size: clamp(40px, 3.8vw, 60px);
+  --kinetus-type-product-name-line-height: 1;
+  --kinetus-type-product-name-weight: 800;
+  --kinetus-type-product-name-letter-spacing: -0.02em;
+
+  /* Navigation and buttons: condensed uppercase. */
+  --kinetus-type-nav-size: 18px;
+  --kinetus-type-nav-weight: 600;
+  --kinetus-type-nav-letter-spacing: 0.01em;
+  --kinetus-type-button-size: 18px;
+  --kinetus-type-button-weight: 700;
+  --kinetus-type-button-letter-spacing: 0.02em;
+
+  /* Eyebrow: letterspaced uppercase (slide 4 "PRECISION SCIENCE. ANALYTICAL CONFIDENCE."). */
+  --kinetus-type-eyebrow-size: 14px;
+  --kinetus-type-eyebrow-line-height: 20px;
+  --kinetus-type-eyebrow-weight: 500;
+  --kinetus-type-eyebrow-letter-spacing: 0.14em;
+
+  /* ---------- Typography: Inter text styles (size / line-height / weight / letter-spacing) ---------- */
+  /* Display: Inter Semi Bold 64/68, -2% */
   --kinetus-type-display-size: 64px;
   --kinetus-type-display-line-height: 68px;
   --kinetus-type-display-weight: 600;
   --kinetus-type-display-letter-spacing: -0.02em;
 
-  /* H1 — Inter Semi Bold 48/54, -1.5% */
+  /* H1: 48/54, -1.5% (condensed face) */
   --kinetus-type-h1-size: 48px;
   --kinetus-type-h1-line-height: 54px;
-  --kinetus-type-h1-weight: 600;
-  --kinetus-type-h1-letter-spacing: -0.015em;
+  --kinetus-type-h1-weight: 700;
+  --kinetus-type-h1-letter-spacing: -0.005em;
 
-  /* H2 — Inter Semi Bold 36/42, -1% */
+  /* H2: 36/42, -1% (condensed face) */
   --kinetus-type-h2-size: 36px;
   --kinetus-type-h2-line-height: 42px;
-  --kinetus-type-h2-weight: 600;
-  --kinetus-type-h2-letter-spacing: -0.01em;
+  --kinetus-type-h2-weight: 700;
+  --kinetus-type-h2-letter-spacing: 0;
 
-  /* H3 — Inter Semi Bold 24/32, -0.5% */
+  /* H3: Inter Semi Bold 24/32, -0.5% */
   --kinetus-type-h3-size: 24px;
   --kinetus-type-h3-line-height: 32px;
   --kinetus-type-h3-weight: 600;
   --kinetus-type-h3-letter-spacing: -0.005em;
 
-  /* Body L — Inter Regular 18/30, 0 */
+  /* Body L: Inter Regular 18/30, 0 */
   --kinetus-type-body-l-size: 18px;
   --kinetus-type-body-l-line-height: 30px;
   --kinetus-type-body-l-weight: 400;
   --kinetus-type-body-l-letter-spacing: 0;
 
-  /* Body — Inter Regular 16/26, 0 */
+  /* Body: Inter Regular 16/26, 0 */
   --kinetus-type-body-size: 16px;
   --kinetus-type-body-line-height: 26px;
   --kinetus-type-body-weight: 400;
   --kinetus-type-body-letter-spacing: 0;
 
-  /* Body S — Inter Regular 14/22, 0 */
+  /* Body S: Inter Regular 14/22, 0 */
   --kinetus-type-body-s-size: 14px;
   --kinetus-type-body-s-line-height: 22px;
   --kinetus-type-body-s-weight: 400;
   --kinetus-type-body-s-letter-spacing: 0;
 
-  /* Caption — Inter Regular 13/18, 0 */
+  /* Caption: Inter Regular 13/18, 0 */
   --kinetus-type-caption-size: 13px;
   --kinetus-type-caption-line-height: 18px;
   --kinetus-type-caption-weight: 400;
   --kinetus-type-caption-letter-spacing: 0;
 
-  /* Label — Inter Medium 12/16, +10%, uppercase */
+  /* Label: Inter Semi Bold 12/16, +8%, uppercase */
   --kinetus-type-label-size: 12px;
   --kinetus-type-label-line-height: 16px;
-  --kinetus-type-label-weight: 500;
-  --kinetus-type-label-letter-spacing: 0.1em;
+  --kinetus-type-label-weight: 600;
+  --kinetus-type-label-letter-spacing: 0.08em;
   --kinetus-type-label-transform: uppercase;
 
-  /* Mobile/Display — Inter Semi Bold 40/44, -2% */
+  /* Mobile/Display: 40/44 */
   --kinetus-type-mobile-display-size: 40px;
   --kinetus-type-mobile-display-line-height: 44px;
   --kinetus-type-mobile-display-weight: 600;
   --kinetus-type-mobile-display-letter-spacing: -0.02em;
 
-  /* Mobile/H1 — Inter Semi Bold 32/38, -1.5% */
-  --kinetus-type-mobile-h1-size: 32px;
+  /* Mobile/H1: 34/38 */
+  --kinetus-type-mobile-h1-size: 34px;
   --kinetus-type-mobile-h1-line-height: 38px;
-  --kinetus-type-mobile-h1-weight: 600;
-  --kinetus-type-mobile-h1-letter-spacing: -0.015em;
+  --kinetus-type-mobile-h1-weight: 700;
+  --kinetus-type-mobile-h1-letter-spacing: -0.005em;
 
-  /* Mobile/H2 — Inter Semi Bold 26/32, -1% */
-  --kinetus-type-mobile-h2-size: 26px;
+  /* Mobile/H2: 28/32 */
+  --kinetus-type-mobile-h2-size: 28px;
   --kinetus-type-mobile-h2-line-height: 32px;
-  --kinetus-type-mobile-h2-weight: 600;
-  --kinetus-type-mobile-h2-letter-spacing: -0.01em;
+  --kinetus-type-mobile-h2-weight: 700;
+  --kinetus-type-mobile-h2-letter-spacing: 0;
 
-  /* Mobile/H3 — Inter Semi Bold 20/28, -0.5% */
+  /* Mobile/H3: Inter Semi Bold 20/28, -0.5% */
   --kinetus-type-mobile-h3-size: 20px;
   --kinetus-type-mobile-h3-line-height: 28px;
   --kinetus-type-mobile-h3-weight: 600;
   --kinetus-type-mobile-h3-letter-spacing: -0.005em;
 
-  /* ---------- Layout (from Figma grid styles + approved container spec) ----------
-   * Grid/Desktop: 12 columns, 24px gutter, 80px offset, centred 1240px section
-   * Grid/Mobile:   4 columns, 16px gutter, 20px offset
-   * Canonical body measure: 580px (approved design spec)
-   * Tap target: 48px (Figma "Menu trigger (48x48 tap)")
-   * Breakpoint used in media queries (cannot be a custom property): 768px
+  /* Legacy Phase 6 steps (kept so no class is left undefined). */
+  --kinetus-type-display-xl-size: 96px;
+  --kinetus-type-display-xl-fluid: 6.5vw;
+  --kinetus-type-display-xl-line-height: 1;
+  --kinetus-type-display-xl-weight: 700;
+  --kinetus-type-display-xl-letter-spacing: -0.01em;
+  --kinetus-type-mobile-display-xl-size: 46px;
+  --kinetus-type-mobile-display-xl-line-height: 48px;
+  --kinetus-type-mobile-display-xl-weight: 700;
+  --kinetus-type-mobile-display-xl-letter-spacing: -0.01em;
+  --kinetus-type-h2-xl-size: 48px;
+  --kinetus-type-h2-xl-line-height: 54px;
+  --kinetus-type-h2-xl-weight: 700;
+  --kinetus-type-h2-xl-letter-spacing: 0;
+  --kinetus-type-mobile-h2-xl-size: 32px;
+  --kinetus-type-mobile-h2-xl-line-height: 38px;
+  --kinetus-type-mobile-h2-xl-weight: 700;
+  --kinetus-type-mobile-h2-xl-letter-spacing: 0;
+
+  /* ---------- Layout ----------
+   * Desktop grid: 12 columns, 24px gutter, centred 1360px section with 40px side margins
+   * (the deck's chrome runs edge to edge with ~40px insets at 1440). Mobile: 20px insets.
+   * Breakpoint used in media queries (cannot be a custom property): 768px; wide: 1024px.
    */
-  --kinetus-container-max: 1240px;
-  --kinetus-container-margin-desktop: 80px;
+  --kinetus-container-max: 1360px;
+  --kinetus-container-margin-desktop: 40px;
   --kinetus-container-margin-mobile: 20px;
   --kinetus-grid-gutter-desktop: 24px;
   --kinetus-grid-gutter-mobile: 16px;
-  --kinetus-measure-body: 580px;
+  --kinetus-measure-body: 620px;
   --kinetus-tap-target: 48px;
-
-  /* ---------- Phase 6 additions (design elevation). No existing value above changed. ----------
-   * Monospace face for data and labels: IBM Plex Mono via next/font (--font-plex-mono).
-   */
-  --kinetus-font-mono:
-    var(--font-plex-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-
-  /* Display XL — editorial hero scale: Inter Semi Bold 104, line-height 1.0, -3%.
-   * Fluid between Display (64) and 104 across laptop widths via the vw step below. */
-  --kinetus-type-display-xl-size: 104px;
-  --kinetus-type-display-xl-fluid: 7.25vw;
-  --kinetus-type-display-xl-line-height: 1;
-  --kinetus-type-display-xl-weight: 600;
-  --kinetus-type-display-xl-letter-spacing: -0.03em;
-
-  /* Mobile/Display XL — Inter Semi Bold 46/48, -3% */
-  --kinetus-type-mobile-display-xl-size: 46px;
-  --kinetus-type-mobile-display-xl-line-height: 48px;
-  --kinetus-type-mobile-display-xl-weight: 600;
-  --kinetus-type-mobile-display-xl-letter-spacing: -0.03em;
-
-  /* H2 XL — section headings: Inter Semi Bold 48/54, -1.5% */
-  --kinetus-type-h2-xl-size: 48px;
-  --kinetus-type-h2-xl-line-height: 54px;
-  --kinetus-type-h2-xl-weight: 600;
-  --kinetus-type-h2-xl-letter-spacing: -0.015em;
-
-  /* Mobile/H2 XL — Inter Semi Bold 32/38, -1.5% */
-  --kinetus-type-mobile-h2-xl-size: 32px;
-  --kinetus-type-mobile-h2-xl-line-height: 38px;
-  --kinetus-type-mobile-h2-xl-weight: 600;
-  --kinetus-type-mobile-h2-xl-letter-spacing: -0.015em;
+  --kinetus-header-height: 96px;
+  --kinetus-utility-height: 38px;
+  --kinetus-hero-min-height: 420px;
 }

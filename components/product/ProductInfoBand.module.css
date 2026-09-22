@@ -1,0 +1,81 @@
+/* Information band: hairline top and bottom, hairline rules between the cells. */
+.band {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--kinetus-border-subtle);
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: var(--kinetus-space-5) var(--kinetus-space-4);
+}
+
+/* Mobile: two columns, a vertical rule between them and a rule above each new row. */
+.item:nth-child(even) {
+  border-left: 1px solid var(--kinetus-border-subtle);
+}
+
+.item:nth-child(n + 3) {
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+.label {
+  color: var(--kinetus-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.value {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/*
+ * Tablet and desktop: one row that always fills the width, however many facts the
+ * catalogue records (a product with no form has four, not five). Flex rather than a
+ * fixed column count, so a shorter band never leaves an empty, unclosed cell.
+ */
+@media (min-width: 768px) {
+  .band {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .item,
+  .item:nth-child(even),
+  .item:nth-child(n + 3) {
+    flex: 1 1 0;
+    padding: var(--kinetus-space-5) var(--kinetus-space-4);
+    border-top: 0;
+    border-left: 1px solid var(--kinetus-border-default);
+  }
+
+  .item:first-child {
+    padding-left: var(--kinetus-space-2);
+    border-left: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .item,
+  .item:nth-child(even),
+  .item:nth-child(n + 3) {
+    padding: var(--kinetus-space-6) var(--kinetus-space-5);
+  }
+
+  .item:first-child {
+    padding-left: var(--kinetus-space-2);
+  }
+}

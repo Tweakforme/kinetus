@@ -1,6 +1,4 @@
 import { Container } from "@/components/layout/Container";
-import { RegistrationMarks } from "@/components/marks/RegistrationMarks";
-import { SectionRule } from "@/components/marks/SectionRule";
 import type { PolicyDocument } from "@/content/types";
 import { canonicalUrl } from "@/lib/seo";
 import { ContentBlocks } from "./ContentBlocks";
@@ -18,8 +16,10 @@ export function sectionNumber(number: string | null, index: number): string {
 }
 
 /**
- * Policy page: header, sticky mono contents list, verbatim sections at the 580px
- * measure, closing block, BreadcrumbList structured data.
+ * Policy page: navy band with the document's kicker, title and effective date, then a
+ * sticky contents list beside the verbatim sections at the body measure, the closing
+ * block in a white card, and BreadcrumbList structured data. The wording is the client's
+ * and is not edited here.
  */
 export function ContentPage({ doc }: ContentPageProps) {
   const path = `/${doc.slug}`;
@@ -27,14 +27,12 @@ export function ContentPage({ doc }: ContentPageProps) {
   return (
     <article className={layout.page}>
       <ContentHeader
-        kicker={doc.kicker}
+        eyebrow={doc.kicker}
         title={doc.title}
         meta={doc.dateLabel && doc.date ? { label: doc.dateLabel, value: doc.date } : null}
       />
 
       <Container className={layout.body} data-reveal="">
-        <SectionRule />
-
         <nav className={layout.contents} aria-label="Contents">
           <p className={`type-label ${layout.contentsLabel}`}>Contents</p>
           <ol className={layout.contentsList}>
@@ -66,7 +64,7 @@ export function ContentPage({ doc }: ContentPageProps) {
               aria-labelledby={`${section.id}-heading`}
             >
               <h2 id={`${section.id}-heading`} className={`type-h3 ${layout.sectionHeading}`}>
-                <span className={`type-label numeric ${layout.sectionNumber}`}>
+                <span className={`numeric ${layout.sectionNumber}`}>
                   {sectionNumber(section.number, index)}
                 </span>{" "}
                 <span>{section.heading}</span>
@@ -79,7 +77,6 @@ export function ContentPage({ doc }: ContentPageProps) {
 
           {doc.closing.length > 0 && (
             <div className={layout.closing}>
-              <RegistrationMarks />
               <ContentBlocks blocks={doc.closing} />
             </div>
           )}

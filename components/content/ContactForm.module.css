@@ -1,0 +1,112 @@
+/* Enquiry form (deck slide 23): bordered 56px fields, radius 8, teal focus border. */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-5);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+  min-width: 0;
+}
+
+.label {
+  color: var(--kinetus-text-heading);
+  font-size: var(--kinetus-type-caption-size);
+  line-height: var(--kinetus-type-caption-line-height);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.optional {
+  color: var(--kinetus-text-secondary);
+  font-weight: 400;
+}
+
+.input {
+  width: 100%;
+  min-height: 56px;
+  padding: var(--kinetus-space-3) var(--kinetus-space-4);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-md);
+  color: var(--kinetus-text-primary);
+  font: inherit;
+  font-size: var(--kinetus-type-body-size);
+  line-height: 1.4;
+  transition:
+    border-color var(--motion-duration) var(--motion-ease),
+    box-shadow var(--motion-duration) var(--motion-ease);
+}
+
+.input::placeholder {
+  color: var(--kinetus-text-secondary);
+  opacity: 1;
+}
+
+.input:hover {
+  border-color: var(--kinetus-border-chip);
+}
+
+/* The global focus ring stays; the border turns teal beneath it. */
+.input:focus {
+  border-color: var(--kinetus-brand-teal);
+  box-shadow: 0 0 0 3px var(--kinetus-brand-teal-light);
+}
+
+.textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  margin-top: var(--kinetus-space-2);
+}
+
+.note {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+}
+
+.noteLink {
+  color: var(--kinetus-brand-teal);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: var(--kinetus-space-1);
+  overflow-wrap: anywhere;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.noteLink:hover,
+.noteLink:active {
+  color: var(--kinetus-brand-teal-dark);
+}
+
+.status {
+  margin: 0;
+  color: var(--kinetus-state-success);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+  font-weight: 500;
+}
+
+.status:empty {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

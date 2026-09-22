@@ -1,69 +1,121 @@
+/* Form column and details card: stacked on mobile, 7/5 columns at >=1024px. */
 .body {
-  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--kinetus-space-8);
+  gap: var(--kinetus-space-10);
   align-items: start;
 }
 
-/* Channels inside a registration-marked hairline frame. */
-.channels {
-  position: relative;
-  padding: var(--kinetus-space-6);
-  border: 1px solid var(--kinetus-border-default);
-}
-
-.channelList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--kinetus-space-6);
-  margin: 0;
-}
-
-.channel {
+.formColumn {
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-2);
   min-width: 0;
 }
 
-.channelLabel {
+.formEyebrow {
+  margin: 0;
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.formTitle {
+  margin: 0 0 var(--kinetus-space-4);
+  color: var(--kinetus-text-heading);
+  text-transform: uppercase;
+}
+
+/* Details card: white, bordered, the panel shadow. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-6);
+  min-width: 0;
+  padding: var(--kinetus-space-6);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-panel);
+}
+
+.cardHeading {
   margin: 0;
   color: var(--kinetus-text-secondary);
 }
 
-.channelIndex {
-  color: var(--kinetus-text-primary);
-}
-
-/* A space precedes the slash in the markup (accessible name), so only the right margin. */
-.channelSlash {
-  margin-inline: 0 var(--kinetus-space-2);
-}
-
-.channelValue {
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-5);
   margin: 0;
-  color: var(--kinetus-text-primary);
-  overflow-wrap: anywhere;
+  padding: 0;
+  list-style: none;
 }
 
-.email {
-  color: var(--kinetus-brand-teal);
+.detail {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: var(--kinetus-space-4);
+  align-items: start;
+}
+
+/* Circle-bordered line icon in deep teal. */
+.detailIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--kinetus-border-chip);
+  border-radius: 50%;
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.detailText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.detailLabel {
+  color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-label-size);
+  line-height: var(--kinetus-type-label-line-height);
+  font-weight: var(--kinetus-type-label-weight);
+  letter-spacing: var(--kinetus-type-label-letter-spacing);
+  text-transform: uppercase;
+}
+
+.detailValue {
+  color: var(--kinetus-text-heading);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.detailLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--kinetus-text-heading);
+  font-size: var(--kinetus-type-body-size);
+  font-weight: 500;
   text-decoration: none;
+  overflow-wrap: anywhere;
   transition: color var(--motion-duration) var(--motion-ease);
 }
 
-.email:hover,
-.email:active {
-  color: var(--kinetus-brand-teal-dark);
+.detailLink:hover,
+.detailLink:active {
+  color: var(--kinetus-brand-teal);
   text-decoration: underline;
 }
 
 .related {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-4);
-  max-width: var(--kinetus-measure-body);
+  gap: var(--kinetus-space-2);
+  padding-top: var(--kinetus-space-5);
+  border-top: 1px solid var(--kinetus-border-subtle);
 }
 
 .relatedLabel {
@@ -71,43 +123,28 @@
   color: var(--kinetus-text-secondary);
 }
 
-.relatedCopy {
-  margin: 0;
-  color: var(--kinetus-text-primary);
-}
-
 .relatedLinks {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-3);
-  list-style: none;
   margin: 0;
   padding: 0;
-}
-
-.relatedLinks > li > a {
-  width: 100%;
+  list-style: none;
 }
 
 @media (min-width: 768px) {
-  /* Channels 580 / related copy beside, on the site grid. */
-  .body {
-    grid-template-columns: minmax(0, var(--kinetus-measure-body)) minmax(0, 1fr);
-    column-gap: var(--kinetus-space-16);
-  }
-
-  .channels {
+  .card {
     padding: var(--kinetus-space-8);
   }
+}
 
-  .relatedLinks {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--kinetus-space-4);
+@media (min-width: 1024px) {
+  .body {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--kinetus-space-16);
   }
 
-  .relatedLinks > li > a {
-    width: auto;
+  .card {
+    position: sticky;
+    top: calc(var(--kinetus-header-height) + var(--kinetus-space-6));
   }
 }

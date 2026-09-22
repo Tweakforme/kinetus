@@ -1,22 +1,31 @@
 /*
- * Listing rhythm (Figma 50:101 desktop / 55:5 mobile): top offset space-8; sections
- * separated by space-12 (mobile) / space-32 (desktop). Block flow — never flex/grid here.
+ * Listing rhythm (deck slides 7 and 12): the hero sits flush under the header, the
+ * divider follows 40px (48px desktop) below it, and the page ends with generous space
+ * above the research-use band. Block flow only; never flex or grid here.
  */
 .page {
   display: block;
-  padding-block: var(--kinetus-space-8) var(--kinetus-space-12);
+  padding-bottom: var(--kinetus-space-16);
 }
 
 .page > * + * {
-  margin-top: var(--kinetus-space-12);
+  margin-top: var(--kinetus-space-10);
+}
+
+.padTop {
+  padding-top: var(--kinetus-space-10);
 }
 
 @media (min-width: 768px) {
   .page {
-    padding-block: var(--kinetus-space-8) var(--kinetus-space-32);
+    padding-bottom: var(--kinetus-space-24);
   }
 
   .page > * + * {
-    margin-top: var(--kinetus-space-32);
+    margin-top: var(--kinetus-space-12);
+  }
+
+  .padTop {
+    padding-top: var(--kinetus-space-12);
   }
 }

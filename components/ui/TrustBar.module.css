@@ -1,0 +1,103 @@
+.bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-5) var(--kinetus-space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  padding: var(--kinetus-space-6);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
+}
+
+/* Top-aligned so every title shares one baseline across the row, as the deck sets it. */
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--kinetus-space-4);
+  min-width: 0;
+}
+
+.icon {
+  flex: 0 0 auto;
+  color: var(--kinetus-text-heading);
+}
+
+.iconRed {
+  color: var(--kinetus-brand-red);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.title {
+  color: var(--kinetus-brand-blue);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.copy {
+  color: var(--kinetus-text-heading);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+/* Two across once there is room for a real measure beside the icon. */
+@media (min-width: 560px) {
+  .bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Tablet: two columns so four or five items never squeeze their titles letter by letter. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--kinetus-space-5);
+    column-gap: 0;
+  }
+
+  .item {
+    padding-inline: var(--kinetus-space-5);
+    border-left: 1px solid var(--kinetus-border-default);
+  }
+
+  .item:nth-child(odd) {
+    padding-left: var(--kinetus-space-2);
+    border-left: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bar {
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  /* Hairline vertical rules between items. */
+  .item {
+    padding-inline: var(--kinetus-space-6);
+    border-left: 1px solid var(--kinetus-border-default);
+  }
+
+  .item:first-child {
+    padding-left: var(--kinetus-space-2);
+    border-left: 0;
+  }
+
+  .item:last-child {
+    padding-right: var(--kinetus-space-2);
+  }
+}

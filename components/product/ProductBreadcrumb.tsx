@@ -6,14 +6,14 @@ type ProductBreadcrumbProps = {
   productName: string;
   /**
    * The crumb between Home and the current page. Defaults to Products; pass `null` for
-   * top-level content pages (Home › Terms & Conditions).
+   * top-level content pages (Home / Terms & Conditions).
    */
   parent?: { label: string; href: string } | null;
 };
 
 const PRODUCTS_CRUMB = { label: "Products", href: "/products" };
 
-/** Home › Products › [name] — Figma 26:4 (desktop) / 68:164 (mobile), in the mono face. */
+/** Home / Products / [name] in small uppercase Inter, secondary colour. */
 export function ProductBreadcrumb({
   productName,
   parent = PRODUCTS_CRUMB,

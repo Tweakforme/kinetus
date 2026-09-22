@@ -1,83 +1,40 @@
-/* Hairline frame on border/default with registration marks at its corners (Phase 6 A7). */
-.frame {
-  position: relative;
-  border: 1px solid var(--kinetus-border-default);
-  padding: var(--kinetus-space-2) var(--kinetus-space-4);
-}
-
+/* Specification list: hairline frame top, one hairline per row. */
 .table {
   margin: 0;
+  border-top: 1px solid var(--kinetus-border-subtle);
 }
 
-/* Mobile (69:161): index + key on one line, value beneath; hairline between rows. */
 .row {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--kinetus-space-2);
+  gap: var(--kinetus-space-1);
   padding-block: var(--kinetus-space-4);
   border-bottom: 1px solid var(--kinetus-border-subtle);
 }
 
-.row:last-child {
-  border-bottom: 0;
-}
-
-/* Index track is space-12 (48px) wide; the key sits beside it. */
 .key {
-  --spec-index-track: var(--kinetus-space-12);
-
-  display: grid;
-  grid-template-columns: var(--spec-index-track) minmax(0, 1fr);
-  align-items: baseline;
   margin: 0;
-}
-
-.index {
   color: var(--kinetus-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
 }
 
-/* Keys stay in Inter: Label size and tracking, uppercase, secondary. */
-.keyText {
-  font-family: var(--kinetus-font-family);
-  font-size: var(--kinetus-type-label-size);
-  line-height: var(--kinetus-type-label-line-height);
-  font-weight: var(--kinetus-type-label-weight);
-  letter-spacing: var(--kinetus-type-label-letter-spacing);
-  text-transform: var(--kinetus-type-label-transform);
-  color: var(--kinetus-text-secondary);
-}
-
-/* Values in the mono face at Body size (mobile) / Body L (desktop), primary. */
 .value {
   margin: 0;
-  padding-left: var(--kinetus-space-12);
-  color: var(--kinetus-text-primary);
-  font-size: var(--kinetus-type-body-size);
-  line-height: var(--kinetus-type-body-line-height);
-  font-weight: var(--kinetus-type-body-weight);
+  color: var(--kinetus-text-heading);
+  font-size: 15px;
+  line-height: 1.5;
   overflow-wrap: anywhere;
 }
 
 @media (min-width: 768px) {
-  .frame {
-    padding: var(--kinetus-space-4) var(--kinetus-space-8);
-  }
-
-  /* Desktop: key column 372 of 1240 (Figma 28:12), value fills, generous rows. */
   .row {
-    --spec-key-track: 372fr;
-    --spec-value-track: 844fr;
-
-    grid-template-columns: minmax(0, var(--spec-key-track)) minmax(0, var(--spec-value-track));
+    grid-template-columns: 240px minmax(0, 1fr);
     column-gap: var(--kinetus-space-6);
-    padding-block: var(--kinetus-space-6);
     align-items: baseline;
-  }
-
-  .value {
-    padding-left: 0;
-    font-size: var(--kinetus-type-body-l-size);
-    line-height: var(--kinetus-type-body-l-line-height);
-    font-weight: var(--kinetus-type-body-l-weight);
+    padding-block: var(--kinetus-space-5);
   }
 }

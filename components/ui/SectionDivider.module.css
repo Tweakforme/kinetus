@@ -1,0 +1,102 @@
+.divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kinetus-space-2);
+  text-align: center;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: var(--kinetus-space-3);
+}
+
+/* Rules run to both edges; the blue is the sampled divider colour at 35%. */
+.rule {
+  position: relative;
+  flex: 1 1 0;
+  height: 2px;
+  min-width: var(--kinetus-space-4);
+  background: var(--kinetus-decor-rule-blue);
+}
+
+/* Three connector nodes ride the left rule (slide 4). */
+.nodes {
+  position: absolute;
+  right: 12%;
+  top: 50%;
+  display: flex;
+  gap: 22px;
+  transform: translateY(-50%);
+}
+
+.node {
+  width: 14px;
+  height: 14px;
+  border: 2.5px solid var(--kinetus-text-secondary);
+  border-radius: 50%;
+  background: var(--kinetus-bg-page);
+  box-shadow: 0 0 0 2px var(--kinetus-bg-page);
+}
+
+.leaf {
+  flex: 0 0 auto;
+  color: var(--kinetus-brand-red);
+}
+
+.title {
+  margin: 0;
+  padding: 0 var(--kinetus-space-1);
+  color: var(--kinetus-text-heading);
+  white-space: normal;
+}
+
+/* Letterspaced blue subheading (slide 12: #065a7d). */
+.subtitle {
+  margin: 0;
+  color: #065a7d;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.note {
+  margin: 0;
+  color: var(--kinetus-brand-blue);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+@media (max-width: 767px) {
+  .row {
+    gap: var(--kinetus-space-2);
+  }
+
+  /* A wrapped title starves the rules to a 16px stub; drop them and keep the leaves. */
+  .rule {
+    display: none;
+  }
+
+  .nodes {
+    display: none;
+  }
+
+  .leaf {
+    width: 18px;
+    height: 18px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+  }
+
+  .note {
+    font-size: 14px;
+  }
+}

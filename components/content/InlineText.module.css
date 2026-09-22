@@ -1,6 +1,7 @@
 /* Inline route and mailto links inside client text: brand/teal, underlined. */
 .link {
   color: var(--kinetus-brand-teal);
+  font-weight: 500;
   text-decoration: underline;
   text-underline-offset: var(--kinetus-space-1);
   transition: color var(--motion-duration) var(--motion-ease);
@@ -15,6 +16,8 @@
 .placeholder {
   padding-inline: var(--kinetus-space-1);
   background: var(--kinetus-bg-subtle);
+  border: 1px solid var(--kinetus-border-subtle);
   border-radius: var(--kinetus-radius-sm);
   color: var(--kinetus-text-secondary);
+  font-weight: 500;
 }

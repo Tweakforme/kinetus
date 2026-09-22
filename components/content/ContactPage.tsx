@@ -1,94 +1,103 @@
 import Link from "next/link";
-import buttons from "@/components/home/buttons.module.css";
+import {
+  ArrowRightIcon,
+  DocumentIcon,
+  EnvelopeIcon,
+  GlobeIcon,
+} from "@/components/icons/LineIcons";
 import { Container } from "@/components/layout/Container";
-import { RegistrationMarks } from "@/components/marks/RegistrationMarks";
-import { SectionRule } from "@/components/marks/SectionRule";
+import buttons from "@/components/ui/buttons.module.css";
 import { canonicalUrl } from "@/lib/seo";
-import { FOOTER_POLICY_LINKS, SITE_NAME } from "@/lib/site";
+import { CONTACT_EMAIL, FOOTER_POLICY_LINKS, LOCATION, SITE_NAME } from "@/lib/site";
+import { ContactForm } from "./ContactForm";
 import { ContentHeader } from "./ContentHeader";
 import { ContentJsonLd } from "./ContentJsonLd";
 import layout from "./ContentLayout.module.css";
 import styles from "./ContactPage.module.css";
 
-/**
- * The only contact channel confirmed in the client's documents (Terms §18, Privacy §14).
- * TODO: confirm mailbox is live before launch.
- */
-const CONTACT_EMAIL = "info@kinetusbiolabs.ca";
-
-/** The client's documents give the company location as "Canada" and nothing more. */
-const LOCATION = "Canada";
-
 const LEDE =
   "Questions about products, documentation, orders or research applications can be sent to the Kinetus BioLabs team by email.";
 
-const RELATED_LINKS = FOOTER_POLICY_LINKS.filter((link) =>
-  ["/shipping-policy", "/returns-policy"].includes(link.href),
-);
+const DOCUMENTATION_NOTE =
+  "Batch documentation is available on request; include the product name and the batch reference printed on the unit.";
+
+const RELATED_LINKS = [
+  { label: "Frequently asked questions", href: "/faq" },
+  ...FOOTER_POLICY_LINKS.filter((link) =>
+    ["/shipping-policy", "/returns-policy"].includes(link.href),
+  ),
+];
 
 /**
- * Contact: one mailto channel, the confirmed location, and pointers to the FAQ and the
- * order-related policies. No form, no phone number, no hours: none is confirmed.
+ * Contact (deck slide 23): the enquiry form on the left, composing a mailto since no
+ * backend exists, and a white details card on the right with the one confirmed channel,
+ * the confirmed location, the documentation note and the related policy links.
  */
 export function ContactPage() {
   return (
     <article className={layout.page}>
-      <ContentHeader kicker={SITE_NAME} title="Contact" lede={LEDE} />
+      <ContentHeader eyebrow={SITE_NAME} title="Contact" lede={LEDE} />
 
       <Container className={styles.body} data-reveal="">
-        <SectionRule />
+        <section className={styles.formColumn} aria-labelledby="inquiries-heading">
+          <p className={`type-eyebrow ${styles.formEyebrow}`}>Send a message</p>
+          <h2 id="inquiries-heading" className={`type-h2 ${styles.formTitle}`}>
+            Inquiries
+          </h2>
+          <ContactForm />
+        </section>
 
-        <div className={styles.channels}>
-          <RegistrationMarks />
-          <dl className={styles.channelList}>
-            <div className={styles.channel}>
-              <dt className={`type-label ${styles.channelLabel}`}>
-                <span className={`numeric ${styles.channelIndex}`}>01</span>{" "}
-                <span aria-hidden="true" className={styles.channelSlash}>
-                  /
-                </span>
-                Email
-              </dt>
-              <dd className={styles.channelValue}>
-                <a href={`mailto:${CONTACT_EMAIL}`} className={`type-h3 type-mono ${styles.email}`}>
+        <aside className={styles.card} aria-labelledby="contact-details-heading">
+          <h2 id="contact-details-heading" className={`type-label ${styles.cardHeading}`}>
+            Contact details
+          </h2>
+
+          <ul className={styles.details}>
+            <li className={styles.detail}>
+              <span className={styles.detailIcon} aria-hidden="true">
+                <EnvelopeIcon size={26} />
+              </span>
+              <span className={styles.detailText}>
+                <span className={styles.detailLabel}>Email</span>
+                <a href={`mailto:${CONTACT_EMAIL}`} className={styles.detailLink}>
                   {CONTACT_EMAIL}
                 </a>
-              </dd>
-            </div>
-            <div className={styles.channel}>
-              <dt className={`type-label ${styles.channelLabel}`}>
-                <span className={`numeric ${styles.channelIndex}`}>02</span>{" "}
-                <span aria-hidden="true" className={styles.channelSlash}>
-                  /
-                </span>
-                Location
-              </dt>
-              <dd className={`type-h3 ${styles.channelValue}`}>{LOCATION}</dd>
-            </div>
-          </dl>
-        </div>
-
-        <div className={styles.related}>
-          <p className={`type-label ${styles.relatedLabel}`}>Before you write</p>
-          <p className={`type-body ${styles.relatedCopy}`}>
-            Common questions about documentation, storage and research use are answered in the FAQ.
-            Order questions are covered by the shipping and returns policies.
-          </p>
-          <ul className={styles.relatedLinks}>
-            <li>
-              <Link href="/faq" className={`type-label ${buttons.secondary}`}>
-                Frequently asked questions
-              </Link>
+              </span>
             </li>
-            {RELATED_LINKS.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className={`type-label ${buttons.tertiary}`}>
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            <li className={styles.detail}>
+              <span className={styles.detailIcon} aria-hidden="true">
+                <GlobeIcon size={26} />
+              </span>
+              <span className={styles.detailText}>
+                <span className={styles.detailLabel}>Location</span>
+                <span className={styles.detailValue}>{LOCATION}</span>
+              </span>
+            </li>
+            <li className={styles.detail}>
+              <span className={styles.detailIcon} aria-hidden="true">
+                <DocumentIcon size={26} />
+              </span>
+              <span className={styles.detailText}>
+                <span className={styles.detailLabel}>Documentation</span>
+                <span className={styles.detailValue}>{DOCUMENTATION_NOTE}</span>
+              </span>
+            </li>
           </ul>
-        </div>
+
+          <div className={styles.related}>
+            <p className={`type-label ${styles.relatedLabel}`}>Before you write</p>
+            <ul className={styles.relatedLinks}>
+              {RELATED_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className={`${buttons.link} ${buttons.linkTeal}`}>
+                    {link.label}
+                    <ArrowRightIcon size={16} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
       </Container>
 
       <ContentJsonLd

@@ -4,15 +4,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { Container } from "./Container";
-import { ChevronIcon } from "./NavIcons";
-import { UtilityBar } from "./UtilityBar";
-import logo from "@/public/kinetus-logo.png";
-import { CloseIcon } from "@/components/icons/CloseIcon";
-import { MenuIcon } from "@/components/icons/MenuIcon";
-import { RESEARCH_USE_COPY, SITE_NAME, type NavItem } from "@/lib/site";
+import {
+  ChevronDownIcon,
+  CloseIcon,
+  DocumentIcon,
+  EnvelopeIcon,
+  MenuIcon,
+  SearchIcon,
+  TruckIcon,
+} from "@/components/icons/LineIcons";
+import {
+  HEADER_ICON_LINKS,
+  SHIPPING_LINE,
+  SITE_NAME,
+  UTILITY_BAR_LINES,
+  type NavItem,
+} from "@/lib/site";
 import styles from "./MobileNav.module.css";
 
-const DESKTOP_MEDIA_QUERY = "(min-width: 768px)";
+const DESKTOP_MEDIA_QUERY = "(min-width: 1024px)";
+
+/** White lockup (772 x 184) at 44px tall for the drawer's navy top bar. */
+const LOCKUP = { src: "/brand/kinetus-logo-horizontal-white.png", width: 186, height: 44 };
 
 type MobileNavProps = {
   items: NavItem[];
@@ -21,17 +34,18 @@ type MobileNavProps = {
 };
 
 /**
- * Mobile navigation: 48×48 menu trigger + full-screen drawer, matching the approved
- * "Mobile Navigation — Open State" frame (55:8): top bar mirrors the header with a
- * close trigger in the same position, stacked rows with subtle rules, and a bottom
- * block (rule · research-use line). Collections are accordion rows listing their products
- * (Figma 71:210 submenu treatment); Contact is a plain row. Focus is trapped inside the
- * drawer while open, body scroll is locked, Escape closes, and focus returns to the trigger.
+ * Mobile navigation: 48 x 48 menu trigger on the right of the header and a full-height
+ * navy drawer (white text). Top bar with the white lockup and a close trigger, a search
+ * field that submits GET /search?q=, accordion rows for items with children and plain
+ * rows otherwise, the documentation and enquiry links, and the utility strings at the
+ * bottom. Focus is trapped inside the drawer while open, body scroll is locked, Escape
+ * closes, and focus returns to the trigger.
  */
 export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
   const drawerId = useId();
+  const searchId = useId();
   const drawerRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -78,7 +92,9 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
       return;
     }
     const focusable = Array.from(
-      drawerRef.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"),
+      drawerRef.current.querySelectorAll<HTMLElement>(
+        "a[href], button:not([disabled]), input:not([disabled])",
+      ),
     ).filter((element) => !element.closest("[inert]") && element.getClientRects().length > 0);
     if (focusable.length === 0) {
       return;
@@ -114,7 +130,7 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
         aria-label="Open menu"
         onClick={() => setOpen(true)}
       >
-        <MenuIcon />
+        <MenuIcon size={28} />
       </button>
 
       <div
@@ -128,7 +144,6 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
         onKeyDown={onDrawerKeyDown}
       >
         <div className={styles.top}>
-          <UtilityBar />
           <div className={styles.topBar}>
             <Container className={styles.topRow}>
               <Link
@@ -138,11 +153,11 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
                 onClick={close}
               >
                 <Image
-                  src={logo}
+                  src={LOCKUP.src}
                   alt={SITE_NAME}
-                  sizes="70px"
+                  width={LOCKUP.width}
+                  height={LOCKUP.height}
                   className={styles.logo}
-                  placeholder="blur"
                   loading="eager"
                 />
               </Link>
@@ -153,10 +168,35 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
                 aria-label="Close menu"
                 onClick={close}
               >
-                <CloseIcon />
+                <CloseIcon size={28} />
               </button>
             </Container>
           </div>
+
+          <Container className={styles.searchWrap}>
+            <form
+              action={HEADER_ICON_LINKS.search.href}
+              method="get"
+              role="search"
+              className={styles.search}
+            >
+              <label htmlFor={searchId} className="visually-hidden">
+                Search the catalogue
+              </label>
+              <input
+                id={searchId}
+                type="search"
+                name="q"
+                className={styles.searchInput}
+                placeholder="Search products"
+                autoComplete="off"
+                enterKeyHint="search"
+              />
+              <button type="submit" className={styles.searchSubmit} aria-label="Search">
+                <SearchIcon size={22} />
+              </button>
+            </form>
+          </Container>
 
           <Container as="nav" className={styles.body} aria-label="Mobile primary">
             <ul className={styles.list}>
@@ -164,12 +204,7 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
                 if (!item.children) {
                   return (
                     <li key={item.href} className={styles.item}>
-                      <Link
-                        href={item.href}
-                        prefetch={item.prefetch === false ? false : undefined}
-                        className={`type-h3 ${styles.link}`}
-                        onClick={close}
-                      >
+                      <Link href={item.href} className={styles.link} onClick={close}>
                         {item.label}
                       </Link>
                     </li>
@@ -182,13 +217,14 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
                   <li key={item.href} className={styles.item}>
                     <button
                       type="button"
-                      className={`type-h3 ${styles.row}`}
+                      className={styles.row}
                       aria-expanded={isExpanded}
                       aria-controls={subId}
                       onClick={() => setExpanded(isExpanded ? null : item.href)}
                     >
                       <span>{item.label}</span>
-                      <ChevronIcon
+                      <ChevronDownIcon
+                        size={20}
                         className={
                           isExpanded
                             ? `${styles.rowChevron} ${styles.rowChevronOpen}`
@@ -203,27 +239,13 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
                     >
                       <div className={styles.subInner}>
                         <ul className={styles.subList}>
-                          {item.children.map((child, index) => {
-                            const isViewAll = index === item.children!.length - 1;
-                            return (
-                              <li key={child.href}>
-                                <Link
-                                  href={child.href}
-                                  className={
-                                    isViewAll
-                                      ? `type-label ${styles.subLink} ${styles.subViewAll}`
-                                      : `type-body ${styles.subLink}`
-                                  }
-                                  aria-label={
-                                    isViewAll ? `${child.label} ${item.label}` : undefined
-                                  }
-                                  onClick={close}
-                                >
-                                  {child.label}
-                                </Link>
-                              </li>
-                            );
-                          })}
+                          {item.children.map((child) => (
+                            <li key={`${child.href}-${child.label}`}>
+                              <Link href={child.href} className={styles.subLink} onClick={close}>
+                                {child.label}
+                              </Link>
+                            </li>
+                          ))}
                         </ul>
                       </div>
                     </div>
@@ -231,15 +253,46 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
                 );
               })}
             </ul>
+
+            <ul className={styles.secondary} aria-label="Documentation and enquiries">
+              <li>
+                <Link
+                  href={HEADER_ICON_LINKS.documentation.href}
+                  className={styles.secondaryLink}
+                  onClick={close}
+                >
+                  <DocumentIcon size={22} className={styles.secondaryIcon} />
+                  <span>{HEADER_ICON_LINKS.documentation.label}</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={HEADER_ICON_LINKS.enquire.href}
+                  className={styles.secondaryLink}
+                  onClick={close}
+                >
+                  <EnvelopeIcon size={22} className={styles.secondaryIcon} />
+                  <span>{HEADER_ICON_LINKS.enquire.label}</span>
+                </Link>
+              </li>
+            </ul>
           </Container>
         </div>
 
         <div className={styles.bottom}>
           <Container className={styles.bottomInner}>
             <hr className={styles.rule} />
-            {/* TODO: confirm public contact info with AJ/Mike — the approved frame shows an
-                email and phone number here. Nothing is rendered until they are confirmed. */}
-            <p className={`type-caption ${styles.caption}`}>{RESEARCH_USE_COPY}</p>
+            <p className={styles.notice}>
+              <span className={styles.noticeLine}>{UTILITY_BAR_LINES[0]}</span>
+              <span className={styles.bullet} aria-hidden="true">
+                •
+              </span>
+              <span className={styles.noticeLine}>{UTILITY_BAR_LINES[1]}</span>
+            </p>
+            <Link href="/shipping-policy" className={styles.shipping} onClick={close}>
+              <TruckIcon size={20} className={styles.secondaryIcon} />
+              <span>{SHIPPING_LINE}</span>
+            </Link>
           </Container>
         </div>
       </div>

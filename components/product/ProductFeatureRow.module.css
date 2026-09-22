@@ -1,0 +1,51 @@
+/*
+ * Icon row (slide 9): 56px hexagon-outline chips with 40px line icons and two-line
+ * uppercase labels, all in blue-soft. Three per row so the labels never collide in the
+ * 30% copy column; six items make two rows.
+ */
+.row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--kinetus-space-4) var(--kinetus-space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kinetus-space-2);
+  min-width: 0;
+  text-align: center;
+}
+
+.chip {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  color: var(--kinetus-brand-blue-soft);
+}
+
+.hex {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.icon {
+  position: relative;
+}
+
+.label {
+  color: var(--kinetus-brand-blue-soft);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}

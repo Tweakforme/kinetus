@@ -1,7 +1,8 @@
-/* Figma Mobile header (55:9): 48×48 menu trigger, 20px icon, flush with the container edge. */
+/* 48 x 48 menu trigger on the right of the header row, and the drawer's close trigger. */
 .toggle,
 .close {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   width: var(--kinetus-tap-target);
@@ -9,20 +10,30 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--kinetus-text-primary);
   border-radius: var(--kinetus-radius-sm);
   cursor: pointer;
   transition: color var(--motion-duration) var(--motion-ease);
 }
 
+.toggle {
+  color: var(--kinetus-text-heading);
+}
+
 .toggle:hover,
-.toggle:active,
-.close:hover,
-.close:active {
+.toggle:active {
   color: var(--kinetus-brand-teal);
 }
 
-/* Full-screen drawer (Figma 55:8). Hidden state keeps it out of layout and the tab order. */
+.close {
+  color: var(--kinetus-text-inverse);
+}
+
+.close:hover,
+.close:active {
+  color: var(--kinetus-brand-cyan-bright);
+}
+
+/* Full-height navy drawer. Hidden state keeps it out of layout and the tab order. */
 .drawer {
   position: fixed;
   inset: 0;
@@ -30,8 +41,9 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: var(--kinetus-bg-base);
-  color: var(--kinetus-text-primary);
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+  overflow-x: hidden;
   overflow-y: auto;
   visibility: hidden;
   opacity: 0;
@@ -56,10 +68,9 @@
   flex: 0 0 auto;
 }
 
-/* Drawer top bar mirrors the header bar: py space-2, 48px row, 1px border/subtle. */
+/* Drawer top bar mirrors the header row: 72px, white lockup left, close trigger right. */
 .topBar {
-  border-bottom: 1px solid var(--kinetus-border-subtle);
-  padding-block: var(--kinetus-space-2);
+  border-bottom: 1px solid var(--kinetus-border-on-dark);
 }
 
 .topRow {
@@ -67,6 +78,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--kinetus-space-4);
+  min-height: 72px;
 }
 
 .logoLink {
@@ -76,13 +88,66 @@
 }
 
 .logo {
-  height: var(--kinetus-tap-target);
+  height: 44px;
   width: auto;
 }
 
-/* Main navigation (71:205): pt space-4; each row py space-4 with a 1px border/subtle rule. */
+/* Search field: GET /search?q= with an icon submit. */
+.searchWrap {
+  padding-block: var(--kinetus-space-5) var(--kinetus-space-2);
+}
+
+.search {
+  display: flex;
+  gap: var(--kinetus-space-2);
+}
+
+.searchInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--kinetus-tap-target);
+  padding: 0 var(--kinetus-space-4);
+  border: 1px solid var(--kinetus-border-on-dark);
+  border-radius: var(--kinetus-radius-md);
+  /* No token for a translucent field on navy; matches the hex-on-dark decor alpha. */
+  background: var(--kinetus-decor-hex-on-dark);
+  color: var(--kinetus-text-inverse);
+  font: inherit;
+  transition: border-color var(--motion-duration) var(--motion-ease);
+}
+
+.searchInput::placeholder {
+  color: var(--kinetus-text-inverse-muted);
+}
+
+.searchInput:focus {
+  border-color: var(--kinetus-brand-cyan-bright);
+}
+
+.searchSubmit {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: var(--kinetus-tap-target);
+  height: var(--kinetus-tap-target);
+  padding: 0;
+  border: 0;
+  border-radius: var(--kinetus-radius-md);
+  background: var(--kinetus-brand-teal);
+  color: var(--kinetus-text-inverse);
+  cursor: pointer;
+  transition: background-color var(--motion-duration) var(--motion-ease);
+}
+
+.searchSubmit:hover,
+.searchSubmit:active {
+  background: var(--kinetus-brand-teal-dark);
+}
+
+/* Main navigation: condensed uppercase white rows with hairline rules. */
 .body {
-  padding-top: var(--kinetus-space-4);
+  padding-top: var(--kinetus-space-2);
 }
 
 .list {
@@ -92,7 +157,7 @@
 }
 
 .item {
-  border-bottom: 1px solid var(--kinetus-border-subtle);
+  border-bottom: 1px solid var(--kinetus-border-on-dark);
 }
 
 .link,
@@ -102,12 +167,19 @@
   justify-content: space-between;
   gap: var(--kinetus-space-4);
   width: 100%;
-  padding: var(--kinetus-space-4) 0;
+  min-height: 56px;
+  padding: var(--kinetus-space-3) 0;
   background: none;
   border: 0;
-  color: var(--kinetus-text-primary);
+  color: var(--kinetus-text-inverse);
+  font-family: var(--kinetus-font-display);
+  font-size: 20px;
+  font-weight: var(--kinetus-type-nav-weight);
+  letter-spacing: 0.02em;
+  line-height: 1;
   text-align: left;
   text-decoration: none;
+  text-transform: uppercase;
   cursor: pointer;
   transition: color var(--motion-duration) var(--motion-ease);
 }
@@ -116,7 +188,7 @@
 .link:active,
 .row:hover,
 .row:active {
-  color: var(--kinetus-brand-teal);
+  color: var(--kinetus-brand-cyan-bright);
 }
 
 .rowChevron {
@@ -144,52 +216,105 @@
   overflow: hidden;
 }
 
-/* Submenu (Figma 71:210): indented space-8, 50px rows (Body + space-3 padding). */
 .subList {
   list-style: none;
   margin: 0;
-  padding: 0 0 var(--kinetus-space-3) var(--kinetus-space-8);
+  padding: 0 0 var(--kinetus-space-3) var(--kinetus-space-4);
 }
 
 .subLink {
   display: flex;
   align-items: center;
   min-height: var(--kinetus-tap-target);
-  padding-block: var(--kinetus-space-3);
-  color: var(--kinetus-text-secondary);
+  padding-block: var(--kinetus-space-2);
+  color: var(--kinetus-text-inverse-muted);
+  font-size: 16px;
+  line-height: 1.4;
   text-decoration: none;
   transition: color var(--motion-duration) var(--motion-ease);
 }
 
 .subLink:hover,
 .subLink:active {
-  color: var(--kinetus-brand-teal);
+  color: var(--kinetus-text-inverse);
 }
 
-.subViewAll {
-  color: var(--kinetus-brand-teal);
+/* Documentation and enquiry links (the header's icon cluster on desktop). */
+.secondary {
+  list-style: none;
+  margin: var(--kinetus-space-4) 0 0;
+  padding: 0;
 }
 
-/* Drawer bottom (71:225): pb space-8; rule · research-use line, gap space-4. */
+.secondaryLink,
+.shipping {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-3);
+  min-height: var(--kinetus-tap-target);
+  color: var(--kinetus-text-inverse-muted);
+  text-decoration: none;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.secondaryLink {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.secondaryLink:hover,
+.secondaryLink:active,
+.shipping:hover,
+.shipping:active {
+  color: var(--kinetus-text-inverse);
+}
+
+.secondaryIcon {
+  flex: 0 0 auto;
+}
+
+/* Drawer bottom: rule, the utility-bar strings, the shipping line. */
 .bottom {
-  padding-block: var(--kinetus-space-8);
+  padding-block: var(--kinetus-space-6) var(--kinetus-space-8);
 }
 
 .bottomInner {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-4);
+  gap: var(--kinetus-space-3);
 }
 
 .rule {
   margin: 0;
   border: 0;
-  border-top: 1px solid var(--kinetus-border-subtle);
+  border-top: 1px solid var(--kinetus-border-on-dark);
 }
 
-.caption {
+.notice,
+.shipping {
   margin: 0;
-  color: var(--kinetus-text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--kinetus-space-3);
+  row-gap: 0;
+  color: var(--kinetus-text-inverse);
+}
+
+.noticeLine {
+  white-space: nowrap;
+}
+
+.bullet {
+  flex: 0 0 auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -201,7 +326,7 @@
 }
 
 /* Hidden on desktop unless the desktop nav has collapsed into the drawer (.forced). */
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .toggle:not(.forced),
   .drawer:not(.forced) {
     display: none;

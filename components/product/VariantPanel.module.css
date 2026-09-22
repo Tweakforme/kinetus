@@ -1,11 +1,18 @@
-/* Details column stack: selector and price blocks, gap space-6 (mobile) / space-8 (desktop). */
+/*
+ * Hero panel (deck slide 9): white card, faint border, 12px radius, soft shadow.
+ * SELECT SIZE chips, hairline, price, solid enquiry button, documentation link.
+ */
 .panel {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-6);
+  gap: var(--kinetus-space-5);
+  padding: var(--kinetus-space-5);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-panel);
 }
 
-/* Figma 27:7: label + chips, gap space-3. */
 .selector {
   display: flex;
   flex-direction: column;
@@ -14,7 +21,12 @@
 
 .selectorLabel {
   margin: 0;
-  color: var(--kinetus-text-secondary);
+  color: var(--kinetus-text-heading);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .chips {
@@ -23,44 +35,51 @@
   gap: var(--kinetus-space-2);
 }
 
-/*
- * Variant Chip (Figma 23:6): px space-6, py space-4, radius/sm, 1px border/default.
- * Selected: bg brand/teal-light + 2px brand/teal. Min height 48px per the component note.
- */
+/* Size chip: 1.5px chip border, 8px radius, 56px tall, teal-deep label ("50 MG"). */
 .chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--kinetus-tap-target);
-  padding: var(--kinetus-space-4) var(--kinetus-space-6);
+  min-height: 56px;
+  padding: 0 var(--kinetus-space-5);
   background: var(--kinetus-bg-base);
-  color: var(--kinetus-text-primary);
-  border: 1px solid var(--kinetus-border-default);
-  border-radius: var(--kinetus-radius-sm);
+  color: var(--kinetus-brand-teal-deep);
+  border: 1.5px solid var(--kinetus-border-chip);
+  border-radius: var(--kinetus-radius-md);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
   cursor: pointer;
   transition:
     border-color var(--motion-duration) var(--motion-ease),
-    background-color var(--motion-duration) var(--motion-ease);
+    background-color var(--motion-duration) var(--motion-ease),
+    color var(--motion-duration) var(--motion-ease);
 }
 
 .chip:hover {
-  border-color: var(--kinetus-brand-teal);
+  border-color: var(--kinetus-brand-teal-deep);
 }
 
 .chip:active {
-  border-color: var(--kinetus-brand-teal);
   background: var(--kinetus-brand-teal-light);
 }
 
+/* Selected: teal-deep fill, white label. */
 .chipSelected,
-.chipSelected:hover {
-  background: var(--kinetus-brand-teal-light);
-  border: 2px solid var(--kinetus-brand-teal);
-  /* Keep the outer size identical to the 1px state so chips do not shift on selection. */
-  padding: calc(var(--kinetus-space-4) - 1px) calc(var(--kinetus-space-6) - 1px);
+.chipSelected:hover,
+.chipSelected:active {
+  background: var(--kinetus-brand-teal-deep);
+  border-color: var(--kinetus-brand-teal-deep);
+  color: var(--kinetus-text-inverse);
 }
 
-/* Figma 27:16: price row gap space-3, stock line below with gap space-2. */
+.rule {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
 .price {
   display: flex;
   flex-direction: column;
@@ -75,37 +94,33 @@
   margin: 0;
 }
 
+/* "$45.00" Inter 800 40px, "CAD" Inter 500 18px secondary (slide 9). */
 .priceValue {
   color: var(--kinetus-text-primary);
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 
-/* Was-price: Body S (mobile) / Body L (desktop), secondary, struck through. */
 .wasPrice {
   color: var(--kinetus-text-secondary);
-  font-size: var(--kinetus-type-body-s-size);
-  line-height: var(--kinetus-type-body-s-line-height);
-  font-weight: var(--kinetus-type-body-s-weight);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
 }
 
 .currency {
   color: var(--kinetus-text-secondary);
-}
-
-/* Screen-reader-only text. */
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
 }
 
 .stock {
   margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .inStock {
@@ -116,14 +131,25 @@
   color: var(--kinetus-text-secondary);
 }
 
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--kinetus-space-2);
+}
+
+.enquire {
+  width: 100%;
+}
+
+.documentation {
+  gap: var(--kinetus-space-2);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
 @media (min-width: 768px) {
   .panel {
-    gap: var(--kinetus-space-8);
-  }
-
-  .wasPrice {
-    font-size: var(--kinetus-type-body-l-size);
-    line-height: var(--kinetus-type-body-l-line-height);
-    font-weight: var(--kinetus-type-body-l-weight);
+    padding: 28px;
   }
 }

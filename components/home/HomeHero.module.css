@@ -1,0 +1,14 @@
+/*
+ * One headline line per span. Below 1024px the lines wrap naturally inside the copy
+ * column; from 1024px the copy column is wide enough for each line to stay whole, so
+ * wrapping is suppressed and the only break is the <br /> between the two lines.
+ */
+.line {
+  display: inline;
+}
+
+@media (min-width: 1024px) {
+  .line {
+    white-space: nowrap;
+  }
+}
