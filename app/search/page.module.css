@@ -1,0 +1,38 @@
+/* Divider, form, then results or the empty state. */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-8);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+}
+
+/* "Showing 3 results for ...": Inter 13px secondary. */
+.results {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+/* Empty state: white panel with the line and the range pills. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kinetus-space-6);
+  padding: var(--kinetus-space-8) var(--kinetus-space-5);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
+  text-align: center;
+}
+
+.emptyText {
+  margin: 0;
+  max-width: var(--kinetus-measure-body);
+  color: var(--kinetus-text-heading);
+}

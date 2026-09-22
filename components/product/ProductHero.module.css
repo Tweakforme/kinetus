@@ -1,0 +1,184 @@
+/*
+ * Product hero (deck slides 9 and 13). Mobile: one column in the order breadcrumb,
+ * eyebrow, name, size line, render, panel, subhead + paragraph, icon row. Tablet: copy
+ * left, render right, panel beneath. Desktop: copy 30% / render 40% / panel 30% with the
+ * copy split into two rows that meet at the render's midline, so the copy block sits
+ * centred beside the vial while the panel stays at the top and sticks.
+ */
+.hero {
+  position: relative;
+  overflow: clip;
+  padding-block: var(--kinetus-space-6) var(--kinetus-space-10);
+  background: var(--kinetus-bg-base);
+}
+
+/* Ghosted decor: hidden on mobile, shown from tablet. */
+.helix,
+.lattice {
+  display: none;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+.breadcrumb {
+  margin-bottom: var(--kinetus-space-4);
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-6);
+}
+
+.identity,
+.detail {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.identity {
+  gap: var(--kinetus-space-3);
+}
+
+.detail {
+  gap: var(--kinetus-space-5);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.name {
+  margin: 0;
+  color: var(--kinetus-text-primary);
+  overflow-wrap: break-word;
+}
+
+.render {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.panel {
+  min-width: 0;
+}
+
+/* Blue form line: "RESEARCH MATERIAL · LYOPHILIZED POWDER". */
+.subhead {
+  margin: 0;
+  color: var(--kinetus-brand-blue-soft);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.paragraph {
+  margin: 0;
+  max-width: 40em;
+  color: var(--kinetus-text-heading);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-block: var(--kinetus-space-8) var(--kinetus-space-12);
+  }
+
+  /* Helix at the page's right edge, top of the page, partly off-canvas (slide 9). */
+  .helix {
+    position: absolute;
+    top: 0;
+    right: -36px;
+    z-index: 0;
+    display: block;
+    width: 150px;
+    height: 720px;
+    color: var(--kinetus-decor-helix);
+  }
+
+  /* Lattice behind the render, overlapping the copy column's right edge. */
+  .lattice {
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    z-index: 0;
+    display: block;
+    width: 360px;
+    height: auto;
+    transform: translateY(-50%);
+    color: var(--kinetus-decor-hex);
+  }
+
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "identity render"
+      "detail render"
+      "panel panel";
+    column-gap: var(--kinetus-space-8);
+    row-gap: var(--kinetus-space-6);
+  }
+
+  .identity {
+    grid-area: identity;
+    align-self: start;
+  }
+
+  .detail {
+    grid-area: detail;
+    align-self: start;
+  }
+
+  .render {
+    grid-area: render;
+    align-self: center;
+  }
+
+  .panel {
+    grid-area: panel;
+    justify-self: center;
+    width: 100%;
+    max-width: 560px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lattice {
+    left: 24%;
+  }
+
+  /*
+   * Row 1 is the identity block's own height and row 2 takes the slack, so the copy
+   * reads as one top-aligned stack beside the render. Two equal 1fr rows used to make
+   * row 1 as tall as the much taller detail row, which left a ~190px hole above the
+   * eyebrow once the identity block was bottom-aligned inside it.
+   */
+  .grid {
+    grid-template-columns: minmax(0, 34fr) minmax(0, 36fr) minmax(0, 30fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "identity render panel"
+      "detail render panel";
+  }
+
+  .panel {
+    position: sticky;
+    top: calc(var(--kinetus-header-height) + var(--kinetus-space-6));
+    align-self: start;
+    justify-self: stretch;
+    max-width: none;
+  }
+}

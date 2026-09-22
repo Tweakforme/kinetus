@@ -1,0 +1,73 @@
+.body {
+  display: block;
+}
+
+/* One white card per document, stacked. */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  gap: var(--kinetus-space-4);
+  align-items: center;
+  min-height: 80px;
+  padding: var(--kinetus-space-4) var(--kinetus-space-5);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
+  color: var(--kinetus-text-heading);
+  text-decoration: none;
+  transition:
+    box-shadow var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease);
+}
+
+.row:hover,
+.row:active {
+  box-shadow: var(--kinetus-shadow-card-hover);
+  transform: translateY(-1px);
+}
+
+.rowIcon {
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.rowText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rowTitle {
+  color: var(--kinetus-text-heading);
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.rowDescription {
+  color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+}
+
+.rowCta {
+  justify-self: end;
+}
+
+@media (min-width: 768px) {
+  .row {
+    gap: var(--kinetus-space-5);
+    padding: var(--kinetus-space-5) var(--kinetus-space-6);
+  }
+}

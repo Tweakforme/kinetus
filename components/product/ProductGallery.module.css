@@ -1,47 +1,39 @@
-/* Figma gallery: column, gap space-2 (mobile) / space-4 (desktop). */
+/* Render column (slide 9): the vial floats on the white page, no panel behind it. */
 .gallery {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-2);
+  align-items: center;
+  gap: var(--kinetus-space-4);
   min-width: 0;
 }
 
-/* Registration marks sit just outside the panel's corners on this frame. */
-.primaryFrame {
-  position: relative;
-}
-
-/* Square media panel: bg/subtle, radius/lg, artwork inset by space-6 (Figma 68:170). */
-.primary {
+/* Sized box for the filled image; the client renders are close to square. */
+.stage {
   position: relative;
   width: 100%;
-  aspect-ratio: 1;
-  background: var(--kinetus-bg-subtle);
-  border-radius: var(--kinetus-radius-lg);
-  overflow: hidden;
-}
-
-.primaryInner {
-  position: absolute;
-  inset: var(--kinetus-space-6);
+  max-width: 560px;
+  aspect-ratio: 14 / 15;
 }
 
 /*
- * The client renders are opaque with near-white backgrounds. Darken-blending them onto
- * the subtle panel clamps those backgrounds to the panel colour (the product itself is
- * darker and unaffected) without editing the client's files.
+ * Opaque photographs blend onto the page so their white background disappears; keyed
+ * renders additionally cast the deck's soft shadow.
  */
 .image {
   object-fit: contain;
+  object-position: center;
   mix-blend-mode: darken;
 }
 
-/* Thumbnail row: 4 across, gap space-2 (mobile) / space-4 (desktop). */
-.thumbs {
-  --thumb-columns: 4;
+.imageKeyed {
+  filter: drop-shadow(0 22px 26px rgba(7, 27, 52, 0.18));
+}
 
-  display: grid;
-  grid-template-columns: repeat(var(--thumb-columns), minmax(0, 1fr));
+/* Thumbnails: 64px squares, 1px border, active border teal-deep. */
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--kinetus-space-2);
   list-style: none;
   margin: 0;
@@ -52,48 +44,50 @@
   min-width: 0;
 }
 
-/* Figma thumb: bg/subtle, radius/md, 1px border/subtle; active 2px brand/teal. ≥44px tall. */
 .thumb {
   position: relative;
   display: block;
-  width: 100%;
-  aspect-ratio: 1;
-  min-height: var(--kinetus-tap-target);
+  width: 64px;
+  height: 64px;
   padding: 0;
-  background: var(--kinetus-bg-subtle);
-  border: 1px solid var(--kinetus-border-subtle);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-default);
   border-radius: var(--kinetus-radius-md);
   overflow: hidden;
   cursor: pointer;
-  transition: border-color var(--motion-duration) var(--motion-ease);
+  transition:
+    border-color var(--motion-duration) var(--motion-ease),
+    box-shadow var(--motion-duration) var(--motion-ease);
 }
 
 .thumb:hover,
 .thumb:active {
-  border-color: var(--kinetus-border-default);
+  border-color: var(--kinetus-border-chip);
 }
 
 .thumbActive,
 .thumbActive:hover {
-  border: 2px solid var(--kinetus-brand-teal);
+  border-color: var(--kinetus-brand-teal-deep);
+  box-shadow: inset 0 0 0 1px var(--kinetus-brand-teal-deep);
 }
 
 .thumbInner {
   position: absolute;
-  inset: var(--kinetus-space-2);
+  inset: var(--kinetus-space-1);
 }
 
-@media (min-width: 768px) {
-  .gallery {
-    gap: var(--kinetus-space-4);
-  }
+.thumbImage {
+  object-fit: contain;
+  mix-blend-mode: darken;
+}
 
-  .thumbs {
-    gap: var(--kinetus-space-4);
-  }
-
-  /* Figma 26:14: 168×128 thumbnails on desktop. */
-  .thumb {
-    aspect-ratio: 21 / 16;
+/*
+ * Desktop: cap the stage so the render column never grows taller than the copy column
+ * beside it, which would reopen slack inside the hero grid. The image is object-fit:
+ * contain, so a shorter stage scales it down rather than cropping it.
+ */
+@media (min-width: 1024px) {
+  .stage {
+    max-height: 420px;
   }
 }

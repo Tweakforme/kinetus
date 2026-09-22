@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CollectionCard } from "@/components/collection/CollectionCard";
-import { ListingIntro } from "@/components/collection/ListingIntro";
+import {
+  CATALOGUE_NOTE,
+  CATALOGUE_SUBTITLE,
+  LISTING_RENDER,
+} from "@/components/collection/listingAssets";
 import { ListingJsonLd } from "@/components/collection/ListingJsonLd";
 import { ListingPage } from "@/components/collection/ListingPage";
 import { Container } from "@/components/layout/Container";
+import buttons from "@/components/ui/buttons.module.css";
+import { PageHero } from "@/components/ui/PageHero";
+import { SectionDivider } from "@/components/ui/SectionDivider";
 import { getAllCollections } from "@/lib/collections";
 import { canonicalUrl } from "@/lib/seo";
-import { ALL_PRODUCTS_LINK, SITE_NAME } from "@/lib/site";
+import { ALL_PRODUCTS_LINK, collectionHref, SITE_NAME } from "@/lib/site";
 import styles from "./page.module.css";
 
-const TITLE = "Collections";
-const INTRO = `${SITE_NAME} research materials, grouped into collections.`;
+const TITLE = "Research Material Categories";
+const INTRO = `${SITE_NAME} research materials grouped by range. Every unit carries a batch reference, and batch-specific documentation is available on request.`;
 
 /** Hourly regeneration, matching the product and collection pages. */
 export const revalidate = 3600;
@@ -38,41 +45,54 @@ export const metadata: Metadata = {
   },
 };
 
+/** Cards in the first row load their render eagerly. */
+const FIRST_ROW = 2;
+
 /**
- * /collections — hub linking every published collection with the Figma Collection Card
- * treatment (40:57), text-led because Collection carries no image. 3 columns on desktop,
- * stacked on mobile.
+ * /collections: the category hub. The navy hero, the "Research Materials" divider, and
+ * every published collection as a large card (render, name, description, count,
+ * "View all") in a 2 x 2 grid from 768px, stacked below.
  */
 export default async function CollectionsPage() {
   const collections = await getAllCollections();
-  const count = collections.length;
 
   return (
     <ListingPage>
-      <ListingIntro eyebrow="Catalogue" title={TITLE} intro={INTRO} />
+      <PageHero
+        variant="category"
+        headline={TITLE}
+        headingId="collections-heading"
+        paragraph={INTRO}
+        cta={{ label: ALL_PRODUCTS_LINK.label, href: ALL_PRODUCTS_LINK.href }}
+        image={LISTING_RENDER}
+      />
 
       <Container
         as="section"
         className={styles.section}
-        aria-label="All collections"
+        aria-labelledby="collections-grid-heading"
         data-reveal=""
       >
-        <p className={`type-body-s numeric ${styles.count}`}>
-          Showing {count} {count === 1 ? "collection" : "collections"}
-        </p>
+        <SectionDivider
+          id="collections-grid-heading"
+          title="Research Materials"
+          subtitle={CATALOGUE_SUBTITLE}
+          note={CATALOGUE_NOTE}
+          nodes
+        />
 
-        {count > 0 ? (
+        {collections.length > 0 ? (
           <ul className={styles.grid}>
-            {collections.map((collection) => (
+            {collections.map((collection, index) => (
               <li key={collection.id} className={styles.item} data-reveal="">
-                <CollectionCard collection={collection} />
+                <CollectionCard collection={collection} priority={index < FIRST_ROW} />
               </li>
             ))}
           </ul>
         ) : (
           <div className={styles.empty}>
             <p className={`type-body ${styles.emptyText}`}>No collections are published yet.</p>
-            <Link href={ALL_PRODUCTS_LINK.href} className={`type-label ${styles.emptyLink}`}>
+            <Link href={ALL_PRODUCTS_LINK.href} className={buttons.outline}>
               {ALL_PRODUCTS_LINK.label}
             </Link>
           </div>
@@ -83,7 +103,7 @@ export default async function CollectionsPage() {
         listName={TITLE}
         items={collections.map((collection) => ({
           name: collection.name,
-          url: canonicalUrl(`/collections/${collection.slug}`),
+          url: canonicalUrl(collectionHref(collection.slug)),
         }))}
       />
     </ListingPage>

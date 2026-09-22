@@ -1,10 +1,11 @@
-/* Figma 68:164 (mobile: Caption) / 26:4 (desktop: Body S) sizes in the mono face, secondary. */
+/* Breadcrumb: Inter 12px uppercase, tracked, secondary colour. */
 .breadcrumb {
   color: var(--kinetus-text-secondary);
-  font-family: var(--kinetus-font-mono);
-  font-size: var(--kinetus-type-caption-size);
-  line-height: var(--kinetus-type-caption-line-height);
-  font-weight: var(--kinetus-type-caption-weight);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .list {
@@ -24,7 +25,7 @@
   min-width: 0;
 }
 
-/* Inline padding enlarges the hit area (18px text → 50px) without changing the line box. */
+/* Block padding enlarges the hit area (16px line to 48px) without changing the line box. */
 .link {
   padding-block: var(--kinetus-space-4);
   color: inherit;
@@ -34,7 +35,7 @@
 
 .link:hover,
 .link:active {
-  color: var(--kinetus-brand-teal);
+  color: var(--kinetus-brand-teal-deep);
 }
 
 .separator {
@@ -42,13 +43,5 @@
 }
 
 .current {
-  color: var(--kinetus-text-primary);
-}
-
-@media (min-width: 768px) {
-  .breadcrumb {
-    font-size: var(--kinetus-type-body-s-size);
-    line-height: var(--kinetus-type-body-s-line-height);
-    font-weight: var(--kinetus-type-body-s-weight);
-  }
+  color: var(--kinetus-text-heading);
 }

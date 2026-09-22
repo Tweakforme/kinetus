@@ -1,0 +1,115 @@
+/* Spans the icon cluster's height so the panel opens at the header's bottom edge. */
+.root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* Search icon in a 44px hit area (no 44px token; the deck's icon boxes). */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: var(--kinetus-radius-sm);
+  color: var(--kinetus-text-heading);
+  cursor: pointer;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.trigger:hover,
+.trigger:active,
+.trigger[aria-expanded="true"] {
+  color: var(--kinetus-brand-teal);
+}
+
+/* Panel under the header, right-aligned to the icon: white, card border, panel shadow. */
+.panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 50;
+  width: 380px;
+  max-width: calc(100vw - 2 * var(--kinetus-container-margin-desktop));
+  margin-top: var(--kinetus-space-2);
+  padding: var(--kinetus-space-3);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-panel);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--kinetus-space-1)));
+  transition:
+    opacity var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease),
+    visibility 0s linear var(--motion-duration);
+}
+
+.panelOpen {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease);
+}
+
+.form {
+  display: flex;
+  gap: var(--kinetus-space-2);
+}
+
+.input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--kinetus-tap-target);
+  padding: 0 var(--kinetus-space-4);
+  border: 1px solid var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-md);
+  background: var(--kinetus-bg-base);
+  color: var(--kinetus-text-primary);
+  font: inherit;
+  font-size: 15px;
+  transition: border-color var(--motion-duration) var(--motion-ease);
+}
+
+.input::placeholder {
+  color: var(--kinetus-text-secondary);
+}
+
+.input:focus {
+  border-color: var(--kinetus-brand-teal);
+}
+
+/* Compact solid teal button in the deck's condensed uppercase label. */
+.submit {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  height: var(--kinetus-tap-target);
+  padding: 0 var(--kinetus-space-5);
+  border: 0;
+  border-radius: var(--kinetus-radius-button);
+  background: var(--kinetus-brand-teal);
+  color: var(--kinetus-text-inverse);
+  font-family: var(--kinetus-font-display);
+  font-size: 16px;
+  font-weight: var(--kinetus-type-button-weight);
+  letter-spacing: var(--kinetus-type-button-letter-spacing);
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--motion-duration) var(--motion-ease);
+}
+
+.submit:hover,
+.submit:active {
+  background: var(--kinetus-brand-teal-dark);
+}

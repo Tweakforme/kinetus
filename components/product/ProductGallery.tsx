@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { RegistrationMarks } from "@/components/marks/RegistrationMarks";
 import { blurPlaceholder } from "@/lib/images";
 import styles from "./ProductGallery.module.css";
 
@@ -17,11 +16,15 @@ type ProductGalleryProps = {
   productName: string;
 };
 
+/** Keyed renders (transparent PNG) take the drop shadow; opaque photographs do not. */
+function isKeyedRender(url: string): boolean {
+  return /\.png(?:[?#].*)?$/i.test(url);
+}
+
 /**
- * Gallery — Figma 26:11 (desktop) / 68:170 + 68:172 (mobile).
- * Square media panel on bg/subtle with radius/lg, image contained and never cropped;
- * thumbnail row beneath (hidden when there is a single image). Registration marks frame
- * the panel (Phase 6 A4). Client component only for the active-thumbnail state.
+ * The render column of the product hero (deck slide 9): the primary image large,
+ * floating on the white page with no panel behind it, thumbnails beneath only when the
+ * product has more than one image. Client component only for the active-thumbnail state.
  */
 export function ProductGallery({ images, productName }: ProductGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -31,39 +34,40 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
     return (
       <div className={styles.gallery}>
         <div
-          className={styles.primary}
-          aria-label={`${productName}: no image available`}
+          className={styles.stage}
           role="img"
+          aria-label={`${productName}: no image available`}
         />
       </div>
     );
   }
 
+  const activeBlur = blurPlaceholder(active.url);
+  const imageClass = isKeyedRender(active.url)
+    ? `${styles.image} ${styles.imageKeyed}`
+    : styles.image;
+
   return (
     <div className={styles.gallery}>
-      <div className={styles.primaryFrame}>
-        <RegistrationMarks outset />
-        <div className={styles.primary}>
-          <div className={styles.primaryInner}>
-            <Image
-              key={active.id}
-              src={active.url}
-              alt={active.altText}
-              fill
-              sizes="(min-width: 768px) 720px, calc(100vw - 40px)"
-              className={styles.image}
-              priority={activeIndex === 0}
-              placeholder={blurPlaceholder(active.url) ? "blur" : "empty"}
-              blurDataURL={blurPlaceholder(active.url)}
-            />
-          </div>
-        </div>
+      <div className={styles.stage}>
+        <Image
+          key={active.id}
+          src={active.url}
+          alt={active.altText}
+          fill
+          sizes="(min-width: 1024px) 40vw, (min-width: 768px) 50vw, 100vw"
+          className={imageClass}
+          priority={activeIndex === 0}
+          placeholder={activeBlur ? "blur" : "empty"}
+          blurDataURL={activeBlur}
+        />
       </div>
 
       {images.length > 1 && (
         <ul className={styles.thumbs} aria-label={`${productName} images`}>
           {images.map((image, index) => {
             const isActive = index === activeIndex;
+            const blur = blurPlaceholder(image.url);
             return (
               <li key={image.id} className={styles.thumbItem}>
                 <button
@@ -78,10 +82,10 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                       src={image.url}
                       alt=""
                       fill
-                      sizes="(min-width: 768px) 168px, 25vw"
-                      className={styles.image}
-                      placeholder={blurPlaceholder(image.url) ? "blur" : "empty"}
-                      blurDataURL={blurPlaceholder(image.url)}
+                      sizes="64px"
+                      className={styles.thumbImage}
+                      placeholder={blur ? "blur" : "empty"}
+                      blurDataURL={blur}
                     />
                   </span>
                 </button>

@@ -1,6 +1,6 @@
 /**
- * Site-wide constants shared by the layout shell and SEO routes.
- * Only confirmed client facts belong here — no fabricated data.
+ * Site-wide constants shared by the layout shell, the pages and the SEO routes.
+ * Only confirmed client facts belong here. Nothing is fabricated.
  */
 
 export const SITE_NAME = "Kinetus BioLabs";
@@ -8,9 +8,6 @@ export const SITE_NAME = "Kinetus BioLabs";
 /**
  * Research-use disclaimer. Exact copy sourced from the client's packaging and the
  * "Kinetus RESEARCH USE - PRODUCT DISCLAIMER" document. Do not paraphrase.
- *
- * Kept as its two sentences so narrow layouts can wrap at the sentence boundary;
- * RESEARCH_USE_COPY is the joined, exact approved wording.
  */
 export const RESEARCH_USE_COPY_LINES = [
   "For Research Use Only.",
@@ -19,17 +16,61 @@ export const RESEARCH_USE_COPY_LINES = [
 
 export const RESEARCH_USE_COPY = RESEARCH_USE_COPY_LINES.join(" ");
 
-/** Header utility-bar strings — verbatim from the client's packaging. Do not reword. */
+/** Utility-bar strings, verbatim from the client's packaging and the approved deck. */
 export const UTILITY_BAR_LINES = ["RESEARCH USE ONLY", "NOT FOR HUMAN CONSUMPTION."] as const;
 
-/** Hero eyebrow — verbatim from the client's packaging. Do not reword. */
+/**
+ * Utility-bar shipping line, verbatim from the approved deck (slide 4). The threshold is
+ * confirmed by the client's Shipping Policy ("Orders over $199 CAD qualify for free
+ * shipping within Canada.").
+ */
+export const SHIPPING_LINE = "FREE SHIPPING ON ORDERS OVER $199 (CAN)";
+
+/** Packaging tagline, verbatim. */
 export const TAGLINE = "PRECISION SCIENCE. PEAK POTENTIAL.";
+
+/** Hero eyebrow, verbatim from the approved deck (slides 4 and 12). */
+export const HERO_EYEBROW = "PRECISION SCIENCE. ANALYTICAL CONFIDENCE.";
+
+/**
+ * Strings permitted verbatim from the client's packaging. Any trust, badge or icon label
+ * on the site must be one of these (or a neutral material fact).
+ */
+export const PACKAGING = {
+  researchUseOnly: "FOR RESEARCH USE ONLY",
+  notForHumanConsumption: "NOT FOR HUMAN CONSUMPTION",
+  labVerified: "LAB VERIFIED PURITY & POTENCY",
+  thirdPartyTested: "THIRD-PARTY TESTED",
+  researchGrade: "RESEARCH GRADE MATERIAL",
+  batchCoa: "BATCH-SPECIFIC COA AVAILABLE",
+  tagline: "PRECISION SCIENCE. PEAK POTENTIAL.",
+  qualityYouCanTrust: "QUALITY YOU CAN TRUST",
+} as const;
+
+/**
+ * The only contact channel confirmed in the client's documents (Terms §18, Privacy §14).
+ * TODO: confirm the mailbox is live before launch.
+ */
+export const CONTACT_EMAIL = "info@kinetusbiolabs.ca";
+
+/** The client's documents give the company location as "Canada" and nothing more. */
+export const LOCATION = "Canada";
+
+/** Collection slugs fixed by the seed and the deck's navigation. */
+export const COLLECTION_SLUGS = {
+  peptides: "peptides",
+  blends: "blends",
+  labSupplies: "lab-supplies",
+  research: "research",
+} as const;
+
+export function collectionHref(slug: string): string {
+  return `/collections/${slug}`;
+}
 
 export type NavLink = {
   label: string;
   href: string;
-  /** `false` opts a link out of viewport prefetching. Every current route exists. */
-  prefetch?: boolean;
 };
 
 /** A primary-nav entry; `children` makes it a dropdown (desktop) / accordion (drawer). */
@@ -37,12 +78,62 @@ export type NavItem = NavLink & {
   children?: NavLink[];
 };
 
-/** Minimal collection shape the nav builder needs (see lib/collections getNavCollections). */
-export type NavCollectionInput = {
-  slug: string;
-  name: string;
-  products: { slug: string; name: string }[];
-};
+/**
+ * Primary navigation, exactly as the deck's sitemap (slide 2) and header (slide 4) show
+ * it: PEPTIDES ▾ · BLENDS ▾ · LAB SUPPLIES ▾ · RESEARCH · ABOUT US ▾ · CONTACT.
+ *
+ * Lab Supplies sub-ranges other than Bacteriostatic Water have no published products yet;
+ * they point at the Lab Supplies collection page until the client supplies the range.
+ */
+export const PRIMARY_NAV: NavItem[] = [
+  {
+    label: "Peptides",
+    href: collectionHref(COLLECTION_SLUGS.peptides),
+    children: [{ label: "All Peptides", href: collectionHref(COLLECTION_SLUGS.peptides) }],
+  },
+  {
+    label: "Blends",
+    href: collectionHref(COLLECTION_SLUGS.blends),
+    children: [{ label: "All Blends", href: collectionHref(COLLECTION_SLUGS.blends) }],
+  },
+  {
+    label: "Lab Supplies",
+    href: collectionHref(COLLECTION_SLUGS.labSupplies),
+    children: [
+      { label: "All Lab Supplies", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
+      { label: "Syringes & Needles", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
+      { label: "Bacteriostatic Water", href: "/products/bacteriostatic-water" },
+      { label: "Alcohol Swabs", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
+      { label: "Storage Solutions", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
+    ],
+  },
+  { label: "Research", href: collectionHref(COLLECTION_SLUGS.research) },
+  {
+    label: "About Us",
+    href: "/about",
+    children: [
+      { label: "Our Story", href: "/about#our-story" },
+      { label: "Quality Standards", href: "/about#quality-standards" },
+      { label: "Why Choose Kinetus", href: "/about#why-choose-kinetus" },
+      { label: "Proudly Canadian", href: "/about#proudly-canadian" },
+      { label: "Legal", href: "/legal" },
+    ],
+  },
+  { label: "Contact", href: "/contact" },
+];
+
+/**
+ * Header icon cluster (deck: search / account / cart). The site has no accounts or cart,
+ * so the three slots are search, documentation and enquiries.
+ */
+export const HEADER_ICON_LINKS = {
+  search: { label: "Search the catalogue", href: "/search" },
+  documentation: {
+    label: "Batch documentation",
+    href: `${collectionHref(COLLECTION_SLUGS.research)}#documentation`,
+  },
+  enquire: { label: "Enquire", href: "/contact" },
+} as const;
 
 /** Canonical full listing. */
 export const ALL_PRODUCTS_LINK: NavLink = { label: "View all products", href: "/products" };
@@ -52,37 +143,19 @@ export const ALL_COLLECTIONS_LINK: NavLink = { label: "All collections", href: "
 
 export const CONTACT_LINK: NavLink = { label: "Contact", href: "/contact" };
 
-/**
- * Primary navigation, per the client-confirmed deck: each published collection is a
- * top-level dropdown listing its products and ending with "View all", then Contact.
- * View all products, About and FAQ live in the footer.
- */
-export function buildPrimaryNav(collections: NavCollectionInput[]): NavItem[] {
-  return [
-    ...collections.map((collection) => ({
-      label: collection.name,
-      href: `/collections/${collection.slug}`,
-      children: [
-        ...collection.products.map((product) => ({
-          label: product.name,
-          href: `/products/${product.slug}`,
-        })),
-        { label: "View all", href: `/collections/${collection.slug}` },
-      ],
-    })),
-    CONTACT_LINK,
-  ];
-}
-
-/** Footer "Catalogue" column = All products, each published collection, All collections. */
-export function buildCatalogueLinks(collectionLinks: NavLink[]): NavLink[] {
-  return [{ label: "All products", href: "/products" }, ...collectionLinks, ALL_COLLECTIONS_LINK];
-}
+export const FOOTER_CATALOGUE_LINKS: NavLink[] = [
+  { label: "All products", href: "/products" },
+  { label: "Peptides", href: collectionHref(COLLECTION_SLUGS.peptides) },
+  { label: "Blends", href: collectionHref(COLLECTION_SLUGS.blends) },
+  { label: "Lab Supplies", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
+  { label: "Research", href: collectionHref(COLLECTION_SLUGS.research) },
+];
 
 export const FOOTER_COMPANY_LINKS: NavLink[] = [
-  { label: "About", href: "/about" },
+  { label: "About us", href: "/about" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
+  { label: "Legal", href: "/legal" },
 ];
 
 export const FOOTER_POLICY_LINKS: NavLink[] = [
@@ -93,7 +166,7 @@ export const FOOTER_POLICY_LINKS: NavLink[] = [
   { label: "Research use disclaimer", href: "/research-use" },
 ];
 
-/** Static top-level routes listed in the sitemap. */
+/** Static top-level routes listed in the sitemap (search is request-time and excluded). */
 export const STATIC_ROUTES: string[] = [
   "/",
   "/products",
@@ -101,6 +174,7 @@ export const STATIC_ROUTES: string[] = [
   "/about",
   "/faq",
   "/contact",
+  "/legal",
   "/terms",
   "/privacy-policy",
   "/shipping-policy",

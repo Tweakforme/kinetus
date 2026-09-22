@@ -5,7 +5,7 @@ import { SITE_NAME } from "@/lib/site";
  * Site-level structured data: Organization + WebSite (schema.org), rendered once in
  * the root layout. Only confirmed facts are included.
  *
- * TODO: confirm before launch —
+ * TODO: confirm before launch:
  *   - legal entity name / incorporation status (no `legalName` is emitted)
  *   - street address (only addressCountry "CA" is emitted)
  *   - public contact email / telephone (none is emitted)

@@ -1,0 +1,166 @@
+/* Block flow: divider, then the card grid. */
+.section {
+  display: block;
+}
+
+/* One card per row on mobile, two at 768, five at 1024 (deck slide 4). */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-5);
+  margin: var(--kinetus-space-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Pale grey card, 12px radius, faint border and shadow; render left, text right. */
+.card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: var(--kinetus-space-3);
+  min-width: 0;
+  padding: var(--kinetus-space-4);
+  background: var(--kinetus-bg-subtle);
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
+  transition:
+    box-shadow var(--motion-duration) var(--motion-ease),
+    border-color var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease);
+}
+
+.card:hover {
+  border-color: var(--kinetus-border-default);
+  box-shadow: var(--kinetus-shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+/* A 44% column; the render is contained, never cropped. */
+.media {
+  position: relative;
+  display: flex;
+  flex: 0 0 44%;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 150px;
+}
+
+/* Keyed PNG on the card ground; the shadow value matches ProductCard's render shadow. */
+.image {
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 8px 10px rgba(7, 27, 52, 0.12));
+  transition: transform var(--motion-duration) var(--motion-ease);
+}
+
+.imageLarge {
+  transform: scale(1.08);
+}
+
+.card:hover .image {
+  transform: scale(1.03);
+}
+
+.card:hover .imageLarge {
+  transform: scale(1.11);
+}
+
+/* Cards 4 and 5: a line icon in deep teal instead of a photograph. */
+.mediaIcon {
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.icon {
+  flex: 0 0 auto;
+}
+
+.text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+  min-width: 0;
+}
+
+/* Roboto Condensed 700 uppercase 18px, royal blue. */
+.title {
+  margin: 0;
+  color: var(--kinetus-brand-blue);
+  font-family: var(--kinetus-font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.description {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+/* The link sits at the foot of the text column and stretches over the whole card. */
+/*
+ * The five cards share a narrow text column, so the longest labels ("VIEW RESOURCES",
+ * "REQUEST A COA") are set a step down so the label and its arrow always fit on one line.
+ */
+.cta {
+  align-self: flex-start;
+  margin-top: auto;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+.cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Odd count: the last card spans the row rather than leaving an empty cell. */
+  .item:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  /*
+   * Five across leaves about 170px per card between 1024 and 1279px, too narrow for a
+   * render beside 13.5px copy, so the render sits above the text until 1280px.
+   */
+  .card {
+    flex-direction: column;
+  }
+
+  .media {
+    flex: 0 0 auto;
+    min-height: 0;
+    height: 132px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .card {
+    flex-direction: row;
+  }
+
+  .media {
+    flex: 0 0 32%;
+    height: auto;
+    min-height: 150px;
+  }
+}

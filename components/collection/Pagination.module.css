@@ -1,0 +1,61 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kinetus-space-2);
+  padding: var(--kinetus-space-2) var(--kinetus-space-3);
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-card);
+  background: var(--kinetus-bg-base);
+  box-shadow: var(--kinetus-shadow-card);
+  width: fit-content;
+  margin-inline: auto;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.page,
+.arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--kinetus-text-heading);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color var(--motion-duration) var(--motion-ease),
+    color var(--motion-duration) var(--motion-ease);
+}
+
+.page:hover,
+.arrow:hover {
+  background: var(--kinetus-bg-subtle);
+}
+
+.pageCurrent {
+  background: var(--kinetus-brand-teal-dark);
+  color: var(--kinetus-text-inverse);
+}
+
+.pageCurrent:hover {
+  background: var(--kinetus-brand-teal-dark);
+}
+
+.arrowDisabled {
+  color: var(--kinetus-border-default);
+}
+
+.arrowDisabled:hover {
+  background: transparent;
+}

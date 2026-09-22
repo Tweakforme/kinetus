@@ -1,0 +1,36 @@
+/* Divider, pills, results line, grid and pagination stacked in one Container. */
+.catalogue {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.pills {
+  margin-top: var(--kinetus-space-6);
+}
+
+/* "Showing 1-12 of 29 products": Inter 13px secondary. */
+.results {
+  margin: var(--kinetus-space-6) 0 0;
+  color: var(--kinetus-text-secondary);
+}
+
+.grid {
+  margin-top: var(--kinetus-space-4);
+}
+
+.pagination {
+  margin-top: var(--kinetus-space-10);
+}
+
+.empty {
+  margin: var(--kinetus-space-8) 0 0;
+  color: var(--kinetus-text-secondary);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .pills {
+    margin-top: var(--kinetus-space-8);
+  }
+}

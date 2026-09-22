@@ -1,5 +1,6 @@
+import { ArrowRightIcon, DocumentIcon } from "@/components/icons/LineIcons";
+import buttons from "@/components/ui/buttons.module.css";
 import type { DocumentRow } from "@/lib/products";
-import { DocumentIcon, DownloadIcon } from "./ProductIcons";
 import styles from "./DocumentationList.module.css";
 
 type DocumentationListProps = {
@@ -7,9 +8,9 @@ type DocumentationListProps = {
 };
 
 /**
- * Documentation rows — Figma 29:10 (desktop) / 69:186 (mobile).
- * Doc icon · title + type badge · batch/lot and variant scope · download (44px target).
- * Callers hide the whole section when there are no documents.
+ * Documentation rows: document icon, title with a file-type badge, batch and variant
+ * scope, and a "Download" link. Callers hide the whole section when there are no
+ * documents; an empty list renders nothing.
  */
 export function DocumentationList({ documents }: DocumentationListProps) {
   if (documents.length === 0) {
@@ -26,14 +27,14 @@ export function DocumentationList({ documents }: DocumentationListProps) {
 
         return (
           <li key={doc.id} className={styles.row}>
-            <DocumentIcon className={styles.docIcon} />
+            <DocumentIcon size={28} className={styles.docIcon} />
             <div className={styles.info}>
               <div className={styles.titleRow}>
-                <span className={`type-body ${styles.title}`}>{doc.title}</span>
+                <span className={styles.title}>{doc.title}</span>
                 <span className={`type-label ${styles.badge}`}>{doc.badge}</span>
               </div>
               {meta.length > 0 && (
-                <p className={`type-caption ${styles.meta}`}>
+                <p className={styles.meta}>
                   {meta.map((part, index) => (
                     <span key={part}>
                       {index > 0 && <span className={styles.metaSeparator}>·</span>}
@@ -45,11 +46,12 @@ export function DocumentationList({ documents }: DocumentationListProps) {
             </div>
             <a
               href={doc.fileUrl}
-              className={styles.download}
+              className={`${buttons.link} ${buttons.linkTeal} ${styles.download}`}
               aria-label={`Download ${doc.title}`}
               download
             >
-              <DownloadIcon />
+              Download
+              <ArrowRightIcon size={18} />
             </a>
           </li>
         );

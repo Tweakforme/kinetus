@@ -212,28 +212,27 @@ export type ProductCardModel = {
   name: string;
   imageUrl: string | null;
   imageAlt: string;
-  presentation: string | null;
+  /** "10 mg · Lyophilized powder" (first presentation, then form). */
+  subline: string | null;
+  /** Lowest active price, formatted ("$80.00"). */
   priceLabel: string | null;
+  /** True when several presentations carry different prices (the card shows "From"). */
+  fromPrice: boolean;
+  variantCount: number;
 };
 
 export function toProductCardModel(product: ProductSummary, now: Date): ProductCardModel {
   const variantCount = product.variants.length;
   const prices = product.variants.map((variant) => effectivePriceCents(variant, now));
   const lowest = prices.length > 0 ? Math.min(...prices) : null;
+  const highest = prices.length > 0 ? Math.max(...prices) : null;
 
-  let priceLabel: string | null = null;
-  if (lowest !== null) {
-    priceLabel = variantCount > 1 ? `From ${formatCad(lowest)}` : formatCad(lowest);
-  }
-
-  const presentationParts: string[] = [];
-  if (variantCount === 1) {
-    presentationParts.push(product.variants[0].label);
-  } else if (variantCount > 1) {
-    presentationParts.push(`${variantCount} presentations`);
+  const sublineParts: string[] = [];
+  if (variantCount > 0) {
+    sublineParts.push(product.variants[0].label);
   }
   if (product.form) {
-    presentationParts.push(product.form);
+    sublineParts.push(product.form);
   }
 
   const image = product.images[0] ?? null;
@@ -244,9 +243,25 @@ export function toProductCardModel(product: ProductSummary, now: Date): ProductC
     name: product.name,
     imageUrl: image?.url ?? null,
     imageAlt: image?.altText ?? product.name,
-    presentation: presentationParts.length > 0 ? presentationParts.join(" · ") : null,
-    priceLabel,
+    subline: sublineParts.length > 0 ? sublineParts.join(" · ") : null,
+    priceLabel: lowest !== null ? formatCad(lowest) : null,
+    fromPrice: lowest !== null && highest !== null && highest > lowest,
+    variantCount,
   };
+}
+
+/**
+ * Product-page eyebrow by primary collection (deck slide 9 "RESEARCH PEPTIDE", slide 13
+ * "RESEARCH PEPTIDE BLEND"). Neutral: names the kind of material, never a use.
+ */
+export function productKindLabel(collectionSlugs: string[]): string {
+  if (collectionSlugs.includes("blends")) {
+    return "Research peptide blend";
+  }
+  if (collectionSlugs.includes("lab-supplies")) {
+    return "Lab supply";
+  }
+  return "Research peptide";
 }
 
 export type SpecRow = { key: string; value: string };
@@ -317,4 +332,36 @@ export function descriptionParagraphs(text: string | null): string[] {
     .split(/\r?\n\s*\r?\n/)
     .map((paragraph) => paragraph.trim())
     .filter((paragraph) => paragraph.length > 0);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Listing helpers (paginated index routes, sitemap, search)                 */
+/* -------------------------------------------------------------------------- */
+
+/** Number of published products, for the paginated /products routes and the sitemap. */
+export async function getProductCount(): Promise<number> {
+  return prisma.product.count({ where: { status: ProductStatus.PUBLISHED } });
+}
+
+/** Longest query the search route accepts; longer input is truncated before querying. */
+export const SEARCH_QUERY_MAX_LENGTH = 80;
+
+/** Trims and truncates a raw `?q=` value; returns "" for anything unusable. */
+export function normaliseSearchQuery(raw: string | string[] | undefined): string {
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return (value ?? "").trim().slice(0, SEARCH_QUERY_MAX_LENGTH);
+}
+
+/** Published products whose name contains the query (case-insensitive), for /search. */
+export async function searchProducts(query: string, limit = 48): Promise<ProductSummary[]> {
+  const term = query.trim();
+  if (!term) {
+    return [];
+  }
+  return prisma.product.findMany({
+    where: { status: ProductStatus.PUBLISHED, name: { contains: term, mode: "insensitive" } },
+    include: productSummaryInclude,
+    orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
+    take: limit,
+  });
 }

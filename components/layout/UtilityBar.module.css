@@ -1,8 +1,7 @@
-/* Deck utility bar executed in tokens: bg/deep, text/inverse, py space-2, Label. */
+/* Deck utility bar (slide 4): navy strip, 38px tall, white Inter 500 13px uppercase. */
 .bar {
   background: var(--kinetus-bg-deep);
   color: var(--kinetus-text-inverse);
-  padding-block: var(--kinetus-space-2);
 }
 
 .row {
@@ -10,51 +9,70 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--kinetus-space-4);
+  min-height: var(--kinetus-utility-height);
+  padding-block: var(--kinetus-space-1);
 }
 
+.notice,
+.shipping {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* The two packaging strings never break mid-string; at 390px the second wraps below. */
 .notice {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  column-gap: var(--kinetus-space-2);
+  column-gap: var(--kinetus-space-3);
   row-gap: 0;
-  margin: 0;
+  min-width: 0;
 }
 
-.icon {
-  flex: 0 0 auto;
-  color: var(--kinetus-text-inverse);
-}
-
-/* Each packaging string stays on one line; on narrow viewports the second wraps below. */
 .line {
   white-space: nowrap;
 }
 
-.separator {
-  display: none;
+/* Bullet and the string after it are one flex item, so they wrap to the next line together. */
+.pair {
+  display: flex;
+  align-items: center;
+  column-gap: var(--kinetus-space-3);
+  min-width: 0;
 }
 
-.link {
+.bullet {
+  flex: 0 0 auto;
+}
+
+/* Truck icon + shipping line, right; hidden on mobile. */
+.shipping {
   display: none;
   flex: 0 0 auto;
-  padding-block: var(--kinetus-space-2);
+  align-items: center;
+  gap: var(--kinetus-space-2);
+  min-height: var(--kinetus-utility-height);
   color: var(--kinetus-text-inverse);
   text-decoration: none;
+  white-space: nowrap;
   transition: color var(--motion-duration) var(--motion-ease);
 }
 
-.link:hover,
-.link:active {
-  color: var(--kinetus-brand-teal-light);
+.shipping:hover,
+.shipping:active {
+  color: var(--kinetus-brand-cyan-bright);
+}
+
+.shippingIcon {
+  flex: 0 0 auto;
 }
 
 @media (min-width: 768px) {
-  .separator {
-    display: inline;
-  }
-
-  .link {
-    display: inline-block;
+  .shipping {
+    display: inline-flex;
   }
 }

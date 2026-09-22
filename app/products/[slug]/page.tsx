@@ -1,20 +1,26 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
-import { SectionHeading } from "@/components/home/SectionHeading";
+import {
+  ClipboardCheckIcon,
+  HexagonIcon,
+  MapleLeafIcon,
+  MicroscopeIcon,
+  ShieldCheckIcon,
+} from "@/components/icons/LineIcons";
 import { Container } from "@/components/layout/Container";
-import { SectionRule } from "@/components/marks/SectionRule";
 import { DocumentationList } from "@/components/product/DocumentationList";
-import { ProductBreadcrumb } from "@/components/product/ProductBreadcrumb";
 import { ProductCard } from "@/components/product/ProductCard";
-import { ProductGallery } from "@/components/product/ProductGallery";
+import { ProductHero } from "@/components/product/ProductHero";
+import { ProductInfoBand } from "@/components/product/ProductInfoBand";
 import { ProductJsonLd } from "@/components/product/ProductJsonLd";
+import type { SelectableVariant } from "@/components/product/ProductSelection";
 import { SpecTable } from "@/components/product/SpecTable";
-import { TrustMarkers } from "@/components/product/TrustMarkers";
-import { VariantPanel } from "@/components/product/VariantPanel";
+import { SectionDivider } from "@/components/ui/SectionDivider";
+import { TrustBar, type TrustItem } from "@/components/ui/TrustBar";
 import {
   collectDocuments,
   descriptionParagraphs,
+  formatCad,
   getAllProductSlugs,
   getProductBySlug,
   getProductRedirectTarget,
@@ -24,7 +30,7 @@ import {
   toVariantViews,
 } from "@/lib/products";
 import { canonicalUrl, DEFAULT_DESCRIPTION } from "@/lib/seo";
-import { CONTACT_LINK, SITE_NAME } from "@/lib/site";
+import { PACKAGING, SITE_NAME } from "@/lib/site";
 import styles from "./page.module.css";
 
 type ProductPageProps = {
@@ -32,6 +38,28 @@ type ProductPageProps = {
 };
 
 const RELATED_LIMIT = 4;
+const HEADING_ID = "product-heading";
+
+/**
+ * Trust card under the information band (deck slide 9). Titles are the client's
+ * packaging strings or neutral facts; the deck's "INDEPENDENTLY VERIFIED",
+ * "HPLC & LC-MS/MS VERIFIED" and "CONSISTENT QUALITY" are replaced.
+ */
+const TRUST_ITEMS: TrustItem[] = [
+  {
+    Icon: ShieldCheckIcon,
+    title: PACKAGING.thirdPartyTested,
+    copy: "Independent laboratory testing",
+  },
+  {
+    Icon: ClipboardCheckIcon,
+    title: PACKAGING.batchCoa,
+    copy: "Issued against the batch reference",
+  },
+  { Icon: MicroscopeIcon, title: PACKAGING.labVerified, copy: "Client packaging statement" },
+  { Icon: HexagonIcon, title: PACKAGING.researchGrade, copy: "Supplied for laboratory research" },
+  { Icon: MapleLeafIcon, title: "Proudly Canadian", copy: "Based in Canada", accent: "red" },
+];
 
 /**
  * Pages are statically generated. This time-based regeneration is a safety net so sale
@@ -85,11 +113,10 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 }
 
 /**
- * Product detail — the only routable catalogue entity. Variants are UI state.
- * Section order follows the approved Figma frames (22:3 desktop / 55:7 mobile); Phase 6
- * adds the indexed mono eyebrows, structural hairlines and the spec-table showpiece
- * without changing that order. The persistent research-use band is rendered by the
- * root layout above the footer.
+ * Product detail, the only routable catalogue entity; variants are UI state. Order
+ * (deck slides 9 and 13): hero, information band, specifications / documentation /
+ * description when the catalogue has them, trust card, related materials. The
+ * persistent research-use band is rendered by the root layout above the footer.
  */
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
@@ -103,13 +130,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  // Sale windows are evaluated when the page is (re)generated — see `revalidate` above.
+  // Sale windows are evaluated when the page is (re)generated; see `revalidate` above.
   const now = new Date();
-  const variants = toVariantViews(product.variants, now);
-  const specRows = specificationRows(product);
+  const variants: SelectableVariant[] = toVariantViews(product.variants, now).map((variant) => ({
+    ...variant,
+    priceLabel: formatCad(variant.priceCents),
+    compareAtLabel: variant.compareAtCents !== null ? formatCad(variant.compareAtCents) : null,
+  }));
+  // Form already appears in the information band, so the table lists the other fields only.
+  const specRows = specificationRows(product).filter((row) => row.key !== "Form");
   const documents = collectDocuments(product);
   const paragraphs = descriptionParagraphs(product.description);
-  const collections = product.collections.map((link) => link.collection);
+  const collectionSlugs = product.collections.map((link) => link.collection.slug);
   const related = (await getRelatedProducts(product.id, RELATED_LIMIT)).map((item) =>
     toProductCardModel(item, now),
   );
@@ -119,37 +151,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <article className={styles.page}>
-      <Container className={styles.heroBlock} data-reveal="">
-        <ProductBreadcrumb productName={product.name} />
+      <ProductHero
+        product={product}
+        variants={variants}
+        collectionSlugs={collectionSlugs}
+        headingId={HEADING_ID}
+      />
 
-        <div className={styles.hero}>
-          <ProductGallery
-            images={product.images.map((image) => ({
-              id: image.id,
-              url: image.url,
-              altText: image.altText,
-            }))}
-            productName={product.name}
-          />
-
-          <div className={styles.details}>
-            <div className={styles.identity}>
-              <p className={`type-label ${styles.eyebrow}`}>Research material</p>
-              <h1 className={`type-h1 ${styles.name}`}>{product.name}</h1>
-              {product.shortDescription && (
-                <p className={styles.shortDescription}>{product.shortDescription}</p>
-              )}
-            </div>
-
-            <VariantPanel variants={variants} />
-
-            <Link href={CONTACT_LINK.href} className={`type-label ${styles.cta}`}>
-              Contact us
-            </Link>
-
-            <TrustMarkers />
-          </div>
-        </div>
+      <Container as="section" className={styles.band} data-reveal="" aria-label="Unit information">
+        <ProductInfoBand
+          form={product.form}
+          presentations={variants.map((variant) => variant.label)}
+        />
       </Container>
 
       {specRows.length > 0 && (
@@ -159,13 +172,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           data-reveal=""
           aria-labelledby="specifications-heading"
         >
-          <SectionRule />
-          <SectionHeading
-            id="specifications-heading"
-            index="01"
-            eyebrow="Data"
-            title="Specifications"
-          />
+          <SectionDivider id="specifications-heading" title="Specifications" />
           <SpecTable rows={specRows} />
         </Container>
       )}
@@ -177,13 +184,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           data-reveal=""
           aria-labelledby="documentation-heading"
         >
-          <SectionRule />
-          <SectionHeading
-            id="documentation-heading"
-            index="02"
-            eyebrow="Files"
-            title="Documentation"
-          />
+          <SectionDivider id="documentation-heading" title="Documentation" />
           <DocumentationList documents={documents} />
         </Container>
       )}
@@ -195,8 +196,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           data-reveal=""
           aria-labelledby="description-heading"
         >
-          <SectionRule />
-          <SectionHeading id="description-heading" index="03" eyebrow="Notes" title="Description" />
+          <SectionDivider id="description-heading" title="Description" />
           <div className={styles.description}>
             {paragraphs.map((paragraph, index) => (
               <p key={index} className="type-body">
@@ -207,35 +207,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </Container>
       )}
 
-      {collections.length > 0 && (
-        <Container
-          as="section"
-          className={styles.collections}
-          aria-labelledby="collections-heading"
-          data-reveal=""
-        >
-          <SectionRule />
-          <h2 id="collections-heading" className={`type-label ${styles.eyebrow}`}>
-            <span className={`numeric ${styles.eyebrowIndex}`}>04</span>{" "}
-            <span aria-hidden="true" className={styles.eyebrowSlash}>
-              /
-            </span>
-            Part of
-          </h2>
-          <ul className={styles.collectionList}>
-            {collections.map((collection) => (
-              <li key={collection.id}>
-                <Link
-                  href={`/collections/${collection.slug}`}
-                  className={`type-label ${styles.collectionLink}`}
-                >
-                  {collection.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      )}
+      <Container
+        as="section"
+        className={styles.section}
+        data-reveal=""
+        aria-label="Packaging statements"
+      >
+        <div className={styles.trust}>
+          <TrustBar items={TRUST_ITEMS} variant="card" label="Packaging statements" />
+        </div>
+      </Container>
 
       {related.length > 0 && (
         <Container
@@ -244,17 +225,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
           data-reveal=""
           aria-labelledby="related-heading"
         >
-          <SectionRule />
-          <SectionHeading
-            id="related-heading"
-            index="05"
-            eyebrow="Materials"
-            title="Related products"
-          />
+          <SectionDivider id="related-heading" title="Related materials" />
           <ul className={styles.relatedGrid}>
-            {related.map((item, index) => (
-              <li key={item.id} className={styles.relatedItem} data-reveal="">
-                <ProductCard product={item} index={index + 1} />
+            {related.map((item) => (
+              <li key={item.id} className={styles.relatedItem}>
+                <ProductCard product={item} />
               </li>
             ))}
           </ul>

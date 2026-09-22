@@ -1,0 +1,14 @@
+.bar {
+  display: block;
+}
+
+/* Centred pills that wrap rather than overflow at narrow widths. */
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--kinetus-space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

@@ -1,0 +1,98 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-8);
+}
+
+/* White bordered panel, 12px radius, card shadow. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-6);
+  padding: var(--kinetus-space-8) var(--kinetus-space-5);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fact {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-4);
+  min-width: 0;
+}
+
+/* Icon in a chip-bordered circle, teal-deep like the product page's icon row. */
+.factIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border: 1.5px solid var(--kinetus-border-chip);
+  border-radius: 50%;
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.factLabel {
+  color: var(--kinetus-text-heading);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.paragraph {
+  margin: 0;
+  max-width: var(--kinetus-measure-body);
+  color: var(--kinetus-text-heading);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .panel {
+    padding: var(--kinetus-space-10);
+  }
+
+  /* Three columns with hairline rules between them. */
+  .facts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .fact {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-inline: var(--kinetus-space-6);
+    border-left: 1px solid var(--kinetus-border-default);
+    text-align: center;
+  }
+
+  .fact:first-child {
+    border-left: 0;
+  }
+
+  .paragraph {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .actions {
+    justify-content: center;
+  }
+}

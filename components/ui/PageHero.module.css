@@ -1,0 +1,241 @@
+/*
+ * Deck hero (slides 4, 12, 17): full-bleed, navy base, gradient deeper left and lighter
+ * right, faint hex mesh upper right, product render composited right of centre.
+ */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Blurred-laboratory light on the right, the deck's #dde3e5 core fading to #637382. */
+.glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 36% 78% at 68% 62%,
+      rgba(226, 233, 238, 0.95) 0%,
+      rgba(178, 192, 206, 0.85) 28%,
+      rgba(90, 112, 132, 0.7) 58%,
+      rgba(0, 19, 36, 0) 100%
+    ),
+    linear-gradient(
+      90deg,
+      var(--kinetus-bg-deep) 0%,
+      var(--kinetus-bg-deep) 40%,
+      #0b2537 56%,
+      #33475a 78%,
+      #56697c 100%
+    );
+}
+
+/* Faint hexagonal mesh, visible in the upper right. */
+.mesh {
+  position: absolute;
+  top: -8%;
+  right: 0;
+  width: 58%;
+  height: 78%;
+  color: rgba(255, 255, 255, 0.55);
+  opacity: 0.16;
+  mask-image: radial-gradient(ellipse 70% 70% at 70% 30%, #000 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 70% 30%, #000 30%, transparent 100%);
+}
+
+/* Keeps the copy column deep navy whatever the glow does. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      var(--kinetus-bg-deep) 0%,
+      rgba(0, 19, 36, 0.92) 36%,
+      rgba(0, 19, 36, 0) 58%
+    ),
+    linear-gradient(0deg, rgba(0, 19, 36, 0.55) 0%, rgba(0, 19, 36, 0) 40%);
+}
+
+.inner {
+  /* Container is content-box; match it so the hero copy lines up with the page grid. */
+  box-sizing: content-box;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-6);
+  max-width: var(--kinetus-container-max);
+  margin-inline: auto;
+  padding: var(--kinetus-space-10) var(--kinetus-container-margin-mobile) var(--kinetus-space-8);
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-5);
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--kinetus-brand-cyan-bright);
+}
+
+.headline {
+  margin: 0;
+  color: var(--kinetus-text-inverse);
+  overflow-wrap: anywhere;
+}
+
+/* Three lines of white body copy. */
+.paragraph {
+  margin: 0;
+  max-width: 34em;
+  color: var(--kinetus-text-inverse);
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+/* Icon row: thin white line icons with two-line labels, hairline rules between items. */
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--kinetus-space-4) var(--kinetus-space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Dividers only where two items actually sit side by side. */
+.feature:nth-child(odd) {
+  padding-right: 12px;
+  border-right: 1px solid var(--kinetus-border-on-dark);
+}
+
+.featureIcon {
+  flex: 0 0 auto;
+  color: var(--kinetus-text-inverse);
+}
+
+.featureLabel {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  color: var(--kinetus-text-inverse);
+}
+
+.actions {
+  display: flex;
+  margin-top: var(--kinetus-space-2);
+}
+
+/* The render: keyed PNG, bottom-anchored, right of centre. */
+.render {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  min-width: 0;
+}
+
+.image {
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.45));
+}
+
+@media (min-width: 768px) {
+  .inner {
+    padding-inline: var(--kinetus-container-margin-desktop);
+    padding-block: var(--kinetus-space-12) var(--kinetus-space-10);
+  }
+
+  .render {
+    height: 340px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    min-height: var(--kinetus-hero-min-height);
+  }
+
+  .inner {
+    grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+    align-items: stretch;
+    gap: var(--kinetus-space-8);
+    min-height: var(--kinetus-hero-min-height);
+    padding-block: var(--kinetus-space-10);
+  }
+
+  .copy {
+    justify-content: center;
+    padding-right: var(--kinetus-space-6);
+  }
+
+  /*
+   * No negative margins: they pushed the render box out through the hero's padding, so
+   * the product sat flush against the top of the navy band with no clearance. The box
+   * now stays inside the padding and the contained image keeps clear space above and
+   * below, as the deck shows.
+   */
+  .render {
+    height: auto;
+    align-self: stretch;
+    min-height: var(--kinetus-hero-min-height);
+  }
+
+  .image {
+    object-position: 58% center;
+  }
+}
+
+@media (min-width: 1280px) {
+  /* The deck keeps the four icons on one line; labels break only at their own <br>. */
+  .features {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .feature {
+    flex: 0 0 auto;
+    padding-right: 12px;
+    margin-right: 12px;
+    border-right: 1px solid var(--kinetus-border-on-dark);
+  }
+
+  .feature:last-child {
+    border-right: 0;
+    margin-right: 0;
+    padding-right: 0;
+  }
+
+  .featureLabel {
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 1440px) {
+  .inner {
+    padding-block: var(--kinetus-space-12);
+  }
+}

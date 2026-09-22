@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Inter } from "next/font/google";
+import { IBM_Plex_Mono, Inter, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { ResearchUseBand } from "@/components/layout/ResearchUseBand";
@@ -9,17 +9,25 @@ import { SiteJsonLd } from "@/components/seo/SiteJsonLd";
 import { DEFAULT_DESCRIPTION, getSiteUrl } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 
-// Inter throughout (approved design system). Exposed as --font-inter and consumed by
+// Inter for body, labels and product names. Exposed as --font-inter and consumed by
 // --kinetus-font-family in app/tokens.css.
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-inter",
   display: "swap",
 });
 
-// IBM Plex Mono for data and labels (Phase 6 design language). Exposed as
-// --font-plex-mono and consumed by --kinetus-font-mono in app/tokens.css.
+// Roboto Condensed for the deck's condensed headlines, navigation and buttons.
+// Exposed as --font-roboto-condensed and consumed by --kinetus-font-display.
+const robotoCondensed = Roboto_Condensed({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-roboto-condensed",
+  display: "swap",
+});
+
+// IBM Plex Mono is retained for the .type-mono treatment on content pages.
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
@@ -56,7 +64,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-CA" className={`${inter.variable} ${plexMono.variable}`}>
+    <html
+      lang="en-CA"
+      className={`${inter.variable} ${robotoCondensed.variable} ${plexMono.variable}`}
+    >
       <body>
         <a href="#main-content" className="skip-link">
           Skip to content

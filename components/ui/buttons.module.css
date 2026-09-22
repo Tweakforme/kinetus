@@ -1,0 +1,171 @@
+/*
+ * Deck button set.
+ *  solid    — brand/teal fill, white condensed uppercase label (slide 12 "SHOP RESEARCH PEPTIDES")
+ *  outline  — 1px border, label in the current accent (teal on light, white on dark)
+ *  navy     — bg/deep fill (deck slide 17 "ADD TO CART" shape, used for enquiry CTAs)
+ *  link     — uppercase label with a trailing arrow (slide 4 "VIEW ALL →", slide 7 "VIEW PRODUCT →")
+ *  pill     — classification bar chip (slide 5), navy fill, white label
+ */
+.solid,
+.outline,
+.navy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kinetus-space-3);
+  min-height: 52px;
+  padding: var(--kinetus-space-3) var(--kinetus-space-8);
+  border: 1px solid transparent;
+  border-radius: var(--kinetus-radius-button);
+  font-family: var(--kinetus-font-display);
+  font-size: var(--kinetus-type-button-size);
+  font-weight: var(--kinetus-type-button-weight);
+  letter-spacing: var(--kinetus-type-button-letter-spacing);
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration) var(--motion-ease),
+    border-color var(--motion-duration) var(--motion-ease),
+    color var(--motion-duration) var(--motion-ease),
+    box-shadow var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease);
+}
+
+.solid {
+  background: var(--kinetus-brand-teal);
+  border-color: var(--kinetus-brand-teal);
+  color: var(--kinetus-text-inverse);
+  box-shadow: 0 6px 18px rgba(1, 114, 136, 0.28);
+}
+
+.solid:hover,
+.solid:active {
+  background: var(--kinetus-brand-teal-dark);
+  border-color: var(--kinetus-brand-teal-dark);
+  transform: translateY(-1px);
+}
+
+.navy {
+  background: var(--kinetus-bg-deep);
+  border-color: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+}
+
+.navy:hover,
+.navy:active {
+  background: var(--kinetus-brand-teal-dark);
+  border-color: var(--kinetus-brand-teal-dark);
+}
+
+.outline {
+  background: transparent;
+  border-color: currentColor;
+  color: var(--kinetus-brand-teal);
+}
+
+.outline:hover,
+.outline:active {
+  background: var(--kinetus-brand-teal-light);
+}
+
+/* On a dark ground the outline button reads white. */
+.outlineOnDark {
+  color: var(--kinetus-text-inverse);
+}
+
+.outlineOnDark:hover,
+.outlineOnDark:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kinetus-space-2);
+  white-space: nowrap;
+  min-height: var(--kinetus-tap-target);
+  color: var(--kinetus-brand-blue);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.link svg {
+  transition: transform var(--motion-duration) var(--motion-ease);
+}
+
+.link:hover,
+.link:active {
+  color: var(--kinetus-brand-teal-dark);
+}
+
+.link:hover svg {
+  transform: translateX(3px);
+}
+
+/* Teal variant of the link (slide 7 "VIEW PRODUCT →" reads #134b6b). */
+.linkTeal {
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.linkTeal:hover,
+.linkTeal:active {
+  color: var(--kinetus-brand-teal);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--kinetus-space-3) var(--kinetus-space-6);
+  border-radius: var(--kinetus-radius-md);
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+  font-family: var(--kinetus-font-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--motion-duration) var(--motion-ease),
+    color var(--motion-duration) var(--motion-ease);
+}
+
+.pill:hover,
+.pill:active {
+  background: var(--kinetus-brand-teal);
+}
+
+.pillActive {
+  background: var(--kinetus-brand-teal);
+}
+
+.pillGhost {
+  background: transparent;
+  border: 1px solid var(--kinetus-border-default);
+  color: var(--kinetus-text-heading);
+}
+
+.pillGhost:hover,
+.pillGhost:active {
+  background: var(--kinetus-bg-subtle);
+  color: var(--kinetus-text-heading);
+}
+
+@media (max-width: 767px) {
+  .solid,
+  .outline,
+  .navy {
+    width: 100%;
+  }
+}

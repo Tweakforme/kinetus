@@ -1,33 +1,64 @@
-/* Figma Mobile footer (64:55): bg/subtle, 1px border/subtle top, py space-8, stack gap space-8. */
+/* Deck footer: navy ground, white text, cyan-bright column headings. */
 .footer {
-  background: var(--kinetus-bg-subtle);
-  border-top: 1px solid var(--kinetus-border-subtle);
-  padding-block: var(--kinetus-space-8);
-  color: var(--kinetus-text-secondary);
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+  padding-block: var(--kinetus-space-12) var(--kinetus-space-8);
 }
 
 .inner {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-8);
+  gap: var(--kinetus-space-10);
 }
 
-/* Two columns on mobile (gap space-4); the desktop frame's four-column rhythm at >=768px. */
+/* White lockup and the two-line note. */
+.top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--kinetus-space-5);
+}
+
+.lockupLink {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  border-radius: var(--kinetus-radius-sm);
+}
+
+/* 56px tall (no token; the deck's footer lockup); width follows the aspect ratio. */
+.lockup {
+  height: 56px;
+  width: auto;
+}
+
+.note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-1);
+  margin: 0;
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+  color: var(--kinetus-text-inverse-muted);
+}
+
+/* Two columns on mobile, four on desktop. */
 .columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--kinetus-space-4);
+  gap: var(--kinetus-space-8) var(--kinetus-space-6);
 }
 
 .column {
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-3);
+  min-width: 0;
 }
 
 .heading {
   margin: 0;
-  color: var(--kinetus-text-primary);
+  color: var(--kinetus-brand-cyan-bright);
 }
 
 .list {
@@ -38,67 +69,83 @@
   flex-direction: column;
 }
 
-/* Mobile: 46px tap rows (py space-3 around a 22px line). */
-.link {
-  display: block;
+/* Links: Inter 14px white/80%, hover white; 46px tap rows on mobile. */
+.link,
+.text {
+  display: inline-block;
   padding-block: var(--kinetus-space-3);
-  color: var(--kinetus-text-secondary);
+  color: var(--kinetus-text-inverse-muted);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+  overflow-wrap: anywhere;
+}
+
+.link {
   text-decoration: none;
   transition: color var(--motion-duration) var(--motion-ease);
 }
 
 .link:hover,
 .link:active {
-  color: var(--kinetus-brand-teal);
+  color: var(--kinetus-text-inverse);
 }
 
-.rule {
-  margin: 0;
-  border: 0;
-  border-top: 1px solid var(--kinetus-border-subtle);
+/* Bottom row under a hairline: copyright, red leaf, research-use statement. */
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kinetus-space-2) var(--kinetus-space-4);
+  padding-top: var(--kinetus-space-6);
+  border-top: 1px solid var(--kinetus-border-on-dark);
 }
 
 .legal {
-  display: flex;
-  flex-direction: column;
-  gap: var(--kinetus-space-2);
+  margin: 0;
+  font-size: var(--kinetus-type-caption-size);
+  line-height: var(--kinetus-type-caption-line-height);
+  color: var(--kinetus-text-inverse-muted);
 }
 
-.legalText {
-  margin: 0;
+.leaf {
+  flex: 0 0 auto;
+  color: var(--kinetus-brand-red);
 }
 
 @media (min-width: 768px) {
-  /* Figma Footer (43:143): py space-16, stack gap space-12, columns gap space-16, links gap space-3. */
+  .list {
+    gap: var(--kinetus-space-3);
+  }
+
+  .link,
+  .text {
+    padding-block: 0;
+  }
+}
+
+@media (min-width: 1024px) {
   .footer {
-    padding-block: var(--kinetus-space-16);
+    padding-block: var(--kinetus-space-16) var(--kinetus-space-10);
   }
 
   .inner {
     gap: var(--kinetus-space-12);
   }
 
+  /* Lockup left, note beside it behind a hairline. */
+  .top {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--kinetus-space-8);
+  }
+
+  .note {
+    padding-left: var(--kinetus-space-8);
+    border-left: 1px solid var(--kinetus-border-on-dark);
+  }
+
   .columns {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--kinetus-space-16);
-  }
-
-  .column {
-    gap: var(--kinetus-space-4);
-  }
-
-  .list {
-    gap: var(--kinetus-space-3);
-  }
-
-  .link {
-    padding-block: 0;
-  }
-
-  .legal {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--kinetus-space-8);
+    gap: var(--kinetus-space-12);
   }
 }

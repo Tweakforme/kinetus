@@ -13,7 +13,7 @@ const TAGLINE = "Research Materials. Quality. Documentation. Transparency.";
 /**
  * Renders a run of verbatim content blocks: paragraphs (bold in the source, and
  * "Important:" notices, wrapped in <strong> at medium weight), lists, and hard-wrapped
- * lines.
+ * lines. Nothing here alters the client's characters.
  */
 export function ContentBlocks({ blocks }: ContentBlocksProps) {
   return (
@@ -37,7 +37,7 @@ export function ContentBlocks({ blocks }: ContentBlocksProps) {
               {block.lines.map((line, lineIndex) => (
                 <Fragment key={lineIndex}>
                   {lineIndex > 0 && <br />}
-                  <span className={line === TAGLINE ? `type-mono ${styles.tagline}` : undefined}>
+                  <span className={line === TAGLINE ? styles.tagline : undefined}>
                     <InlineText text={line} />
                   </span>
                 </Fragment>
@@ -48,7 +48,7 @@ export function ContentBlocks({ blocks }: ContentBlocksProps) {
 
         if (block.text === TAGLINE) {
           return (
-            <p key={index} className={`type-body-s type-mono ${styles.tagline}`}>
+            <p key={index} className={`type-body-s ${styles.tagline}`}>
               {block.text}
             </p>
           );

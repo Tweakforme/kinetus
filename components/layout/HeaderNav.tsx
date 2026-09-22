@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
+import { IconLinks } from "./IconLinks";
 import { MobileNav } from "./MobileNav";
 import { NavDropdown } from "./NavDropdown";
 import type { NavItem } from "@/lib/site";
@@ -12,9 +13,10 @@ type HeaderNavProps = {
 };
 
 /**
- * Desktop navigation (dropdown per collection + Contact) and the mobile drawer, owned
- * together so the nav can never wrap: the list is measured against the space beside the
- * logo and, whenever it would overflow, it collapses into the drawer instead.
+ * Desktop navigation (dropdown per item with children, plain link otherwise), the icon
+ * cluster and the mobile drawer, owned together so the nav can never wrap: the list is
+ * measured against the space beside the logo and, whenever it would overflow, it
+ * collapses into the drawer instead.
  */
 export function HeaderNav({ items }: HeaderNavProps) {
   const slotRef = useRef<HTMLDivElement>(null);
@@ -70,8 +72,7 @@ export function HeaderNav({ items }: HeaderNavProps) {
                 <li key={item.href} className={styles.item}>
                   <Link
                     href={item.href}
-                    prefetch={item.prefetch === false ? false : undefined}
-                    className={`type-label ${styles.link}`}
+                    className={`type-nav ${styles.link}`}
                     tabIndex={collapsed ? -1 : undefined}
                   >
                     {item.label}
@@ -82,6 +83,8 @@ export function HeaderNav({ items }: HeaderNavProps) {
           </ul>
         </nav>
       </div>
+
+      <IconLinks />
 
       <MobileNav items={items} forceVisible={collapsed} />
     </>

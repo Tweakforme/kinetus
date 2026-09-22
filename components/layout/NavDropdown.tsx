@@ -10,7 +10,7 @@ import {
   type FocusEvent,
   type KeyboardEvent,
 } from "react";
-import { ChevronIcon } from "./NavIcons";
+import { ChevronDownIcon } from "@/components/icons/LineIcons";
 import type { NavItem } from "@/lib/site";
 import styles from "./NavDropdown.module.css";
 
@@ -21,10 +21,10 @@ type NavDropdownProps = {
 };
 
 /**
- * Collection dropdown — disclosure pattern. Opens on hover, on trigger focus, on click,
- * and on Enter / Space / ArrowDown (which also moves focus into the list). Arrow keys move
- * through the entries, Escape closes and returns focus to the trigger, and leaving the
- * item (focus or pointer) closes it.
+ * Primary-nav dropdown (deck slide 4 "PEPTIDES v"), disclosure pattern. Opens on hover, on
+ * trigger focus, on click, and on Enter / Space / ArrowDown (which also moves focus into
+ * the list). Arrow keys move through the entries, Escape closes and returns focus to the
+ * trigger, and leaving the item (focus or pointer) closes it.
  */
 export function NavDropdown({ item }: NavDropdownProps) {
   const [open, setOpen] = useState(false);
@@ -143,14 +143,16 @@ export function NavDropdown({ item }: NavDropdownProps) {
     }
   };
 
+  // Close when focus moves to another element outside the item (keyboard users tabbing
+  // away). A null relatedTarget is a pointer click in browsers that do not focus buttons
+  // or links (Safari); the document pointerdown handler decides those, so a click on an
+  // entry still navigates.
   const onItemBlur = (event: FocusEvent<HTMLLIElement>) => {
-    if (!itemRef.current?.contains(event.relatedTarget as Node | null)) {
+    const next = event.relatedTarget as Node | null;
+    if (next && !itemRef.current?.contains(next)) {
       closeNow();
     }
   };
-
-  const viewAll = children[children.length - 1];
-  const products = children.slice(0, -1);
 
   return (
     <li
@@ -172,8 +174,9 @@ export function NavDropdown({ item }: NavDropdownProps) {
         onFocus={onTriggerFocus}
         onKeyDown={onTriggerKeyDown}
       >
-        <span className="type-label">{item.label}</span>
-        <ChevronIcon
+        <span className="type-nav">{item.label}</span>
+        <ChevronDownIcon
+          size={14}
           className={open ? `${styles.chevron} ${styles.chevronOpen}` : styles.chevron}
         />
       </button>
@@ -183,35 +186,20 @@ export function NavDropdown({ item }: NavDropdownProps) {
         className={open ? `${styles.panelWrap} ${styles.panelWrapOpen}` : styles.panelWrap}
       >
         <div className={styles.panel}>
-          {products.length > 0 && (
-            <ul className={styles.list} aria-label={`${item.label} products`}>
-              {products.map((product) => (
-                <li key={product.href}>
-                  <Link
-                    href={product.href}
-                    className={`type-body-s ${styles.link}`}
-                    tabIndex={open ? undefined : -1}
-                    onClick={closeNow}
-                  >
-                    {product.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-          {viewAll && (
-            <div className={products.length > 0 ? styles.viewAll : undefined}>
-              <Link
-                href={viewAll.href}
-                className={`type-label ${styles.link} ${styles.viewAllLink}`}
-                aria-label={`${viewAll.label} ${item.label}`}
-                tabIndex={open ? undefined : -1}
-                onClick={closeNow}
-              >
-                {viewAll.label}
-              </Link>
-            </div>
-          )}
+          <ul className={styles.list} aria-label={item.label}>
+            {children.map((child) => (
+              <li key={`${child.href}-${child.label}`}>
+                <Link
+                  href={child.href}
+                  className={styles.link}
+                  tabIndex={open ? undefined : -1}
+                  onClick={closeNow}
+                >
+                  {child.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </li>

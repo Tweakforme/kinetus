@@ -1,19 +1,23 @@
 /*
- * Content page rhythm: block flow with margins (never a flex/grid parent for the
- * Containers), top offset space-8, sections separated by space-12 / space-32.
+ * Content page rhythm shared by the About, Contact, FAQ, Legal and policy pages: block
+ * flow under the navy band (never a flex or grid parent for the Containers), sections
+ * separated by the page gap, a sticky contents list beside the prose at >=1024px, and a
+ * white card for closing notices.
  */
 .page {
+  --content-gap: var(--kinetus-space-12);
+
   display: block;
-  padding-block: var(--kinetus-space-8) var(--kinetus-space-12);
+  padding-bottom: var(--kinetus-space-16);
 }
 
+/* Every block after the band, including the first, sits one gap below its predecessor. */
 .page > * + * {
-  margin-top: var(--kinetus-space-12);
+  margin-top: var(--content-gap);
 }
 
 /* Contents list above the prose on mobile; two columns on desktop. */
 .body {
-  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--kinetus-space-8);
@@ -23,7 +27,7 @@
 .contents {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-4);
+  gap: var(--kinetus-space-3);
   min-width: 0;
 }
 
@@ -45,18 +49,17 @@
   border-bottom: 1px solid var(--kinetus-border-subtle);
 }
 
-/* Mono entries: index track space-12, ≥48px rows, hover brand/teal. */
+/* Inter 14px entries with a number track; >=44px rows; hover brand/teal. */
 .contentsLink {
   display: grid;
-  grid-template-columns: var(--kinetus-space-12) minmax(0, 1fr);
+  grid-template-columns: var(--kinetus-space-10) minmax(0, 1fr);
   align-items: baseline;
-  min-height: var(--kinetus-tap-target);
+  min-height: 44px;
   padding-block: var(--kinetus-space-3);
-  color: var(--kinetus-text-primary);
-  font-family: var(--kinetus-font-mono);
+  color: var(--kinetus-text-heading);
   font-size: var(--kinetus-type-body-s-size);
-  line-height: var(--kinetus-type-body-s-line-height);
-  font-weight: var(--kinetus-type-body-s-weight);
+  line-height: 20px;
+  font-weight: 500;
   text-decoration: none;
   transition: color var(--motion-duration) var(--motion-ease);
 }
@@ -68,13 +71,16 @@
 
 .contentsNumber {
   color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-label-size);
+  font-weight: var(--kinetus-type-label-weight);
+  letter-spacing: 0.04em;
 }
 
-/* Prose column at the canonical 580px measure. */
+/* Prose column at the body measure. */
 .prose {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-12);
+  gap: var(--kinetus-space-10);
   max-width: var(--kinetus-measure-body);
   min-width: 0;
 }
@@ -89,67 +95,71 @@
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-4);
-  scroll-margin-top: var(--kinetus-space-8);
+  scroll-margin-top: calc(var(--kinetus-header-height) + var(--kinetus-space-6));
 }
 
-/* Section heading: mono number in the index track, H3 text beside it. */
+/* Section heading: condensed number in teal, Inter semibold text beside it. */
 .sectionHeading {
-  display: grid;
-  grid-template-columns: var(--kinetus-space-12) minmax(0, 1fr);
+  display: flex;
   align-items: baseline;
+  gap: var(--kinetus-space-3);
   margin: 0;
-  color: var(--kinetus-text-primary);
+  color: var(--kinetus-text-heading);
 }
 
 .sectionNumber {
-  color: var(--kinetus-text-secondary);
+  flex: 0 0 auto;
+  color: var(--kinetus-brand-teal-deep);
+  font-family: var(--kinetus-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
-/* Closing block (sign-off, notices): hairline frame with registration marks. */
+/* Closing block (sign-off, notices): white card. */
 .closing {
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--kinetus-space-4);
   padding: var(--kinetus-space-6);
-  border: 1px solid var(--kinetus-border-default);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
 }
 
 @media (min-width: 768px) {
   .page {
-    padding-block: var(--kinetus-space-8) var(--kinetus-space-32);
+    --content-gap: var(--kinetus-space-16);
+
+    padding-bottom: var(--kinetus-space-20);
   }
 
-  .page > * + * {
-    margin-top: var(--kinetus-space-32);
+  .closing {
+    padding: var(--kinetus-space-8);
   }
+}
 
-  /* Contents 300px, sticky; prose at the measure; the right third stays open. */
+@media (min-width: 1024px) {
   .body {
-    --contents-track: 300px;
-
-    grid-template-columns: var(--contents-track) minmax(0, var(--kinetus-measure-body));
+    grid-template-columns: 280px minmax(0, 1fr);
     column-gap: var(--kinetus-space-16);
   }
 
   /* Long documents (Terms: 18 entries) scroll inside the sticky block. */
   .contents {
     position: sticky;
-    top: var(--kinetus-space-8);
-    max-height: calc(100vh - var(--kinetus-space-8) * 2);
+    top: calc(var(--kinetus-header-height) + var(--kinetus-space-6));
+    max-height: calc(100vh - var(--kinetus-header-height) - var(--kinetus-space-12));
     overflow-y: auto;
     overscroll-behavior: contain;
   }
 
   .prose {
-    gap: var(--kinetus-space-16);
+    gap: var(--kinetus-space-12);
   }
 
   .section {
-    gap: var(--kinetus-space-6);
-  }
-
-  .closing {
-    padding: var(--kinetus-space-8);
+    gap: var(--kinetus-space-5);
   }
 }

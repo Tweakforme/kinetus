@@ -1,89 +1,178 @@
 /*
- * Product Card (Figma 24:18 / 63:73): bg/base, 1px border/subtle, radius/md, padding space-4,
- * stack gap space-3 (mobile) / space-4 (desktop). Hover: border/default only.
+ * Deck product card (slide 7): pale grey card, 12px radius, faint border and shadow,
+ * landscape media, tight text stack.
  */
 .card {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-3);
   height: 100%;
   padding: var(--kinetus-space-4);
-  background: var(--kinetus-bg-base);
+  background: var(--kinetus-bg-subtle);
   border: 1px solid var(--kinetus-border-subtle);
-  border-radius: var(--kinetus-radius-md);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
   color: var(--kinetus-text-primary);
   text-decoration: none;
-  transition: border-color var(--motion-duration) var(--motion-ease);
+  transition:
+    box-shadow var(--motion-duration) var(--motion-ease),
+    border-color var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease);
 }
 
 .card:hover,
 .card:focus-visible,
 .card:active {
   border-color: var(--kinetus-border-default);
+  box-shadow: var(--kinetus-shadow-card-hover);
+  transform: translateY(-2px);
 }
 
-/* Square media on bg/subtle, radius/md, artwork inset space-3 (mobile) / space-6 (desktop). */
+/* Landscape media: box and vial together, contained, never cropped. */
 .media {
   position: relative;
   display: block;
   width: 100%;
-  aspect-ratio: 1;
-  background: var(--kinetus-bg-subtle);
-  border-radius: var(--kinetus-radius-md);
+  aspect-ratio: 5 / 4;
   overflow: hidden;
+  border-radius: var(--kinetus-radius-md);
 }
 
-.mediaInner {
-  position: absolute;
-  inset: var(--kinetus-space-3);
-}
-
-/* Mono index in the media corner (Phase 6 A3), above the artwork. */
-.index {
-  position: absolute;
-  top: var(--kinetus-space-3);
-  left: var(--kinetus-space-3);
-  z-index: 1;
-  color: var(--kinetus-text-secondary);
-}
-
-/* Contained, never cropped; darken-blend hides the renders' opaque near-white backgrounds. */
 .image {
   object-fit: contain;
-  mix-blend-mode: darken;
+  object-position: center bottom;
+  padding: var(--kinetus-space-2);
+  filter: drop-shadow(0 10px 12px rgba(7, 27, 52, 0.12));
+  transition: transform var(--motion-duration) var(--motion-ease);
 }
 
-.text {
+.card:hover .image {
+  transform: scale(1.02);
+}
+
+.body {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-3);
+  gap: var(--kinetus-space-1);
+  padding-top: var(--kinetus-space-3);
   min-width: 0;
 }
 
-/* Name wraps to at most two lines. */
+/* Uppercase product name. */
 .name {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
   color: var(--kinetus-text-primary);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
-.presentation {
+/* "10 mg · Lyophilized powder", small grey. */
+.subline {
   color: var(--kinetus-text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
+.rule {
+  display: block;
+  height: 1px;
+  margin: var(--kinetus-space-2) 0 var(--kinetus-space-3);
+  background: var(--kinetus-border-default);
+}
+
+/* Four micro-badges with tiny line icons and two-line labels. */
+.badges {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--kinetus-space-1);
+}
+
+.badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  text-align: center;
+}
+
+.badgeIcon {
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.badgeLabel {
+  color: var(--kinetus-text-heading);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--kinetus-space-2);
+  margin-top: var(--kinetus-space-3);
+}
+
+.from {
+  color: var(--kinetus-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Large bold price, "CAD / VIAL" small beside it. */
 .price {
   color: var(--kinetus-text-primary);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
 }
 
-@media (min-width: 768px) {
-  .card {
-    gap: var(--kinetus-space-4);
+.unit {
+  color: var(--kinetus-text-secondary);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cta {
+  min-height: 0;
+  margin-top: var(--kinetus-space-2);
+}
+
+/*
+ * Below the desktop grid the card is too narrow for four badges: at 390 and 768 the
+ * columns fall to about 45px and the long single words (AVAILABLE, RESEARCH) collide.
+ * Two by two instead, and the price unit gets its own line on every card so a "From"
+ * card and a single-price card in the same row wrap identically.
+ */
+@media (max-width: 1023px) {
+  .badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--kinetus-space-2) var(--kinetus-space-3);
   }
 
-  .mediaInner {
-    inset: var(--kinetus-space-6);
+  .unit {
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .card {
+    padding: var(--kinetus-space-3);
+  }
+
+  .price {
+    font-size: 19px;
   }
 }

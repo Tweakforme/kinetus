@@ -7,7 +7,7 @@
   min-width: 0;
 }
 
-/* Figma Navigation (38:50): items in Label with space-8 gaps; never wraps. */
+/* Deck navigation (slide 4): condensed uppercase labels, right-aligned, never wraps. */
 .list {
   display: flex;
   justify-content: flex-end;
@@ -23,14 +23,19 @@
   flex: 0 0 auto;
 }
 
+/* Each item spans the header height so a dropdown opens at the header's bottom edge. */
 .item {
   position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--kinetus-header-height);
 }
 
 .link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding-block: var(--kinetus-space-2);
-  color: var(--kinetus-text-primary);
+  color: var(--kinetus-text-heading);
   text-decoration: none;
   transition: color var(--motion-duration) var(--motion-ease);
 }
@@ -40,7 +45,7 @@
   color: var(--kinetus-brand-teal);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   /* Takes the space beside the logo; the list is measured against it. Never clips once
      measured, so the absolutely positioned dropdown panels can extend below the header. */
   .slot {
@@ -58,5 +63,12 @@
     visibility: hidden;
     height: 0;
     overflow: hidden;
+  }
+}
+
+/* The deck's 40px gaps once the container is at full width. */
+@media (min-width: 1360px) {
+  .list {
+    gap: var(--kinetus-space-10);
   }
 }

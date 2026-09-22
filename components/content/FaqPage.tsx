@@ -1,9 +1,7 @@
 import Link from "next/link";
-import buttons from "@/components/home/buttons.module.css";
+import { ChevronDownIcon } from "@/components/icons/LineIcons";
 import { Container } from "@/components/layout/Container";
-import { ChevronIcon } from "@/components/layout/NavIcons";
-import { RegistrationMarks } from "@/components/marks/RegistrationMarks";
-import { SectionRule } from "@/components/marks/SectionRule";
+import buttons from "@/components/ui/buttons.module.css";
 import type { ContentBlock, FaqDocument } from "@/content/types";
 import { canonicalUrl } from "@/lib/seo";
 import { CONTACT_LINK, SITE_NAME } from "@/lib/site";
@@ -29,20 +27,19 @@ function answerText(blocks: ContentBlock[]): string {
 }
 
 /**
- * FAQ: header, sticky mono contents (one entry per group), native disclosure
- * accordions grouped under the document's own headings, closing block, and FAQPage
- * structured data built from the published questions only.
+ * FAQ: navy band, sticky contents (one entry per group), native disclosure accordions
+ * as white cards grouped under the document's own headings, the closing block with a
+ * contact button, and FAQPage structured data built from the published questions only.
  */
 export function FaqPage({ doc }: FaqPageProps) {
   const published = doc.groups.flatMap((group) => group.entries);
+  const closingIndex = String(doc.groups.length + 1).padStart(2, "0");
 
   return (
     <article className={layout.page}>
-      <ContentHeader kicker={SITE_NAME} title={doc.title} lede={doc.intro} breadcrumbLabel="FAQ" />
+      <ContentHeader eyebrow={SITE_NAME} title={doc.title} lede={doc.intro} breadcrumbLabel="FAQ" />
 
       <Container className={layout.body} data-reveal="">
-        <SectionRule />
-
         <nav className={layout.contents} aria-label="Contents">
           <p className={`type-label ${layout.contentsLabel}`}>Contents</p>
           <ol className={layout.contentsList}>
@@ -58,9 +55,7 @@ export function FaqPage({ doc }: FaqPageProps) {
             ))}
             <li className={layout.contentsItem}>
               <a href="#still-have-questions" className={layout.contentsLink}>
-                <span className={`numeric ${layout.contentsNumber}`}>
-                  {String(doc.groups.length + 1).padStart(2, "0")}
-                </span>{" "}
+                <span className={`numeric ${layout.contentsNumber}`}>{closingIndex}</span>{" "}
                 <span>{doc.closingHeading}</span>
               </a>
             </li>
@@ -68,32 +63,23 @@ export function FaqPage({ doc }: FaqPageProps) {
         </nav>
 
         <div className={`${layout.prose} ${styles.prose}`}>
-          {doc.groups.map((group, groupIndex) => (
+          {doc.groups.map((group) => (
             <section
               key={group.id}
               id={group.id}
               className={layout.section}
               aria-labelledby={`${group.id}-heading`}
             >
-              <h2 id={`${group.id}-heading`} className={`type-h3 ${layout.sectionHeading}`}>
-                <span className={`type-label numeric ${layout.sectionNumber}`}>
-                  {String(groupIndex + 1).padStart(2, "0")}
-                </span>{" "}
-                <span>{group.heading}</span>
+              <h2 id={`${group.id}-heading`} className={`type-h2 ${styles.groupHeading}`}>
+                {group.heading}
               </h2>
 
               <div className={styles.entries}>
-                {group.entries.map((entry, entryIndex) => (
+                {group.entries.map((entry) => (
                   <details key={entry.id} id={entry.id} className={styles.entry}>
                     <summary className={styles.summary}>
-                      <span
-                        className={`type-label numeric ${styles.entryIndex}`}
-                        aria-hidden="true"
-                      >
-                        {String(entryIndex + 1).padStart(2, "0")}
-                      </span>
                       <span className={styles.question}>{entry.question}</span>
-                      <ChevronIcon className={styles.chevron} />
+                      <ChevronDownIcon size={20} className={styles.chevron} />
                     </summary>
                     <div className={styles.answer}>
                       <ContentBlocks blocks={entry.answer} />
@@ -109,17 +95,13 @@ export function FaqPage({ doc }: FaqPageProps) {
             className={layout.section}
             aria-labelledby="still-have-questions-heading"
           >
-            <h2 id="still-have-questions-heading" className={`type-h3 ${layout.sectionHeading}`}>
-              <span className={`type-label numeric ${layout.sectionNumber}`}>
-                {String(doc.groups.length + 1).padStart(2, "0")}
-              </span>{" "}
-              <span>{doc.closingHeading}</span>
+            <h2 id="still-have-questions-heading" className={`type-h2 ${styles.groupHeading}`}>
+              {doc.closingHeading}
             </h2>
             <div className={layout.closing}>
-              <RegistrationMarks />
               <ContentBlocks blocks={doc.closing} />
               <div className={styles.closingAction}>
-                <Link href={CONTACT_LINK.href} className={`type-label ${buttons.secondary}`}>
+                <Link href={CONTACT_LINK.href} className={buttons.solid}>
                   Contact us
                 </Link>
               </div>

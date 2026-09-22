@@ -1,56 +1,165 @@
-/* Breadcrumb, title block, divider: gap space-6 (mobile) / space-8 (desktop). */
-.header {
+/*
+ * Content band: the deck hero's navy ground without the product render. 200px minimum on
+ * desktop, faint hex mesh upper right, breadcrumb, cyan eyebrow, white condensed title.
+ */
+.band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Hexagonal mesh, upper right, fading towards the copy. */
+.mesh {
+  position: absolute;
+  top: -20%;
+  right: -4%;
+  width: 64%;
+  height: 140%;
+  color: var(--kinetus-text-inverse);
+  opacity: 0.09;
+  mask-image: radial-gradient(ellipse 60% 80% at 78% 40%, #000 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 80% at 78% 40%, #000 20%, transparent 100%);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-6);
+  gap: var(--kinetus-space-4);
+  padding-block: var(--kinetus-space-4) var(--kinetus-space-8);
+}
+
+/* Breadcrumb: white at 70% (no token exists for this step on dark), current crumb white. */
+.breadcrumb {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--kinetus-type-caption-size);
+  line-height: var(--kinetus-type-caption-line-height);
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kinetus-space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kinetus-space-2);
+  min-width: 0;
+}
+
+/* Block padding lifts the hit area to 44px without changing the line box. */
+.crumbLink {
+  padding-block: var(--kinetus-space-3);
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.crumbLink:hover,
+.crumbLink:active {
+  color: var(--kinetus-brand-cyan-bright);
+}
+
+.separator {
+  color: inherit;
+}
+
+.crumbCurrent {
+  color: var(--kinetus-text-inverse);
 }
 
 .titleBlock {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-4);
+  gap: var(--kinetus-space-3);
+  max-width: 48em;
 }
 
-.kicker {
+.eyebrow {
   margin: 0;
-  color: var(--kinetus-brand-teal);
+  color: var(--kinetus-brand-cyan-bright);
 }
 
 .title {
   margin: 0;
+  color: var(--kinetus-text-inverse);
   overflow-wrap: anywhere;
 }
 
-/* Lede: Body (mobile) / Body L (desktop), secondary, at the canonical measure. */
+/* The status code (404) in the hero's uppercase condensed size. */
+.code {
+  margin: 0;
+  color: var(--kinetus-text-inverse);
+  line-height: 0.9;
+}
+
 .lede {
   margin: 0;
-  max-width: var(--kinetus-measure-body);
-  color: var(--kinetus-text-secondary);
-  font-size: var(--kinetus-type-body-size);
-  line-height: var(--kinetus-type-body-line-height);
-  font-weight: var(--kinetus-type-body-weight);
+  max-width: 36em;
+  color: var(--kinetus-text-inverse);
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 400;
 }
 
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--kinetus-space-3);
+  gap: var(--kinetus-space-2);
   margin: 0;
-  color: var(--kinetus-text-secondary);
+  color: var(--kinetus-text-inverse-muted);
 }
 
 .metaValue {
-  color: var(--kinetus-text-primary);
+  color: var(--kinetus-text-inverse);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  width: 100%;
+  margin-top: var(--kinetus-space-4);
 }
 
 @media (min-width: 768px) {
-  .header {
-    gap: var(--kinetus-space-8);
+  .inner {
+    gap: var(--kinetus-space-5);
+    padding-block: var(--kinetus-space-5) var(--kinetus-space-10);
   }
 
-  .lede {
-    font-size: var(--kinetus-type-body-l-size);
-    line-height: var(--kinetus-type-body-l-line-height);
-    font-weight: var(--kinetus-type-body-l-weight);
+  .actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--kinetus-space-4);
+    width: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .inner {
+    min-height: 200px;
+    justify-content: center;
+  }
+
+  .status .inner {
+    min-height: 360px;
+    padding-block: var(--kinetus-space-12);
   }
 }
