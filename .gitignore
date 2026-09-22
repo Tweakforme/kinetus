@@ -53,5 +53,9 @@ next-env.d.ts
 /*.jpg
 /*.jpeg
 
+# Client asset pack (roughly 326 MB of source photography and documents). Working
+# copies that the site actually serves are optimised into public/products/.
+/_client-assets/
+
 .vercel
 .env*
