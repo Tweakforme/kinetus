@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { DEFAULT_COLLECTION_HERO, pageHref, paginate } from "@/lib/catalogue";
-import { getAllProducts, toProductCardModel } from "@/lib/products";
+import { getAllProducts, revalidateAtNextPriceChange, toProductCardModel } from "@/lib/products";
 import { canonicalUrl } from "@/lib/seo";
 import { ALL_PRODUCTS_LINK, SITE_NAME } from "@/lib/site";
 import { CatalogueListing } from "./CatalogueListing";
@@ -65,6 +65,11 @@ export async function ProductsListingPage({ page }: ProductsListingProps) {
   if (page > slice.totalPages) {
     notFound();
   }
+  const shownIds = new Set(slice.items.map((card) => card.id));
+  await revalidateAtNextPriceChange(
+    rows.filter((row) => shownIds.has(row.id)).flatMap((row) => row.variants),
+    now,
+  );
 
   return (
     <ListingPage>

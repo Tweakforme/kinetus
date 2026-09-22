@@ -3,12 +3,16 @@
 import Image from "next/image";
 import { useState } from "react";
 import { blurPlaceholder } from "@/lib/images";
+import { imagesForVariant } from "@/lib/product-images";
+import { useProductSelection } from "./ProductSelection";
 import styles from "./ProductGallery.module.css";
 
 export type GalleryImage = {
   id: string;
   url: string;
   altText: string;
+  /** The variant whose strength is printed on the render; null for product level. */
+  variantId: string | null;
 };
 
 type ProductGalleryProps = {
@@ -22,11 +26,27 @@ function isKeyedRender(url: string): boolean {
 }
 
 /**
- * The render column of the product hero (deck slide 9): the primary image large,
- * floating on the white page with no panel behind it, thumbnails beneath only when the
- * product has more than one image. Client component only for the active-thumbnail state.
+ * The render column of the product hero (deck slide 9). It shows the selected size's own
+ * renders, or the product-level renders when that size has none, and never another
+ * size's render. Remounted per size so the first image of the new set is shown.
  */
 export function ProductGallery({ images, productName }: ProductGalleryProps) {
+  const { selected } = useProductSelection();
+  const selectedId = selected?.id ?? null;
+  return (
+    <GallerySet
+      key={selectedId ?? "product"}
+      images={imagesForVariant(images, selectedId)}
+      productName={productName}
+    />
+  );
+}
+
+/**
+ * One image set: the first image large, floating on the white page with no panel behind
+ * it, thumbnails beneath only when the set has more than one image.
+ */
+function GallerySet({ images, productName }: ProductGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = images[activeIndex] ?? images[0];
 

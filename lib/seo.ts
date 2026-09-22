@@ -30,6 +30,14 @@ export function getSiteUrl(): string {
 }
 
 /**
+ * Absolute URL for an image or file. Site paths ("/products/…") resolve against the
+ * origin; absolute URLs (admin uploads on Vercel Blob) pass through unchanged.
+ */
+export function absoluteUrl(pathOrUrl: string): string {
+  return /^https?:\/\//i.test(pathOrUrl) ? pathOrUrl : canonicalUrl(pathOrUrl);
+}
+
+/**
  * Absolute canonical URL for a site path.
  * Root resolves to `${origin}/`; other paths are normalised to a leading slash and
  * no trailing slash, e.g. canonicalUrl("products/") → `${origin}/products`.

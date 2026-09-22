@@ -1,11 +1,17 @@
-import { CollectionStatus, Prisma, ProductStatus, RedirectEntityType } from "@prisma/client";
-import { unstable_cache } from "next/cache";
+import {
+  CollectionKind,
+  CollectionStatus,
+  Prisma,
+  ProductStatus,
+  RedirectEntityType,
+} from "@prisma/client";
 import { cache } from "react";
+import { CACHE_TAGS, cachedQuery } from "@/lib/cache";
 import { prisma } from "@/lib/db";
 import { productSummaryInclude } from "@/lib/products";
 
-/** Cache tag for everything derived from published collections (nav, footer). */
-export const COLLECTIONS_CACHE_TAG = "collections";
+/** Cache tag for everything derived from published collections (the admin expires it). */
+export const COLLECTIONS_CACHE_TAG = CACHE_TAGS.collections;
 
 /* -------------------------------------------------------------------------- */
 /*  Queries                                                                   */
@@ -24,16 +30,23 @@ export type CollectionDetail = Prisma.CollectionGetPayload<{
   include: typeof collectionDetailInclude;
 }>;
 
+const collectionBySlug = cachedQuery(
+  "collection-by-slug",
+  (slug: string): Promise<CollectionDetail | null> =>
+    prisma.collection.findFirst({
+      where: { slug, status: CollectionStatus.PUBLISHED },
+      include: collectionDetailInclude,
+    }),
+  (slug) => [CACHE_TAGS.collections, CACHE_TAGS.collection(slug), CACHE_TAGS.products],
+);
+
 /**
  * Published collection by slug with its published products in membership order.
- * Cached per request so generateMetadata and the page share one query.
+ * Deduplicated per request so generateMetadata and the page share one read.
  */
-export const getCollectionBySlug = cache(async (slug: string): Promise<CollectionDetail | null> => {
-  return prisma.collection.findFirst({
-    where: { slug, status: CollectionStatus.PUBLISHED },
-    include: collectionDetailInclude,
-  });
-});
+export const getCollectionBySlug = cache((slug: string): Promise<CollectionDetail | null> =>
+  collectionBySlug(slug),
+);
 
 export type CollectionSummary = {
   id: string;
@@ -44,31 +57,39 @@ export type CollectionSummary = {
   productCount: number;
 };
 
-/** Every published collection with its published-product count, in display order. */
-export async function getAllCollections(): Promise<CollectionSummary[]> {
-  const rows = await prisma.collection.findMany({
-    where: { status: CollectionStatus.PUBLISHED },
-    select: {
-      id: true,
-      slug: true,
-      name: true,
-      description: true,
-      _count: {
-        select: { products: { where: { product: { status: ProductStatus.PUBLISHED } } } },
+/**
+ * Every published collection with its published-product count, in display order.
+ * Pass a kind to limit it: the /collections hub shows the four ranges only, so the Shop
+ * by Category groupings the client adds in the admin do not change its layout.
+ */
+export const getAllCollections = cachedQuery(
+  "all-collections",
+  async (kind?: CollectionKind): Promise<CollectionSummary[]> => {
+    const rows = await prisma.collection.findMany({
+      where: { status: CollectionStatus.PUBLISHED, ...(kind ? { kind } : {}) },
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        description: true,
+        _count: {
+          select: { products: { where: { product: { status: ProductStatus.PUBLISHED } } } },
+        },
       },
-    },
-    orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
-  });
-  return rows.map((row) => ({
-    id: row.id,
-    slug: row.slug,
-    name: row.name,
-    description: row.description,
-    productCount: row._count.products,
-  }));
-}
+      orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
+    });
+    return rows.map((row) => ({
+      id: row.id,
+      slug: row.slug,
+      name: row.name,
+      description: row.description,
+      productCount: row._count.products,
+    }));
+  },
+  () => [CACHE_TAGS.collections, CACHE_TAGS.products],
+);
 
-/** Slugs of every published collection — for generateStaticParams. */
+/** Slugs of every published collection, for generateStaticParams (build time, uncached). */
 export async function getAllCollectionSlugs(): Promise<string[]> {
   const rows = await prisma.collection.findMany({
     where: { status: CollectionStatus.PUBLISHED },
@@ -78,22 +99,33 @@ export async function getAllCollectionSlugs(): Promise<string[]> {
   return rows.map((row) => row.slug);
 }
 
-/** Slug + last update of every published collection — for the sitemap. */
-export async function getCollectionsForSitemap(): Promise<{ slug: string; updatedAt: Date }[]> {
-  return prisma.collection.findMany({
-    where: { status: CollectionStatus.PUBLISHED },
-    select: { slug: true, updatedAt: true },
-    orderBy: { slug: "asc" },
-  });
-}
+/** Slug + last update of every published collection, for the sitemap. */
+export const getCollectionsForSitemap = cachedQuery(
+  "collections-for-sitemap",
+  (): Promise<{ slug: string; updatedAt: Date }[]> =>
+    prisma.collection.findMany({
+      where: { status: CollectionStatus.PUBLISHED },
+      select: { slug: true, updatedAt: true },
+      orderBy: { slug: "asc" },
+    }),
+  () => [CACHE_TAGS.collections],
+);
+
+const collectionRedirectTarget = cachedQuery(
+  "collection-redirect",
+  async (fromSlug: string) => {
+    const redirect = await prisma.slugRedirect.findFirst({
+      where: { fromSlug, entityType: RedirectEntityType.COLLECTION },
+      select: { toSlug: true },
+    });
+    return redirect?.toSlug ?? null;
+  },
+  (fromSlug) => [CACHE_TAGS.collections, CACHE_TAGS.collection(fromSlug)],
+);
 
 /** Target slug for a renamed collection, or null when no redirect is recorded. */
-export async function getCollectionRedirectTarget(fromSlug: string): Promise<string | null> {
-  const redirect = await prisma.slugRedirect.findFirst({
-    where: { fromSlug, entityType: RedirectEntityType.COLLECTION },
-    select: { toSlug: true },
-  });
-  return redirect?.toSlug ?? null;
+export function getCollectionRedirectTarget(fromSlug: string): Promise<string | null> {
+  return collectionRedirectTarget(fromSlug);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -108,20 +140,21 @@ export type NavProduct = {
 export type NavCollection = {
   slug: string;
   name: string;
-  /** Published member products in membership order — the dropdown / accordion entries. */
+  /** Published member products in membership order: the dropdown / accordion entries. */
   products: NavProduct[];
 };
 
 /**
- * Published collections (with their published products) for the header dropdowns, the
- * drawer accordions and the footer, in display order. Cached across requests
- * (revalidated hourly, or on demand via COLLECTIONS_CACHE_TAG once the admin lands in
- * Phase 7) so the shell never queries per render.
+ * Published ranges with their published products, in display order, for navigation built
+ * from the catalogue. Tagged `nav` (and expired by every catalogue save). Not currently
+ * rendered: since the deck-match redesign the header, drawer and footer use the static
+ * navigation in lib/site.ts.
  */
-export const getNavCollections = unstable_cache(
+export const getNavCollections = cachedQuery(
+  "nav-collections",
   async (): Promise<NavCollection[]> => {
     const rows = await prisma.collection.findMany({
-      where: { status: CollectionStatus.PUBLISHED },
+      where: { status: CollectionStatus.PUBLISHED, kind: CollectionKind.RANGE },
       select: {
         slug: true,
         name: true,
@@ -139,6 +172,5 @@ export const getNavCollections = unstable_cache(
       products: row.products.map((link) => link.product),
     }));
   },
-  ["nav-collections", "with-products"],
-  { revalidate: 3600, tags: [COLLECTIONS_CACHE_TAG] },
+  () => [CACHE_TAGS.nav, CACHE_TAGS.collections, CACHE_TAGS.products],
 );

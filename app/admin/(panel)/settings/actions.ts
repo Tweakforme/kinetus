@@ -1,0 +1,115 @@
+"use server";
+
+import { requireAdmin } from "@/lib/admin/auth";
+import {
+  checkbox,
+  errorState,
+  optionalText,
+  parseDollars,
+  parsePercentToBps,
+  successState,
+  text,
+  type FormState,
+} from "@/lib/admin/forms";
+import { refreshAdmin } from "@/lib/admin/revalidate";
+import { prisma } from "@/lib/db";
+
+const SETTINGS_ID = "store";
+/** GST/HST registration: nine-digit business number, "RT", four-digit account number. */
+const GST_PATTERN = /^\d{9}RT\d{4}$/;
+
+export async function saveStoreSettings(_previous: FormState, form: FormData): Promise<FormState> {
+  await requireAdmin();
+  const errors: Record<string, string> = {};
+
+  const taxEnabled = checkbox(form, "taxEnabled");
+  const gstInput = text(form, "gstNumber");
+  const gstNumber = gstInput === "" ? null : gstInput.replace(/[\s-]/g, "").toUpperCase();
+  if (gstNumber !== null && !GST_PATTERN.test(gstNumber)) {
+    errors.gstNumber =
+      "Enter the number as 9 digits, RT and 4 digits, for example 123456789RT0001.";
+  }
+  if (taxEnabled && gstNumber === null) {
+    errors.taxEnabled = "Enter the GST/HST registration number before switching sales tax on.";
+  }
+
+  const flat = parseDollars(text(form, "shippingFlat"));
+  if (flat === null || flat > 100_000) {
+    errors.shippingFlat = "Enter the flat shipping charge in dollars, for example 20.00.";
+  }
+  const threshold = parseDollars(text(form, "freeShippingThreshold"));
+  if (threshold === null || threshold > 10_000_000) {
+    errors.freeShippingThreshold =
+      "Enter the order total for free shipping in dollars, for example 199.00.";
+  }
+  const localFreeCity = optionalText(form, "localFreeCity");
+  if (localFreeCity !== null && localFreeCity.length > 80) {
+    errors.localFreeCity = "Keep the city to 80 characters or fewer.";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return errorState(errors, form);
+  }
+
+  const data = {
+    taxEnabled,
+    gstNumber,
+    shippingFlatCents: flat!,
+    freeShippingThresholdCents: threshold!,
+    localFreeCity,
+    shipsInternationally: checkbox(form, "shipsInternationally"),
+  };
+  await prisma.storeSetting.upsert({
+    where: { id: SETTINGS_ID },
+    create: { id: SETTINGS_ID, ...data },
+    update: data,
+  });
+  refreshAdmin();
+  return successState(
+    taxEnabled
+      ? "Settings saved. Sales tax is switched on (checkout is not built yet, so nothing is charged)."
+      : "Settings saved. Sales tax is off.",
+  );
+}
+
+export async function saveTaxRates(_previous: FormState, form: FormData): Promise<FormState> {
+  await requireAdmin();
+  const rates = await prisma.taxRate.findMany();
+  const errors: Record<string, string> = {};
+  const updates: { id: string; label: string; rateBps: number; isActive: boolean }[] = [];
+
+  for (const rate of rates) {
+    const field = (name: string) => `rates.${rate.id}.${name}`;
+    const label = text(form, field("label"));
+    if (!label) {
+      errors[field("label")] = `${rate.province}: enter a label.`;
+    } else if (label.length > 80) {
+      errors[field("label")] = `${rate.province}: keep the label to 80 characters or fewer.`;
+    }
+    const bps = parsePercentToBps(text(form, field("rate")));
+    if (bps === null || bps > 3000) {
+      errors[field("rate")] =
+        `${rate.province}: enter the rate as a percentage from 0 to 30, for example 13 or 14.97.`;
+    }
+    updates.push({
+      id: rate.id,
+      label,
+      rateBps: bps ?? 0,
+      isActive: checkbox(form, field("isActive")),
+    });
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return errorState(errors, form);
+  }
+  await prisma.$transaction(
+    updates.map((update) =>
+      prisma.taxRate.update({
+        where: { id: update.id },
+        data: { label: update.label, rateBps: update.rateBps, isActive: update.isActive },
+      }),
+    ),
+  );
+  refreshAdmin();
+  return successState("Tax rates saved.");
+}

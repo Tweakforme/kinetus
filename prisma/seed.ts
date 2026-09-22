@@ -7,21 +7,34 @@
  *  - No descriptions are written: description / shortDescription stay null until the
  *    client supplies copy. `form` is "Lyophilized powder" for every vial product;
  *    the other specification fields stay null.
- *  - Imagery: the client's blank box-and-vial render for every product; Retatrutide uses
- *    its two labelled renders. Real photography for the rest is still required.
+ *  - Imagery: the client's own renders (PRODUCT_IMAGES). Every render has a strength
+ *    printed on it and belongs to that variant. A variant with no render of its own falls
+ *    back to the product-level unlabelled "Kinetus Vial and Blank box" render, which is
+ *    also the only image for Bacteriostatic Water.
  *  - Name normalisation from the price list: "5-amino - 1MQ" → "5-Amino-1MQ",
  *    "AHK-cu" → "AHK-Cu", "kisspeptin" → "Kisspeptin", "PNC 27" → "PNC-27",
  *    "SNAP 8" → "SNAP-8", "Thymosin Alpha 1" → "Thymosin Alpha-1",
  *    "Retatrutide (GLP3/Reta)" → "Retatrutide", "Bac Water" → "Bacteriostatic Water".
+ *  - Commerce configuration (Phase 7A): the client's six discount codes (all inactive),
+ *    two volume tiers, the 13 provincial tax rates and the single store settings row.
+ *    These rows are only ever created, never overwritten, so a re-run cannot switch a
+ *    code on or off or change a setting the client has made.
  *
- * Idempotent: every row has a fixed id and is upserted; variants and images of a seeded
- * product that are no longer listed here are removed; the Phase 3 mock rows (ids prefixed
- * "mock_") are deleted.
+ * Idempotent: every catalogue row has a fixed id and is upserted; variants and images of
+ * a seeded product that are no longer listed here are removed; the Phase 3 mock rows (ids
+ * prefixed "mock_") are deleted.
+ *
+ * Once an admin account exists the admin owns the catalogue, and a re-run would discard
+ * the client's edits (prices, copy, uploaded images). The catalogue and the client-managed
+ * commerce rows (discount codes, volume tiers) are therefore skipped when an AdminUser row
+ * exists, unless SEED_CATALOGUE=overwrite is set. Tax rates and the settings row are still
+ * created if missing.
  *
  * Run with: npx prisma db seed
  */
 
 import {
+  CollectionKind,
   CollectionStatus,
   PrismaClient,
   ProductStatus,
@@ -32,12 +45,14 @@ import {
 const prisma = new PrismaClient();
 
 /**
- * Fallback render, used only by products the client has not photographed yet. It is the
- * unlabelled box and vial with its studio background removed, so it composites on the
- * navy hero as well as on the light catalogue pages.
+ * The unlabelled "Kinetus Vial and Blank box" render (genuine client artwork, no strength
+ * and no product name printed), with its studio background removed so it composites on
+ * the navy hero as well as on the light catalogue pages. It is the product-level fallback
+ * shown for any variant that has no render of its own.
  */
 const RENDER_BLANK_BOX_VIAL = "/products/kinetus-vial-and-blank-box-cut.png";
 
+/** `variant` is the strength printed on the render, or null for an unlabelled render. */
 type ImageSeed = { url: string; alt: string; variant: string | null };
 
 /**
@@ -45,9 +60,10 @@ type ImageSeed = { url: string; alt: string; variant: string | null };
  * "Shop by Category/Peptide Vials (Colored)", optimised into public/products/<slug>/).
  * The vial-and-box render leads, then the individual vials in ascending strength.
  *
- * `variant` records the strength printed on that render. Nothing consumes it yet:
- * ProductImage has no variantId column, so per-strength imagery needs a schema change
- * before the gallery can switch renders with the size selector.
+ * `variant` is the strength printed on the render, read off the artwork itself (the pack's
+ * file names omit it for AOD-9604, CJC-1295, DSIP, Kisspeptin and SNAP-8; those renders all
+ * read "10 MG"). The seed attaches each render to that variant, so the product page never
+ * shows one strength's render while another strength is selected.
  */
 const PRODUCT_IMAGES: Record<string, ImageSeed[]> = {
   "5-amino-1mq": [
@@ -78,8 +94,8 @@ const PRODUCT_IMAGES: Record<string, ImageSeed[]> = {
   "aod-9604": [
     {
       url: "/products/aod-9604/aod-9604-vial-and-box.webp",
-      alt: "AOD-9604 vial and box",
-      variant: null,
+      alt: "AOD-9604 10 mg vial and box",
+      variant: "10 mg",
     },
     {
       url: "/products/aod-9604/aod-9604-10mg-vial.webp",
@@ -114,8 +130,8 @@ const PRODUCT_IMAGES: Record<string, ImageSeed[]> = {
   "cjc-1295-no-dac-ipamorelin": [
     {
       url: "/products/cjc-1295-no-dac-ipamorelin/cjc-1295-no-dac-ipamorelin-vial-and-box.webp",
-      alt: "CJC-1295 (No DAC) / Ipamorelin vial and box",
-      variant: null,
+      alt: "CJC-1295 (No DAC) / Ipamorelin 10 mg vial and box",
+      variant: "10 mg",
     },
     {
       url: "/products/cjc-1295-no-dac-ipamorelin/cjc-1295-no-dac-ipamorelin-10mg-vial.webp",
@@ -124,8 +140,12 @@ const PRODUCT_IMAGES: Record<string, ImageSeed[]> = {
     },
   ],
   dsip: [
-    { url: "/products/dsip/dsip-vial-and-box.webp", alt: "DSIP vial and box", variant: null },
-    { url: "/products/dsip/dsip-vial.webp", alt: "DSIP vial", variant: null },
+    {
+      url: "/products/dsip/dsip-vial-and-box.webp",
+      alt: "DSIP 10 mg vial and box",
+      variant: "10 mg",
+    },
+    { url: "/products/dsip/dsip-vial.webp", alt: "DSIP 10 mg vial", variant: "10 mg" },
   ],
   epitalon: [
     {
@@ -167,10 +187,14 @@ const PRODUCT_IMAGES: Record<string, ImageSeed[]> = {
   kisspeptin: [
     {
       url: "/products/kisspeptin/kisspeptin-vial-and-box.webp",
-      alt: "Kisspeptin vial and box",
-      variant: null,
+      alt: "Kisspeptin 10 mg vial and box",
+      variant: "10 mg",
     },
-    { url: "/products/kisspeptin/kisspeptin-vial.webp", alt: "Kisspeptin vial", variant: null },
+    {
+      url: "/products/kisspeptin/kisspeptin-vial.webp",
+      alt: "Kisspeptin 10 mg vial",
+      variant: "10 mg",
+    },
   ],
   klow: [
     {
@@ -307,8 +331,12 @@ const PRODUCT_IMAGES: Record<string, ImageSeed[]> = {
     },
   ],
   "snap-8": [
-    { url: "/products/snap-8/snap-8-vial-and-box.webp", alt: "SNAP-8 vial and box", variant: null },
-    { url: "/products/snap-8/snap-8-vial.webp", alt: "SNAP-8 vial", variant: null },
+    {
+      url: "/products/snap-8/snap-8-vial-and-box.webp",
+      alt: "SNAP-8 10 mg vial and box",
+      variant: "10 mg",
+    },
+    { url: "/products/snap-8/snap-8-vial.webp", alt: "SNAP-8 10 mg vial", variant: "10 mg" },
   ],
   "ss-31": [
     {
@@ -626,27 +654,56 @@ function variantId(productSlug: string, label: string): string {
   return `var_${productSlug}_${label.replace(/\s+/g, "").toLowerCase()}`;
 }
 
-function imagesFor(product: ProductSeed) {
-  const own = PRODUCT_IMAGES[product.slug];
-  if (own && own.length > 0) {
-    return own.map((image, index) => ({
+type ImageRow = {
+  id: string;
+  url: string;
+  altText: string;
+  variantId: string | null;
+  isPrimary: boolean;
+  displayOrder: number;
+};
+
+/**
+ * The product's image rows. Each render attaches to the variant whose strength is printed
+ * on it (a label the product does not list is a data error and stops the seed). When any
+ * variant is left without a render of its own and the product has no unlabelled render,
+ * the product-level blank render is added so that variant falls back to it instead of
+ * borrowing another strength's render.
+ */
+function imagesFor(product: ProductSeed): ImageRow[] {
+  const own = PRODUCT_IMAGES[product.slug] ?? [];
+  const labels = new Set(product.variants.map(([label]) => label));
+
+  const rows: ImageRow[] = own.map((image, index) => {
+    if (image.variant !== null && !labels.has(image.variant)) {
+      throw new Error(
+        `${product.slug}: render ${image.url} is labelled "${image.variant}", which is not a listed variant.`,
+      );
+    }
+    return {
       id: `img_${product.slug}_${index + 1}`,
       url: image.url,
       altText: image.alt,
+      variantId: image.variant === null ? null : variantId(product.slug, image.variant),
       isPrimary: index === 0,
       displayOrder: index + 1,
-    }));
-  }
-  // No client photography for this product yet; the unlabelled render stands in.
-  return [
-    {
-      id: `img_${product.slug}_1`,
+    };
+  });
+
+  const covered = new Set(own.map((image) => image.variant));
+  const hasProductLevel = covered.has(null);
+  const uncovered = product.variants.some(([label]) => !covered.has(label));
+  if (uncovered && !hasProductLevel) {
+    rows.push({
+      id: own.length === 0 ? `img_${product.slug}_1` : `img_${product.slug}_blank`,
       url: RENDER_BLANK_BOX_VIAL,
       altText: `${product.name}: Kinetus BioLabs vial and box (representative packaging render, unlabelled)`,
-      isPrimary: true,
-      displayOrder: 1,
-    },
-  ];
+      variantId: null,
+      isPrimary: own.length === 0,
+      displayOrder: own.length + 1,
+    });
+  }
+  return rows;
 }
 
 async function seedCollections() {
@@ -657,6 +714,7 @@ async function seedCollections() {
       description: c.description,
       status: CollectionStatus.PUBLISHED,
       displayOrder: c.displayOrder,
+      kind: CollectionKind.RANGE,
     };
     await prisma.collection.upsert({
       where: { id: c.id },
@@ -725,6 +783,7 @@ async function seedProducts() {
         productId,
         url: img.url,
         altText: img.altText,
+        variantId: img.variantId,
         isPrimary: img.isPrimary,
         displayOrder: img.displayOrder,
       };
@@ -738,6 +797,7 @@ async function seedProducts() {
       where: { productId, id: { notIn: images.map((img) => img.id) } },
     });
 
+    // The seed manages range membership only: category links are the client's.
     const collectionId = COLLECTIONS[p.collection].id;
     await prisma.productCollection.upsert({
       where: { productId_collectionId: { productId, collectionId } },
@@ -745,9 +805,103 @@ async function seedProducts() {
       create: { productId, collectionId, displayOrder: index + 1 },
     });
     await prisma.productCollection.deleteMany({
-      where: { productId, collectionId: { not: collectionId } },
+      where: {
+        productId,
+        collectionId: { not: collectionId },
+        collection: { kind: CollectionKind.RANGE },
+      },
     });
   }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Commerce configuration (Phase 7A): configuration only, nothing consumes it */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The client's own codes, exactly as he wrote them. All start inactive so nothing is live
+ * until he switches a code on. None combines with the volume discount: the approved rule
+ * is that the customer receives whichever of the two is larger.
+ */
+const DISCOUNT_CODES: { code: string; percentOff: number }[] = [
+  { code: "Kinetus-10", percentOff: 10 },
+  { code: "Kin-15", percentOff: 15 },
+  { code: "Mikeb-10", percentOff: 10 },
+  { code: "Fam-25", percentOff: 25 },
+  { code: "Family-50%", percentOff: 50 },
+  { code: "Special-50", percentOff: 50 },
+];
+
+/** From two of the client's inner-page mockups. */
+const VOLUME_TIERS: { minQuantity: number; percentOff: number }[] = [
+  { minQuantity: 2, percentOff: 5 },
+  { minQuantity: 3, percentOff: 10 },
+];
+
+/**
+ * Combined sales tax per province and territory, in basis points. Quebec is GST 5% plus
+ * QST 9.975% (14.975%), held as 1497 because the column is whole basis points.
+ */
+const TAX_RATES: { province: string; label: string; rateBps: number }[] = [
+  { province: "AB", label: "Alberta (GST)", rateBps: 500 },
+  { province: "BC", label: "British Columbia (GST + PST)", rateBps: 1200 },
+  { province: "MB", label: "Manitoba (GST + RST)", rateBps: 1200 },
+  { province: "NB", label: "New Brunswick (HST)", rateBps: 1500 },
+  { province: "NL", label: "Newfoundland and Labrador (HST)", rateBps: 1500 },
+  { province: "NS", label: "Nova Scotia (HST)", rateBps: 1500 },
+  { province: "NT", label: "Northwest Territories (GST)", rateBps: 500 },
+  { province: "NU", label: "Nunavut (GST)", rateBps: 500 },
+  { province: "ON", label: "Ontario (HST)", rateBps: 1300 },
+  { province: "PE", label: "Prince Edward Island (HST)", rateBps: 1500 },
+  { province: "QC", label: "Quebec (GST + QST)", rateBps: 1497 },
+  { province: "SK", label: "Saskatchewan (GST + PST)", rateBps: 1100 },
+  { province: "YT", label: "Yukon (GST)", rateBps: 500 },
+];
+
+/** Codes and volume tiers belong to the client once the admin is in use. */
+async function seedClientManagedConfig() {
+  let codes = 0;
+  for (const { code, percentOff } of DISCOUNT_CODES) {
+    const existing = await prisma.discountCode.findUnique({ where: { code } });
+    if (!existing) {
+      await prisma.discountCode.create({
+        data: { code, percentOff, isActive: false, stacksWithVolume: false },
+      });
+      codes += 1;
+    }
+  }
+
+  let tiers = 0;
+  if ((await prisma.volumeDiscountTier.count()) === 0) {
+    const created = await prisma.volumeDiscountTier.createMany({
+      data: VOLUME_TIERS.map((tier) => ({ ...tier, isActive: true })),
+    });
+    tiers = created.count;
+  }
+  return { codes, tiers };
+}
+
+/**
+ * Structural rows the admin relies on: one row per province and the single settings row.
+ * Created when missing, never updated. `taxEnabled` is left at its default (false): the
+ * business is not confirmed as registered to collect GST/HST.
+ */
+async function seedStructuralConfig() {
+  let taxRates = 0;
+  for (const rate of TAX_RATES) {
+    const existing = await prisma.taxRate.findUnique({ where: { province: rate.province } });
+    if (!existing) {
+      await prisma.taxRate.create({ data: { ...rate, isActive: true } });
+      taxRates += 1;
+    }
+  }
+
+  let settings = 0;
+  if (!(await prisma.storeSetting.findUnique({ where: { id: "store" } }))) {
+    await prisma.storeSetting.create({ data: { id: "store" } });
+    settings = 1;
+  }
+  return { taxRates, settings };
 }
 
 /** Removes the Phase 3 placeholder catalogue (every id was prefixed "mock_"). */
@@ -771,19 +925,57 @@ async function removeMockRows() {
 }
 
 async function main() {
-  const removed = await removeMockRows();
-  await seedCollections();
-  await seedProducts();
+  const adminAccounts = await prisma.adminUser.count();
+  const overwrite = process.env.SEED_CATALOGUE === "overwrite";
 
-  const [productCount, variantCount, imageCount, collectionCount, linkCount, docCount] =
-    await Promise.all([
-      prisma.product.count(),
-      prisma.productVariant.count(),
-      prisma.productImage.count(),
-      prisma.collection.count(),
-      prisma.productCollection.count(),
-      prisma.documentation.count(),
-    ]);
+  if (adminAccounts > 0 && !overwrite) {
+    console.log(
+      "An admin account exists, so the client manages the catalogue, discount codes and " +
+        "volume tiers in the admin. Those rows were left untouched. Set " +
+        "SEED_CATALOGUE=overwrite to re-apply the price list (this discards admin edits).",
+    );
+  } else {
+    const removed = await removeMockRows();
+    await seedCollections();
+    await seedProducts();
+    const config = await seedClientManagedConfig();
+    console.log(
+      `Catalogue seeded. Removed mock rows: ${JSON.stringify(removed)}. Created ` +
+        `${config.codes} discount codes and ${config.tiers} volume tiers.`,
+    );
+  }
+  const structural = await seedStructuralConfig();
+  console.log(
+    `Created ${structural.taxRates} tax rates and ${structural.settings} settings row (existing rows are never changed).`,
+  );
+
+  const [
+    productCount,
+    variantCount,
+    imageCount,
+    variantImageCount,
+    collectionCount,
+    linkCount,
+    docCount,
+    codeCount,
+    activeCodeCount,
+    tierCount,
+    taxCount,
+    settingsCount,
+  ] = await Promise.all([
+    prisma.product.count(),
+    prisma.productVariant.count(),
+    prisma.productImage.count(),
+    prisma.productImage.count({ where: { variantId: { not: null } } }),
+    prisma.collection.count(),
+    prisma.productCollection.count(),
+    prisma.documentation.count(),
+    prisma.discountCode.count(),
+    prisma.discountCode.count({ where: { isActive: true } }),
+    prisma.volumeDiscountTier.count(),
+    prisma.taxRate.count(),
+    prisma.storeSetting.count(),
+  ]);
 
   const byCollection = await prisma.collection.findMany({
     select: { name: true, _count: { select: { products: true } } },
@@ -791,9 +983,12 @@ async function main() {
   });
 
   console.log(
-    `Seed complete. Removed mock rows: ${JSON.stringify(removed)}. Products: ${productCount}, variants: ${variantCount}, images: ${imageCount}, documentation: ${docCount}, collections: ${collectionCount}, links: ${linkCount}. ` +
+    `Counts. Products: ${productCount}, variants: ${variantCount}, images: ${imageCount} ` +
+      `(${variantImageCount} variant-level, ${imageCount - variantImageCount} product-level), ` +
+      `documentation: ${docCount}, collections: ${collectionCount}, links: ${linkCount}. ` +
       byCollection.map((c) => `${c.name}: ${c._count.products}`).join(", ") +
-      ".",
+      `. Discount codes: ${codeCount} (${activeCodeCount} active), volume tiers: ${tierCount}, ` +
+      `tax rates: ${taxCount}, settings rows: ${settingsCount}.`,
   );
   // Redirect enum is imported so the seed keeps compiling against the schema.
   void RedirectEntityType;

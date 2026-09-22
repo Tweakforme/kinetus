@@ -8,8 +8,9 @@ import {
   paginate,
 } from "@/lib/catalogue";
 import { getCollectionBySlug, getCollectionRedirectTarget } from "@/lib/collections";
-import { toProductCardModel } from "@/lib/products";
-import { canonicalUrl, DEFAULT_DESCRIPTION } from "@/lib/seo";
+import { imagesForVariant } from "@/lib/product-images";
+import { revalidateAtNextPriceChange, toProductCardModel } from "@/lib/products";
+import { absoluteUrl, canonicalUrl, DEFAULT_DESCRIPTION } from "@/lib/seo";
 import { COLLECTION_SLUGS, collectionHref, SITE_NAME } from "@/lib/site";
 import { CatalogueListing } from "./CatalogueListing";
 import { DOCUMENTATION_SECTION_ID } from "./DocumentationSection";
@@ -45,9 +46,12 @@ export async function collectionListingMetadata(slug: string, page: number): Pro
   const title = pagedTitle(collection.metaTitle ?? collection.name, page);
   const description = collection.metaDescription ?? collection.description ?? DEFAULT_DESCRIPTION;
   const canonical = canonicalUrl(pageHref(collectionHref(collection.slug), page));
-  const firstImage = collection.products.find((link) => link.product.images[0])?.product.images[0];
+  // The first card's render, resolved exactly as the card resolves it.
+  const firstImage = collection.products
+    .map((link) => imagesForVariant(link.product.images, link.product.variants[0]?.id ?? null)[0])
+    .find((image) => image !== undefined);
   const shareImages = firstImage
-    ? [{ url: canonicalUrl(firstImage.url), alt: firstImage.altText }]
+    ? [{ url: absoluteUrl(firstImage.url), alt: firstImage.altText }]
     : [{ url: canonicalUrl("/kinetus-logo.png"), alt: SITE_NAME }];
 
   return {
@@ -97,6 +101,13 @@ export async function CollectionListingPage({ slug, page }: CollectionListingPro
   if (page > slice.totalPages) {
     notFound();
   }
+  const shownIds = new Set(slice.items.map((card) => card.id));
+  await revalidateAtNextPriceChange(
+    collection.products
+      .filter((link) => shownIds.has(link.product.id))
+      .flatMap((link) => link.product.variants),
+    now,
+  );
 
   const base = collectionHref(collection.slug);
   const isResearch = collection.slug === COLLECTION_SLUGS.research;
