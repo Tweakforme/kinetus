@@ -1,0 +1,113 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+}
+
+.label {
+  color: var(--kinetus-text-heading);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* Field and Apply side by side at every width; the button keeps its label on one line. */
+.controls {
+  display: flex;
+  gap: var(--kinetus-space-2);
+}
+
+.input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 52px;
+  padding: var(--kinetus-space-3) var(--kinetus-space-4);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-md);
+  color: var(--kinetus-text-primary);
+  font: inherit;
+  font-size: var(--kinetus-type-body-size);
+  text-transform: uppercase;
+  transition: border-color var(--motion-duration) var(--motion-ease);
+}
+
+.input::placeholder {
+  color: var(--kinetus-text-secondary);
+  text-transform: none;
+  opacity: 1;
+}
+
+.input:focus {
+  border-color: var(--kinetus-brand-teal);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--kinetus-state-error);
+}
+
+.controls .apply {
+  flex: 0 0 auto;
+  width: auto;
+  padding-inline: var(--kinetus-space-6);
+}
+
+.messages:empty {
+  display: none;
+}
+
+.current {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--kinetus-space-4);
+}
+
+.ok,
+.error,
+.info {
+  margin: 0;
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+}
+
+.ok {
+  color: var(--kinetus-state-success);
+  font-weight: 500;
+}
+
+.error {
+  color: var(--kinetus-state-error);
+  font-weight: 500;
+}
+
+.info {
+  color: var(--kinetus-text-secondary);
+}
+
+.remove {
+  min-height: var(--kinetus-tap-target);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--kinetus-brand-teal);
+  font: inherit;
+  font-size: var(--kinetus-type-body-s-size);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: var(--kinetus-space-1);
+  cursor: pointer;
+}
+
+.remove:hover,
+.remove:active {
+  color: var(--kinetus-brand-teal-dark);
+}

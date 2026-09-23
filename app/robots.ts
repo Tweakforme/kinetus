@@ -7,8 +7,8 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // Admin (Phase 7) and order-request (Phase 8) areas must never be indexed.
-        disallow: ["/admin", "/request"],
+        // Admin, the cart, checkout and order confirmations must never be indexed.
+        disallow: ["/admin", "/cart", "/checkout", "/checkout/confirmation", "/api/"],
       },
     ],
     sitemap: canonicalUrl("/sitemap.xml"),

@@ -235,6 +235,24 @@ model AdminSession {
 }
 
 // Login attempts, for rate limiting the sign-in form by network address and by email.
+/// Last order reference number issued per year (KIN-YYYY-NNNN). Incremented inside the
+/// order transaction, so concurrent submissions queue on the row and never collide.
+model OrderSequence {
+  year Int @id
+  last Int @default(0)
+}
+
+/// One row per checkout submission, for rate limiting. Kept apart from AdminLoginAttempt
+/// so customer traffic can never lock out the admin, or the reverse.
+model CheckoutAttempt {
+  id        String   @id @default(cuid())
+  ip        String
+  success   Boolean
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+}
+
 model AdminLoginAttempt {
   id        String   @id @default(cuid())
   ip        String
@@ -300,11 +318,19 @@ model StoreSetting {
   freeShippingThresholdCents Int      @default(19900)
   localFreeCity              String?  @default("Calgary")
   shipsInternationally       Boolean  @default(false)
+  /// Shown to customers on the order confirmation page and in their email.
+  etransferEmail             String?
+  etransferInstructions      String?
+  /// Where new-order notifications go.
+  orderNotifyEmail           String?
   createdAt                  DateTime @default(now())
   updatedAt                  DateTime @updatedAt
 }
 
-// Tables only — no request form, submission handling or notifications in this phase (Phase 8).
+// An order placed through /checkout (Phase 8). No payment is taken on the site: the client
+// arranges Interac e-Transfer by email and moves the status along. Every money field is a
+// snapshot computed by lib/pricing.ts at submission, so a later price, discount or tax
+// change never alters a placed order.
 model OrderRequest {
   id                      String             @id @default(cuid())
   referenceNumber         String             @unique
@@ -320,6 +346,24 @@ model OrderRequest {
   shippingCountry         String             @default("CA")
   note                    String?
   researchUseAcknowledged Boolean            @default(false)
+  ageConfirmed            Boolean            @default(false)
+  subtotalCents           Int
+  volumeDiscountCents     Int                @default(0)
+  codeDiscountCents       Int                @default(0)
+  discountCodeUsed        String?
+  shippingCents           Int                @default(0)
+  taxRateBps              Int                @default(0)
+  taxLabel                String?
+  taxCents                Int                @default(0)
+  totalCents              Int
+  trackingNumber          String?
+  carrier                 String?
+  shippedAt               DateTime?
+  paidAt                  DateTime?
+  /// Set when both order emails were accepted by the mail provider.
+  notificationSentAt      DateTime?
+  /// Why the order emails did not send (no API key, provider error). Null once sent.
+  notificationError       String?
   internalNotes           String?
   createdAt               DateTime           @default(now())
   updatedAt               DateTime           @updatedAt
@@ -342,6 +386,7 @@ model OrderRequestItem {
   skuSnapshot          String
   unitPriceSnapshot    Int
   quantity             Int
+  lineTotalCents       Int
 
   @@index([orderRequestId])
   @@index([productId])

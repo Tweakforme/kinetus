@@ -12,7 +12,7 @@ import {
   text,
   type FormState,
 } from "@/lib/admin/forms";
-import { refreshAdmin } from "@/lib/admin/revalidate";
+import { expireVolumeTierPages, refreshAdmin } from "@/lib/admin/revalidate";
 import { prisma } from "@/lib/db";
 
 const TRANSACTION_OPTIONS = { timeout: 20000, maxWait: 10000 };
@@ -263,6 +263,6 @@ export async function saveVolumeTiers(_previous: FormState, form: FormData): Pro
     }
   }, TRANSACTION_OPTIONS);
 
-  refreshAdmin();
+  expireVolumeTierPages();
   return successState("Volume tiers saved. Nothing on the site uses them until checkout is built.");
 }

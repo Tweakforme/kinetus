@@ -17,6 +17,7 @@ import { prisma } from "@/lib/db";
 const SETTINGS_ID = "store";
 /** GST/HST registration: nine-digit business number, "RT", four-digit account number. */
 const GST_PATTERN = /^\d{9}RT\d{4}$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export async function saveStoreSettings(_previous: FormState, form: FormData): Promise<FormState> {
   await requireAdmin();
@@ -47,6 +48,25 @@ export async function saveStoreSettings(_previous: FormState, form: FormData): P
     errors.localFreeCity = "Keep the city to 80 characters or fewer.";
   }
 
+  const orderNotifyEmail = optionalText(form, "orderNotifyEmail");
+  if (
+    orderNotifyEmail !== null &&
+    (orderNotifyEmail.length > 254 || !EMAIL_PATTERN.test(orderNotifyEmail))
+  ) {
+    errors.orderNotifyEmail = "Enter an email address like orders@example.com, or leave it empty.";
+  }
+  const etransferEmail = optionalText(form, "etransferEmail");
+  if (
+    etransferEmail !== null &&
+    (etransferEmail.length > 254 || !EMAIL_PATTERN.test(etransferEmail))
+  ) {
+    errors.etransferEmail = "Enter an email address like payments@example.com, or leave it empty.";
+  }
+  const etransferInstructions = optionalText(form, "etransferInstructions");
+  if (etransferInstructions !== null && etransferInstructions.length > 1000) {
+    errors.etransferInstructions = "Keep the instructions to 1000 characters or fewer.";
+  }
+
   if (Object.keys(errors).length > 0) {
     return errorState(errors, form);
   }
@@ -58,6 +78,9 @@ export async function saveStoreSettings(_previous: FormState, form: FormData): P
     freeShippingThresholdCents: threshold!,
     localFreeCity,
     shipsInternationally: checkbox(form, "shipsInternationally"),
+    orderNotifyEmail,
+    etransferEmail,
+    etransferInstructions,
   };
   await prisma.storeSetting.upsert({
     where: { id: SETTINGS_ID },
@@ -67,7 +90,7 @@ export async function saveStoreSettings(_previous: FormState, form: FormData): P
   refreshAdmin();
   return successState(
     taxEnabled
-      ? "Settings saved. Sales tax is switched on (checkout is not built yet, so nothing is charged)."
+      ? "Settings saved. Sales tax is switched on and is charged on new orders."
       : "Settings saved. Sales tax is off.",
   );
 }

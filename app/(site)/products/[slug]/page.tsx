@@ -21,11 +21,14 @@ import {
   collectDocuments,
   defaultImages,
   descriptionParagraphs,
+  effectivePriceCents,
   formatCad,
   getAllProductSlugs,
   getProductBySlug,
   getProductRedirectTarget,
   getRelatedProducts,
+  getVolumeTiers,
+  isSaleActive,
   pageImages,
   revalidateAtNextPriceChange,
   specificationRows,
@@ -144,7 +147,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const documents = collectDocuments(product);
   const paragraphs = descriptionParagraphs(product.description);
   const collectionSlugs = product.collections.map((link) => link.collection.slug);
-  const relatedRows = await getRelatedProducts(product.id, RELATED_LIMIT);
+  const [relatedRows, tiers] = await Promise.all([
+    getRelatedProducts(product.id, RELATED_LIMIT),
+    getVolumeTiers(),
+  ]);
   const related = relatedRows.map((item) => toProductCardModel(item, now));
   await revalidateAtNextPriceChange(
     [...product.variants, ...relatedRows.flatMap((item) => item.variants)],
@@ -160,6 +166,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         product={product}
         images={pageImages(product)}
         variants={variants}
+        tiers={tiers}
         collectionSlugs={collectionSlugs}
         headingId={HEADING_ID}
       />
@@ -248,6 +255,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
         images={defaultImages(product).map((image) => absoluteUrl(image.url))}
         sku={firstSku}
         url={pageUrl}
+        offers={product.variants.map((variant) => ({
+          name: variant.label,
+          sku: variant.sku,
+          priceCents: effectivePriceCents(variant, now),
+          inStock: !variant.trackInventory || (variant.stock ?? 0) > 0,
+          priceValidUntil:
+            isSaleActive(variant, now) && variant.saleEndsAt
+              ? variant.saleEndsAt.toISOString().slice(0, 10)
+              : null,
+        }))}
         breadcrumb={[
           { name: "Home", url: canonicalUrl("/") },
           { name: "Products", url: canonicalUrl("/products") },

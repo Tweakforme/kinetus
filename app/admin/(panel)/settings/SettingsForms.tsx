@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { CheckboxField, TextField } from "@/components/admin/Fields";
+import { CheckboxField, TextArea, TextField } from "@/components/admin/Fields";
 import { FormNotice, SaveBar } from "@/components/admin/FormNotice";
 import styles from "@/components/admin/admin.module.css";
 import { IDLE_STATE } from "@/lib/admin/forms";
@@ -14,6 +14,9 @@ export type SettingsData = {
   freeShippingThreshold: string;
   localFreeCity: string;
   shipsInternationally: boolean;
+  orderNotifyEmail: string;
+  etransferEmail: string;
+  etransferInstructions: string;
 };
 
 export type TaxRateRow = {
@@ -99,6 +102,43 @@ export function StoreSettingsForm({ settings }: { settings: SettingsData }) {
               hint="Off: orders ship within Canada only."
             />
           </div>
+
+          <h3 className={styles.subTitle}>Orders and payment</h3>
+          <div className={`${styles.notice} ${styles.noticeInfo}`}>
+            <p>
+              The site takes no payment. After an order is placed, the customer is told they will be
+              contacted to arrange payment by Interac e-Transfer.
+            </p>
+          </div>
+          <div className={`${styles.grid} ${styles.grid2}`}>
+            <TextField
+              label="Send new-order notifications to"
+              name="orderNotifyEmail"
+              type="email"
+              inputMode="email"
+              defaultValue={value("orderNotifyEmail", settings.orderNotifyEmail)}
+              error={errors.orderNotifyEmail}
+              hint="Every new order is emailed here. Not shown to customers."
+            />
+            <TextField
+              label="Interac e-Transfer email"
+              name="etransferEmail"
+              type="email"
+              inputMode="email"
+              defaultValue={value("etransferEmail", settings.etransferEmail)}
+              error={errors.etransferEmail}
+              hint="Shown to customers on the order confirmation page and in their order email."
+            />
+          </div>
+          <TextArea
+            label="e-Transfer instructions"
+            name="etransferInstructions"
+            rows={4}
+            maxLength={1000}
+            defaultValue={value("etransferInstructions", settings.etransferInstructions)}
+            error={errors.etransferInstructions}
+            hint="Shown to customers on the order confirmation page and in their order email, for example the security question to use. Plain text."
+          />
         </div>
       </section>
       <SaveBar state={state} label="Save settings" idleText="Saves tax and shipping settings." />
@@ -120,8 +160,8 @@ export function TaxRatesForm({ rates }: { rates: TaxRateRow[] }) {
         <p className={styles.panelIntro}>
           The combined rate charged for each province or territory, used only when sales tax is
           switched on above. Rates are held to two decimal places, so Quebec&apos;s 14.975% (GST 5%
-          plus QST 9.975%) is 14.97%. Confirm every rate with the accountant before switching tax
-          on.
+          plus QST 9.975%) is 14.97%. The accountant should confirm all thirteen rates before sales
+          tax is switched on.
         </p>
         <FormNotice state={state} />
         <ul className={styles.cards} key={state.savedAt ?? "initial"}>

@@ -1,0 +1,47 @@
+/*
+ * Cart icon at the far right of the header row, at every width (deck slide 4 shows the
+ * cart with a count at top right). 48px hit area like the menu trigger; sits close to the
+ * trigger on mobile and to the icon cluster on desktop.
+ */
+.cart {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: var(--kinetus-tap-target);
+  height: var(--kinetus-tap-target);
+  margin-left: calc(var(--kinetus-space-1) - var(--kinetus-space-4));
+  border-radius: var(--kinetus-radius-sm);
+  color: var(--kinetus-text-heading);
+  text-decoration: none;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.cart:hover,
+.cart:active {
+  color: var(--kinetus-brand-teal);
+}
+
+/* Count: teal pill over the top-right of the icon, white tabular numerals. */
+.badge {
+  position: absolute;
+  top: var(--kinetus-space-1);
+  right: 0;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--kinetus-radius-pill);
+  background: var(--kinetus-brand-teal);
+  color: var(--kinetus-text-inverse);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .cart {
+    margin-left: calc(var(--kinetus-space-1) - var(--kinetus-space-6));
+  }
+}

@@ -215,6 +215,32 @@ export function EnvelopeIcon(props: IconProps) {
   );
 }
 
+export function CartIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M2.5 4h2.6l2.3 10.6a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L20.8 8H6.3" />
+      <circle cx="9.5" cy="19.5" r="1.3" />
+      <circle cx="17" cy="19.5" r="1.3" />
+    </Base>
+  );
+}
+
+export function MinusIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M5 12h14" />
+    </Base>
+  );
+}
+
+export function PlusIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M12 5v14M5 12h14" />
+    </Base>
+  );
+}
+
 export function HeadsetIcon(props: IconProps) {
   return (
     <Base {...props}>

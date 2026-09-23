@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
+import { CartLink } from "./CartLink";
 import { IconLinks } from "./IconLinks";
 import { MobileNav } from "./MobileNav";
 import { NavDropdown } from "./NavDropdown";
@@ -87,6 +88,8 @@ export function HeaderNav({ items }: HeaderNavProps) {
       <IconLinks />
 
       <MobileNav items={items} forceVisible={collapsed} />
+
+      <CartLink />
     </>
   );
 }

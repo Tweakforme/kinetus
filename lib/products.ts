@@ -9,6 +9,7 @@ import { cache } from "react";
 import { CACHE_TAGS, cachedQuery, regenerateAt } from "@/lib/cache";
 import { prisma } from "@/lib/db";
 import { imagesForVariant } from "@/lib/product-images";
+import { effectivePriceCents, formatCad, isSaleActive, type SaleFields } from "@/lib/pricing";
 
 /* -------------------------------------------------------------------------- */
 /*  Queries                                                                   */
@@ -187,50 +188,27 @@ export const getProductsForSitemap = cachedQuery(
   () => [CACHE_TAGS.products],
 );
 
+/**
+ * Active volume discount tiers, shown on every product page. Tagged `products`, so a tier
+ * save in the admin expires the product pages (lib/admin/revalidate.ts).
+ */
+export const getVolumeTiers = cachedQuery(
+  "volume-tiers",
+  () =>
+    prisma.volumeDiscountTier.findMany({
+      where: { isActive: true },
+      orderBy: { minQuantity: "asc" },
+      select: { minQuantity: true, percentOff: true, isActive: true },
+    }),
+  () => [CACHE_TAGS.products],
+);
+
 /* -------------------------------------------------------------------------- */
 /*  Pricing (integer cents, CAD)                                              */
 /* -------------------------------------------------------------------------- */
 
-type SaleFields = {
-  price: number;
-  salePrice: number | null;
-  saleStartsAt: Date | null;
-  saleEndsAt: Date | null;
-};
-
-const cadFormatter = new Intl.NumberFormat("en-CA", {
-  style: "currency",
-  currency: "CAD",
-  minimumFractionDigits: 2,
-});
-
-/** Formats integer cents as a CAD amount, e.g. 38900 → "$389.00". */
-export function formatCad(cents: number): string {
-  return cadFormatter.format(cents / 100);
-}
-
-/**
- * A sale is active only when a lower sale price exists and `now` falls inside the
- * optional start/end window.
- */
-export function isSaleActive(variant: SaleFields, now: Date): boolean {
-  if (variant.salePrice === null || variant.salePrice >= variant.price) {
-    return false;
-  }
-  if (variant.saleStartsAt && now < variant.saleStartsAt) {
-    return false;
-  }
-  if (variant.saleEndsAt && now > variant.saleEndsAt) {
-    return false;
-  }
-  return true;
-}
-
-export function effectivePriceCents(variant: SaleFields, now: Date): number {
-  return isSaleActive(variant, now) && variant.salePrice !== null
-    ? variant.salePrice
-    : variant.price;
-}
+// Formatting and sale rules live with the rest of the pricing rules (lib/pricing.ts).
+export { effectivePriceCents, formatCad, isSaleActive };
 
 /** The next moment after `now` at which any of these variants' sale starts or ends. */
 export function nextSaleBoundary(variants: SaleFields[], now: Date): Date | null {

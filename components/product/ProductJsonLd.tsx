@@ -5,6 +5,16 @@ type BreadcrumbItem = {
   url: string;
 };
 
+export type OfferData = {
+  /** Variant label, e.g. "10 MG". */
+  name: string;
+  sku: string | null;
+  priceCents: number;
+  inStock: boolean;
+  /** YYYY-MM-DD, only while a sale with an end date is active. */
+  priceValidUntil: string | null;
+};
+
 type ProductJsonLdProps = {
   name: string;
   description: string | null;
@@ -13,12 +23,15 @@ type ProductJsonLdProps = {
   sku: string | null;
   url: string;
   breadcrumb: BreadcrumbItem[];
+  /** One offer per active variant, at the price the page shows. */
+  offers: OfferData[];
 };
 
 /**
- * Product + BreadcrumbList structured data for one product page.
- * Deliberately no `Offer`: the site has no transactional path, so an offer would
- * misrepresent it. Brand is the confirmed site name only.
+ * Product + BreadcrumbList structured data for one product page, with an `Offer` per
+ * active variant now that the cart and checkout exist (Phase 8): price in CAD,
+ * availability from stock, and priceValidUntil while a dated sale runs. Brand and seller
+ * are the confirmed site name only.
  */
 export function ProductJsonLd({
   name,
@@ -27,6 +40,7 @@ export function ProductJsonLd({
   sku,
   url,
   breadcrumb,
+  offers,
 }: ProductJsonLdProps) {
   const product: Record<string, unknown> = {
     "@type": "Product",
@@ -43,6 +57,29 @@ export function ProductJsonLd({
   }
   if (sku) {
     product.sku = sku;
+  }
+  if (offers.length > 0) {
+    product.offers = offers.map((offer) => {
+      const data: Record<string, unknown> = {
+        "@type": "Offer",
+        name: offer.name,
+        url,
+        price: (offer.priceCents / 100).toFixed(2),
+        priceCurrency: "CAD",
+        availability: offer.inStock
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+        itemCondition: "https://schema.org/NewCondition",
+        seller: { "@type": "Organization", name: SITE_NAME },
+      };
+      if (offer.sku) {
+        data.sku = offer.sku;
+      }
+      if (offer.priceValidUntil) {
+        data.priceValidUntil = offer.priceValidUntil;
+      }
+      return data;
+    });
   }
 
   const graph = {

@@ -1,0 +1,330 @@
+/* Form left, summary right from 1024px; stacked below with the summary first. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-10);
+  align-items: start;
+}
+
+.form,
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-8);
+  min-width: 0;
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-5);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  margin: 0 0 var(--kinetus-space-5);
+  padding: 0;
+  color: var(--kinetus-text-heading);
+  font-family: var(--kinetus-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.payment .legend {
+  margin-bottom: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+  min-width: 0;
+}
+
+.label {
+  color: var(--kinetus-text-heading);
+  font-size: var(--kinetus-type-caption-size);
+  line-height: var(--kinetus-type-caption-line-height);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.optional {
+  color: var(--kinetus-text-secondary);
+  font-weight: 400;
+}
+
+/* Same field as the enquiry form: 56px, radius 8, teal focus border. */
+.input {
+  width: 100%;
+  min-height: 56px;
+  padding: var(--kinetus-space-3) var(--kinetus-space-4);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-md);
+  color: var(--kinetus-text-primary);
+  font: inherit;
+  font-size: var(--kinetus-type-body-size);
+  line-height: 1.4;
+  transition:
+    border-color var(--motion-duration) var(--motion-ease),
+    box-shadow var(--motion-duration) var(--motion-ease);
+}
+
+.input:hover {
+  border-color: var(--kinetus-border-chip);
+}
+
+.input:focus {
+  border-color: var(--kinetus-brand-teal);
+  box-shadow: 0 0 0 3px var(--kinetus-brand-teal-light);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--kinetus-state-error);
+}
+
+.select {
+  appearance: auto;
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.readOnly,
+.readOnly:hover {
+  background: var(--kinetus-bg-subtle);
+  border-color: var(--kinetus-border-subtle);
+  color: var(--kinetus-text-secondary);
+}
+
+.hint,
+.error {
+  margin: 0;
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+}
+
+.hint {
+  color: var(--kinetus-text-secondary);
+}
+
+.error {
+  color: var(--kinetus-state-error);
+  font-weight: 500;
+}
+
+/* Form-level message: shown after a failed attempt, announced and focused. */
+.alert {
+  padding: var(--kinetus-space-4);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-state-error);
+  border-left-width: var(--kinetus-space-1);
+  border-radius: var(--kinetus-radius-md);
+  color: var(--kinetus-state-error);
+  font-weight: 500;
+}
+
+.alertEmpty {
+  display: none;
+}
+
+/* Checkboxes: 24px box inside a 44px row, label beside it. */
+.checks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+}
+
+.check {
+  display: grid;
+  grid-template-columns: var(--kinetus-tap-target) minmax(0, 1fr);
+  align-items: start;
+}
+
+.checkbox {
+  width: 24px;
+  height: 24px;
+  margin: 10px;
+  accent-color: var(--kinetus-brand-teal);
+  cursor: pointer;
+}
+
+.checkbox[aria-invalid="true"] {
+  outline: 2px solid var(--kinetus-state-error);
+  outline-offset: 2px;
+}
+
+.checkLabel {
+  padding-block: 10px;
+  color: var(--kinetus-text-primary);
+  font-size: var(--kinetus-type-body-size);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.checkError {
+  grid-column: 2;
+}
+
+.payment {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  padding: var(--kinetus-space-5);
+  background: var(--kinetus-bg-subtle);
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-card);
+}
+
+.payment p {
+  margin: 0;
+  color: var(--kinetus-text-primary);
+  font-size: var(--kinetus-type-body-size);
+  line-height: 1.5;
+}
+
+.payment .terms {
+  color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-body-s-size);
+}
+
+.inlineLink {
+  color: var(--kinetus-brand-teal);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: var(--kinetus-space-1);
+}
+
+.submit {
+  align-self: stretch;
+}
+
+.submit[aria-disabled="true"] {
+  cursor: progress;
+  opacity: 0.8;
+}
+
+/* Honeypot: off-screen for people, still in the form for bots. */
+.trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Below 1024px the summary comes first, so the total is seen before Place order. */
+.side {
+  order: -1;
+  min-width: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-5);
+  padding: var(--kinetus-space-5);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-panel);
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+  margin: 0;
+  padding: var(--kinetus-space-4) 0 0;
+  border-top: 1px solid var(--kinetus-border-subtle);
+  list-style: none;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--kinetus-space-4);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: 1.4;
+}
+
+.lineName {
+  min-width: 0;
+  color: var(--kinetus-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.lineVariant {
+  color: var(--kinetus-brand-teal-deep);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.lineQuantity {
+  color: var(--kinetus-text-secondary);
+}
+
+.lineTotal {
+  flex: 0 0 auto;
+  color: var(--kinetus-text-primary);
+  font-weight: 600;
+}
+
+.editCart {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: var(--kinetus-tap-target);
+  color: var(--kinetus-brand-teal);
+  font-size: var(--kinetus-type-body-s-size);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: var(--kinetus-space-1);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .full {
+    grid-column: 1 / -1;
+  }
+
+  .card {
+    padding: var(--kinetus-space-6);
+  }
+
+  .submit {
+    align-self: flex-start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: var(--kinetus-space-12);
+  }
+
+  .side {
+    order: 0;
+    position: sticky;
+    top: calc(var(--kinetus-header-height) + var(--kinetus-space-6));
+  }
+}

@@ -1,0 +1,38 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  padding: var(--kinetus-space-5);
+  background: var(--kinetus-bg-subtle);
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-card);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-2);
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.icon {
+  flex: 0 0 auto;
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+  margin: 0;
+  padding-left: var(--kinetus-space-5);
+  color: var(--kinetus-text-primary);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+}
