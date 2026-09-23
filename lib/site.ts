@@ -78,36 +78,16 @@ export type NavItem = NavLink & {
   children?: NavLink[];
 };
 
+/** The Research Area page, a fixed navigation item (the Research range is unpublished). */
+export const RESEARCH_LINK: NavLink = { label: "Research", href: "/research" };
+
 /**
- * Primary navigation, exactly as the deck's sitemap (slide 2) and header (slide 4) show
- * it: PEPTIDES ▾ · BLENDS ▾ · LAB SUPPLIES ▾ · RESEARCH · ABOUT US ▾ · CONTACT.
- *
- * Lab Supplies sub-ranges other than Bacteriostatic Water have no published products yet;
- * they point at the Lab Supplies collection page until the client supplies the range.
+ * The fixed part of the primary navigation, after the published ranges (lib/navigation.ts
+ * builds those from the catalogue). Deck order: PEPTIDES ▾ · BLENDS ▾ · LAB SUPPLIES ▾ ·
+ * RESEARCH · ABOUT US ▾ · CONTACT.
  */
-export const PRIMARY_NAV: NavItem[] = [
-  {
-    label: "Peptides",
-    href: collectionHref(COLLECTION_SLUGS.peptides),
-    children: [{ label: "All Peptides", href: collectionHref(COLLECTION_SLUGS.peptides) }],
-  },
-  {
-    label: "Blends",
-    href: collectionHref(COLLECTION_SLUGS.blends),
-    children: [{ label: "All Blends", href: collectionHref(COLLECTION_SLUGS.blends) }],
-  },
-  {
-    label: "Lab Supplies",
-    href: collectionHref(COLLECTION_SLUGS.labSupplies),
-    children: [
-      { label: "All Lab Supplies", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
-      { label: "Syringes & Needles", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
-      { label: "Bacteriostatic Water", href: "/products/bacteriostatic-water" },
-      { label: "Alcohol Swabs", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
-      { label: "Storage Solutions", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
-    ],
-  },
-  { label: "Research", href: collectionHref(COLLECTION_SLUGS.research) },
+export const FIXED_NAV_ITEMS: NavItem[] = [
+  RESEARCH_LINK,
   {
     label: "About Us",
     href: "/about",
@@ -129,10 +109,7 @@ export const PRIMARY_NAV: NavItem[] = [
  */
 export const HEADER_ICON_LINKS = {
   search: { label: "Search the catalogue", href: "/search" },
-  documentation: {
-    label: "Batch documentation",
-    href: `${collectionHref(COLLECTION_SLUGS.research)}#documentation`,
-  },
+  documentation: { label: "Test reports and documentation", href: "/documentation" },
   cart: { label: "Cart", href: "/cart" },
 } as const;
 
@@ -144,16 +121,10 @@ export const ALL_COLLECTIONS_LINK: NavLink = { label: "All collections", href: "
 
 export const CONTACT_LINK: NavLink = { label: "Contact", href: "/contact" };
 
-export const FOOTER_CATALOGUE_LINKS: NavLink[] = [
-  { label: "All products", href: "/products" },
-  { label: "Peptides", href: collectionHref(COLLECTION_SLUGS.peptides) },
-  { label: "Blends", href: collectionHref(COLLECTION_SLUGS.blends) },
-  { label: "Lab Supplies", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
-  { label: "Research", href: collectionHref(COLLECTION_SLUGS.research) },
-];
-
 export const FOOTER_COMPANY_LINKS: NavLink[] = [
   { label: "About us", href: "/about" },
+  { label: "Research", href: "/research" },
+  { label: "Test reports", href: "/documentation" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
   { label: "Legal", href: "/legal" },
@@ -175,6 +146,8 @@ export const STATIC_ROUTES: string[] = [
   "/about",
   "/faq",
   "/contact",
+  "/research",
+  "/documentation",
   "/legal",
   "/terms",
   "/privacy-policy",

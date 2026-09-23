@@ -4,6 +4,7 @@ import { DEFAULT_COLLECTION_HERO, pageHref, paginate } from "@/lib/catalogue";
 import { getAllProducts, revalidateAtNextPriceChange, toProductCardModel } from "@/lib/products";
 import { canonicalUrl } from "@/lib/seo";
 import { ALL_PRODUCTS_LINK, SITE_NAME } from "@/lib/site";
+import { sortListing, withSort, type SortKey } from "@/lib/sort";
 import { CatalogueListing } from "./CatalogueListing";
 import {
   CATALOGUE_NOTE,
@@ -17,6 +18,8 @@ import { ListingPage } from "./ListingPage";
 type ProductsListingProps = {
   /** 1-based page; the route has already validated it is a whole number. */
   page: number;
+  /** From `?sort=`; null keeps the catalogue order. */
+  sort: SortKey | null;
 };
 
 export const PRODUCTS_TITLE = "All Research Materials";
@@ -24,7 +27,10 @@ export const PRODUCTS_DESCRIPTION = `The complete list of research materials cur
 
 const BASE = ALL_PRODUCTS_LINK.href;
 
-/** Metadata for `/products` (page 1) and `/products/page/[n]`; each page is its own canonical. */
+/**
+ * Metadata for `/products` (page 1) and `/products/page/[n]`; each page is its own
+ * canonical, always without `?sort=`, so sorted views never compete with it.
+ */
 export function productsListingMetadata(page: number): Metadata {
   const title = pagedTitle(PRODUCTS_TITLE, page);
   const canonical = canonicalUrl(pageHref(BASE, page));
@@ -55,11 +61,14 @@ export function productsListingMetadata(page: number): Metadata {
  * Research Materials", the "Research Materials" divider with nodes, the pill bar with
  * "All Products" current, twelve cards per page and pagination. Pages past the end 404.
  */
-export async function ProductsListingPage({ page }: ProductsListingProps) {
+export async function ProductsListingPage({ page, sort }: ProductsListingProps) {
   const now = new Date();
   const rows = await getAllProducts();
   const slice = paginate(
-    rows.map((product) => toProductCardModel(product, now)),
+    sortListing(
+      rows.map((product) => toProductCardModel(product, now)),
+      sort,
+    ),
     page,
   );
   if (page > slice.totalPages) {
@@ -93,8 +102,9 @@ export async function ProductsListingPage({ page }: ProductsListingProps) {
         page={slice.page}
         totalPages={slice.totalPages}
         totalItems={slice.totalItems}
-        hrefFor={(target) => pageHref(BASE, target)}
+        hrefFor={(target) => withSort(pageHref(BASE, target), sort)}
         emptyMessage="No products are published yet."
+        sort={{ base: BASE, current: sort }}
       />
 
       <ListingJsonLd

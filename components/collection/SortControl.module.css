@@ -1,0 +1,46 @@
+/* Restrained: a small label and a native select, sized to a 44px target. */
+.form {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-3);
+  min-width: 0;
+}
+
+.label {
+  flex: 0 0 auto;
+  color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-caption-size);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.select {
+  min-width: 0;
+  min-height: var(--kinetus-tap-target);
+  padding: 0 var(--kinetus-space-3);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-md);
+  color: var(--kinetus-text-primary);
+  font: inherit;
+  font-size: var(--kinetus-type-body-s-size);
+  cursor: pointer;
+}
+
+.select:hover {
+  border-color: var(--kinetus-border-chip);
+}
+
+.submit {
+  min-height: var(--kinetus-tap-target);
+  padding: 0 var(--kinetus-space-4);
+  background: var(--kinetus-bg-deep);
+  border: 0;
+  border-radius: var(--kinetus-radius-md);
+  color: var(--kinetus-text-inverse);
+  font: inherit;
+  font-size: var(--kinetus-type-body-s-size);
+  font-weight: 600;
+  cursor: pointer;
+}

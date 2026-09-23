@@ -41,31 +41,27 @@ export function pageHref(base: string, page: number): string {
   return page <= 1 ? base : `${base}/page/${page}`;
 }
 
-/** Category-page hero copy per collection (deck slides 12 and 17). */
-export const COLLECTION_HERO: Record<
-  string,
-  { headline: string; paragraph: string; ctaLabel: string }
-> = {
+/**
+ * Approved hero paragraph and button label per range (deck slides 12 and 17), used while
+ * the collection's subtitle is empty. The headline is always the collection's name.
+ */
+export const COLLECTION_HERO: Record<string, { paragraph: string; ctaLabel: string }> = {
   [COLLECTION_SLUGS.peptides]: {
-    headline: "Research Peptides",
     paragraph:
       "Research-grade peptide materials supplied as lyophilized powder in sealed glass vials. Every unit is labelled with a batch reference, and batch-specific documentation is available.",
     ctaLabel: "View all peptides",
   },
   [COLLECTION_SLUGS.blends]: {
-    headline: "Peptide Blends",
     paragraph:
       "Combination peptide materials supplied as lyophilized powder in a single sealed vial. Each blend is labelled with its components, its total strength and a batch reference.",
     ctaLabel: "View all blends",
   },
   [COLLECTION_SLUGS.labSupplies]: {
-    headline: "Lab Supplies",
     paragraph:
       "Laboratory consumables that accompany the catalogue. Bacteriostatic water is listed now; further supplies are added as the client confirms them.",
     ctaLabel: "View all lab supplies",
   },
   [COLLECTION_SLUGS.research]: {
-    headline: "Research Documentation",
     paragraph:
       "Documentation for the catalogue: how units are identified, what a batch reference is, and how batch-specific certificates of analysis are requested.",
     ctaLabel: "Request documentation",

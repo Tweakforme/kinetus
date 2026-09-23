@@ -41,6 +41,7 @@ import {
   RedirectEntityType,
   VariantStatus,
 } from "@prisma/client";
+import { seedCategories } from "./categories.ts";
 
 const prisma = new PrismaClient();
 
@@ -440,7 +441,15 @@ type ProductSeed = {
 
 const COLLECTIONS: Record<
   CollectionKey,
-  { id: string; slug: string; name: string; description: string; displayOrder: number }
+  {
+    id: string;
+    slug: string;
+    name: string;
+    description: string;
+    displayOrder: number;
+    /** Research is unpublished: the /research page replaces it in the navigation. */
+    status?: CollectionStatus;
+  }
 > = {
   peptides: {
     id: "coll_peptides",
@@ -469,6 +478,7 @@ const COLLECTIONS: Record<
     name: "Research",
     description: "Documentation, batch references and research-use resources.",
     displayOrder: 4,
+    status: CollectionStatus.DRAFT,
   },
 };
 
@@ -712,7 +722,7 @@ async function seedCollections() {
       slug: c.slug,
       name: c.name,
       description: c.description,
-      status: CollectionStatus.PUBLISHED,
+      status: c.status ?? CollectionStatus.PUBLISHED,
       displayOrder: c.displayOrder,
       kind: CollectionKind.RANGE,
     };
@@ -939,6 +949,16 @@ async function main() {
     await seedCollections();
     await seedProducts();
     const config = await seedClientManagedConfig();
+    // Once an admin exists the client owns the categories; `npm run seed:categories` is the
+    // one-time additive run for an existing database.
+    const categories = await seedCategories(prisma);
+    console.log(
+      `Shop by Category: ${categories.collectionsCreated} collections created, ` +
+        `${categories.linksCreated} product links added.` +
+        (categories.missingProducts.length > 0
+          ? ` Not in the catalogue: ${categories.missingProducts.join(", ")}.`
+          : ""),
+    );
     console.log(
       `Catalogue seeded. Removed mock rows: ${JSON.stringify(removed)}. Created ` +
         `${config.codes} discount codes and ${config.tiers} volume tiers.`,

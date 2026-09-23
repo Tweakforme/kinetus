@@ -1,3 +1,4 @@
+import { CollectionKind } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentType } from "react";
@@ -6,7 +7,8 @@ import { Container } from "@/components/layout/Container";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 import buttons from "@/components/ui/buttons.module.css";
 import { blurPlaceholder } from "@/lib/images";
-import { COLLECTION_SLUGS, HEADER_ICON_LINKS, collectionHref } from "@/lib/site";
+import { getAllCollections } from "@/lib/collections";
+import { COLLECTION_SLUGS, HEADER_ICON_LINKS, RESEARCH_LINK, collectionHref } from "@/lib/site";
 import styles from "./CategoryCards.module.css";
 
 /** The universal keyed render (public/products); the only product imagery on these cards. */
@@ -32,49 +34,46 @@ type CategoryCard = {
   media: CardMedia;
 };
 
+/** Ranges that show their render a little larger (deck slide 4 blends card). */
+const LARGE_RENDER_SLUGS: string[] = [COLLECTION_SLUGS.blends];
+
 /**
- * The five cards of deck slide 4. Cards 1 to 3 use the blank render; the deck's document
- * photographs on cards 4 and 5 are replaced by line icons (no fabricated document imagery).
+ * The fixed cards after the ranges. The deck's document photographs are replaced by line
+ * icons (no fabricated document imagery).
  */
-const CARDS: CategoryCard[] = [
-  {
-    title: "Peptides",
-    description: "Browse our full selection of research-grade peptide materials.",
-    href: collectionHref(COLLECTION_SLUGS.peptides),
-    linkLabel: "View all",
-    linkContext: "peptides",
-    media: { kind: "render" },
-  },
-  {
-    title: "Blends",
-    description: "Combination peptide materials supplied in a single vial.",
-    href: collectionHref(COLLECTION_SLUGS.blends),
-    linkLabel: "View blends",
-    media: { kind: "render", large: true },
-  },
-  {
-    title: "Lab supplies",
-    description: "Research accessories and laboratory materials.",
-    href: collectionHref(COLLECTION_SLUGS.labSupplies),
-    linkLabel: "View all",
-    linkContext: "lab supplies",
-    media: { kind: "render" },
-  },
+const FIXED_CARDS: CategoryCard[] = [
   {
     title: "Research",
-    description: "Documentation, batch references and research-use resources.",
-    href: collectionHref(COLLECTION_SLUGS.research),
-    linkLabel: "View resources",
+    description: "Research material categories and research-use resources.",
+    href: RESEARCH_LINK.href,
+    linkLabel: "View research",
     media: { kind: "icon", Icon: DocumentIcon },
   },
   {
-    title: "Certificate of analysis",
-    description: "Batch-specific documentation, available on request.",
+    title: "Test reports",
+    description: "Third-party test reports, hosted by the testing provider.",
     href: HEADER_ICON_LINKS.documentation.href,
-    linkLabel: "Request a COA",
+    linkLabel: "View test reports",
     media: { kind: "icon", Icon: ClipboardCheckIcon },
   },
 ];
+
+/**
+ * The deck's slide 4 cards: one per published range (name and description from the
+ * catalogue, so a renamed or unpublished range follows), then Research and Test reports.
+ */
+async function getCards(): Promise<CategoryCard[]> {
+  const ranges = await getAllCollections(CollectionKind.RANGE);
+  const rangeCards = ranges.map((range) => ({
+    title: range.name,
+    description: range.description ?? `Browse the ${range.name} range.`,
+    href: collectionHref(range.slug),
+    linkLabel: "View all",
+    linkContext: range.name,
+    media: { kind: "render", large: LARGE_RENDER_SLUGS.includes(range.slug) } as const,
+  }));
+  return [...rangeCards, ...FIXED_CARDS];
+}
 
 function CardMedia({ media, blur }: { media: CardMedia; blur: string | undefined }) {
   if (media.kind === "icon") {
@@ -101,12 +100,13 @@ function CardMedia({ media, blur }: { media: CardMedia; blur: string | undefined
 }
 
 /**
- * "RESEARCH MATERIALS" divider and the five category cards (deck slide 4): pale grey
+ * "RESEARCH MATERIALS" divider and the range cards (deck slide 4): pale grey
  * cards with the render on the left and royal-blue condensed title, short description
  * and "VIEW ALL" link on the right. The link is stretched over the whole card so the
  * entire card is the tap target while the page carries a single link per card.
  */
-export function CategoryCards() {
+export async function CategoryCards() {
+  const cards = await getCards();
   const blur = blurPlaceholder(RENDER_SRC);
 
   return (
@@ -119,7 +119,7 @@ export function CategoryCards() {
       <SectionDivider id="home-materials-heading" title="Research materials" nodes />
 
       <ul className={styles.grid}>
-        {CARDS.map((card) => (
+        {cards.map((card) => (
           <li key={card.title} className={styles.card} data-reveal="">
             <CardMedia media={card.media} blur={blur} />
             <div className={styles.text}>

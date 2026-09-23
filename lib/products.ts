@@ -188,6 +188,55 @@ export const getProductsForSitemap = cachedQuery(
   () => [CACHE_TAGS.products],
 );
 
+export type TestReportProduct = {
+  slug: string;
+  name: string;
+  reports: { variantId: string; label: string; url: string; updatedAt: Date | null }[];
+};
+
+/**
+ * Published products with at least one active variant carrying a third-party test report
+ * link (set by the client in the admin), grouped by product, for /documentation. Only
+ * real links are returned; nothing is filled in.
+ */
+export const getTestReports = cachedQuery(
+  "test-reports",
+  async (): Promise<TestReportProduct[]> => {
+    const rows = await prisma.product.findMany({
+      where: {
+        status: ProductStatus.PUBLISHED,
+        variants: { some: { status: VariantStatus.ACTIVE, testReportUrl: { not: null } } },
+      },
+      select: {
+        slug: true,
+        name: true,
+        variants: {
+          where: { status: VariantStatus.ACTIVE, testReportUrl: { not: null } },
+          orderBy: variantOrder,
+          select: { id: true, label: true, testReportUrl: true, testReportUpdatedAt: true },
+        },
+      },
+      orderBy: { name: "asc" },
+    });
+    return rows.map((row) => ({
+      slug: row.slug,
+      name: row.name,
+      reports: row.variants.map((variant) => ({
+        variantId: variant.id,
+        label: variant.label,
+        url: variant.testReportUrl ?? "",
+        updatedAt: variant.testReportUpdatedAt,
+      })),
+    }));
+  },
+  () => [CACHE_TAGS.products],
+);
+
+/** /documentation#<slug>: where a product page links when the product has a report. */
+export function testReportsHref(slug: string): string {
+  return `/documentation#${slug}`;
+}
+
 /**
  * Active volume discount tiers, shown on every product page. Tagged `products`, so a tier
  * save in the admin expires the product pages (lib/admin/revalidate.ts).
@@ -275,6 +324,8 @@ export type ProductCardModel = {
   priceLabel: string | null;
   /** True when several presentations carry different prices (the card shows "From"). */
   fromPrice: boolean;
+  /** Lowest active price in cents, for sorting; null without an active variant. */
+  lowestPriceCents: number | null;
   variantCount: number;
 };
 
@@ -305,6 +356,7 @@ export function toProductCardModel(product: ProductSummary, now: Date): ProductC
     subline: sublineParts.length > 0 ? sublineParts.join(" · ") : null,
     priceLabel: lowest !== null ? formatCad(lowest) : null,
     fromPrice: lowest !== null && highest !== null && highest > lowest,
+    lowestPriceCents: lowest,
     variantCount,
   };
 }
@@ -411,11 +463,6 @@ export function descriptionParagraphs(text: string | null): string[] {
 /*  Listing helpers (paginated index routes, sitemap, search)                 */
 /* -------------------------------------------------------------------------- */
 
-/** Number of published products, for the paginated /products routes and the sitemap. */
-export async function getProductCount(): Promise<number> {
-  return prisma.product.count({ where: { status: ProductStatus.PUBLISHED } });
-}
-
 /** Longest query the search route accepts; longer input is truncated before querying. */
 export const SEARCH_QUERY_MAX_LENGTH = 80;
 
@@ -425,14 +472,33 @@ export function normaliseSearchQuery(raw: string | string[] | undefined): string
   return (value ?? "").trim().slice(0, SEARCH_QUERY_MAX_LENGTH);
 }
 
-/** Published products whose name contains the query (case-insensitive), for /search. */
+/**
+ * Published products whose name, or an active variant's label or SKU, contains the query
+ * (case-insensitive), for /search. A plain `contains` query: 34 products need no index.
+ */
 export async function searchProducts(query: string, limit = 48): Promise<ProductSummary[]> {
   const term = query.trim();
   if (!term) {
     return [];
   }
   return prisma.product.findMany({
-    where: { status: ProductStatus.PUBLISHED, name: { contains: term, mode: "insensitive" } },
+    where: {
+      status: ProductStatus.PUBLISHED,
+      OR: [
+        { name: { contains: term, mode: "insensitive" } },
+        {
+          variants: {
+            some: {
+              status: VariantStatus.ACTIVE,
+              OR: [
+                { label: { contains: term, mode: "insensitive" } },
+                { sku: { contains: term, mode: "insensitive" } },
+              ],
+            },
+          },
+        },
+      ],
+    },
     include: productSummaryInclude,
     orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
     take: limit,

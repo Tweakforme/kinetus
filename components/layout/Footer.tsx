@@ -4,7 +4,6 @@ import { MapleLeafIcon } from "@/components/icons/LineIcons";
 import { Container } from "./Container";
 import {
   CONTACT_EMAIL,
-  FOOTER_CATALOGUE_LINKS,
   FOOTER_COMPANY_LINKS,
   FOOTER_POLICY_LINKS,
   LOCATION,
@@ -12,6 +11,7 @@ import {
   SITE_NAME,
   type NavLink,
 } from "@/lib/site";
+import { getCatalogueLinks } from "@/lib/navigation";
 import styles from "./Footer.module.css";
 
 /** White lockup (772 x 184, with tagline) at 56px tall on the navy ground. */
@@ -41,11 +41,13 @@ function FooterColumn({ heading, links }: FooterColumnProps) {
 
 /**
  * Site footer: navy ground, white text. White lockup and a two-line note on top, then
- * Catalogue / Company / Policies / Contact columns (static links from lib/site.ts), then
+ * Catalogue / Company / Policies / Contact columns (the catalogue column lists the
+ * published ranges; the rest are fixed links from lib/site.ts), then
  * the copyright line, a red maple leaf and the research-use statement under a hairline.
  * Two columns on mobile, four on desktop.
  */
-export function Footer() {
+export async function Footer() {
+  const catalogueLinks = await getCatalogueLinks();
   const year = new Date().getFullYear();
 
   return (
@@ -68,7 +70,7 @@ export function Footer() {
         </div>
 
         <div className={styles.columns}>
-          <FooterColumn heading="Catalogue" links={FOOTER_CATALOGUE_LINKS} />
+          <FooterColumn heading="Catalogue" links={catalogueLinks} />
           <FooterColumn heading="Company" links={FOOTER_COMPANY_LINKS} />
           <FooterColumn heading="Policies" links={FOOTER_POLICY_LINKS} />
 

@@ -4,26 +4,15 @@ import {
   CollectionListingPage,
   collectionListingMetadata,
 } from "@/components/collection/CollectionListingPage";
-import { pageCount, parsePageParam } from "@/lib/catalogue";
-import { getAllCollections } from "@/lib/collections";
+import { parsePageParam } from "@/lib/catalogue";
+import { parseSort } from "@/lib/sort";
 
 type CollectionPagedProps = {
   params: Promise<{ slug: string; n: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-// Regenerated like the base collection route (on-demand tags and sale boundaries).
-
-/** Every page from 2 up to the last page of each published collection. */
-export async function generateStaticParams() {
-  const collections = await getAllCollections();
-  return collections.flatMap((collection) => {
-    const total = pageCount(collection.productCount);
-    return Array.from({ length: Math.max(0, total - 1) }, (_, index) => ({
-      slug: collection.slug,
-      n: String(index + 2),
-    }));
-  });
-}
+// Rendered per request like the base collection route (`?sort=`), from the data cache.
 
 export async function generateMetadata({ params }: CollectionPagedProps): Promise<Metadata> {
   const { slug, n } = await params;
@@ -35,11 +24,12 @@ export async function generateMetadata({ params }: CollectionPagedProps): Promis
  * `/collections/[slug]/page/[n]` for n >= 2. Anything that is not a whole number from 2
  * up, or that lies past the last page, is a 404; page 1 is only ever the base URL.
  */
-export default async function CollectionPagedPage({ params }: CollectionPagedProps) {
+export default async function CollectionPagedPage({ params, searchParams }: CollectionPagedProps) {
   const { slug, n } = await params;
   const page = parsePageParam(n);
   if (page === null) {
     notFound();
   }
-  return <CollectionListingPage slug={slug} page={page} />;
+  const sort = parseSort((await searchParams).sort);
+  return <CollectionListingPage slug={slug} page={page} sort={sort} />;
 }

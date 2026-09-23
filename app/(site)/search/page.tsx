@@ -13,7 +13,7 @@ type SearchPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-const DESCRIPTION = `Search the ${SITE_NAME} catalogue by product name.`;
+const DESCRIPTION = `Search the ${SITE_NAME} catalogue by product name, size or SKU.`;
 
 /** Quoted query for copy, e.g. “BPC”. */
 function quoted(query: string): string {
@@ -61,7 +61,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             <p className={`type-body ${styles.emptyText}`} aria-live="polite">
               {query
                 ? `No products match ${quoted(query)}. Check the spelling, or browse the catalogue by range.`
-                : "Enter a product name to search the catalogue, or browse by range."}
+                : "Enter a product name, size or SKU to search the catalogue, or browse by range."}
             </p>
             <ClassificationBar label="Browse by range" />
           </div>

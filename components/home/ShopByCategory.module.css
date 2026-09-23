@@ -1,0 +1,158 @@
+/* Block flow: divider, then the card grid (Container shrink-wrap trap). */
+.section {
+  display: block;
+}
+
+/* One card per row on mobile, two at 768, three at 1024 (client mockup). */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-4);
+  margin: var(--kinetus-space-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kinetus-space-2);
+  margin-top: var(--kinetus-space-6);
+  text-align: center;
+}
+
+.intro p {
+  margin: 0;
+  max-width: var(--kinetus-measure-body);
+  color: var(--kinetus-text-secondary);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+/* Pale card: icon, hairline, name, chevron in a circle. The whole card is the link. */
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-4);
+  height: 100%;
+  min-height: 104px;
+  padding: var(--kinetus-space-4) var(--kinetus-space-5);
+  background: var(--kinetus-bg-subtle);
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
+  color: var(--kinetus-text-heading);
+  text-decoration: none;
+  transition:
+    box-shadow var(--motion-duration) var(--motion-ease),
+    border-color var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease);
+}
+
+.card:hover,
+.card:active {
+  border-color: var(--kinetus-border-default);
+  box-shadow: var(--kinetus-shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+/* Square box so the icons are never stretched. */
+.icon {
+  display: inline-flex;
+  flex: 0 0 72px;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+}
+
+.iconImage {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.iconFallback {
+  color: var(--kinetus-brand-teal-deep);
+}
+
+.rule {
+  flex: 0 0 1px;
+  align-self: stretch;
+  margin-block: var(--kinetus-space-2);
+  background: var(--kinetus-border-default);
+}
+
+.name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--kinetus-font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.chevron {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid currentColor;
+  border-radius: var(--kinetus-radius-pill);
+  color: var(--kinetus-text-heading);
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.card:hover .chevron {
+  color: var(--kinetus-brand-teal);
+}
+
+.allCard {
+  justify-content: center;
+}
+
+.allText {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--kinetus-space-1);
+  min-width: 0;
+}
+
+.allText .name {
+  flex: none;
+}
+
+/* Tight at phone width so the line wraps once at most; the mockup's wide tracking from 768. */
+.allSub {
+  color: var(--kinetus-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .allSub {
+    letter-spacing: 0.08em;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--kinetus-space-5);
+  }
+}
