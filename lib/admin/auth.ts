@@ -19,7 +19,8 @@ import {
  */
 
 export const LOGIN_PATH = "/admin/login";
-export const ADMIN_HOME = "/admin/products";
+/** Where /admin and a fresh sign-in land: orders, so a new one is seen first. */
+export const ADMIN_HOME = "/admin/orders";
 
 export type AdminIdentity = { id: string; email: string; sessionId: string };
 

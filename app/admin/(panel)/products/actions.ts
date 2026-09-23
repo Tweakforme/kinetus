@@ -60,6 +60,8 @@ type ParsedVariant = {
   saleStartsAt: Date | null;
   saleEndsAt: Date | null;
   stock: number | null;
+  /** The stock field was left as loaded: the saved count is kept, not overwritten. */
+  stockUnchanged: boolean;
   trackInventory: boolean;
   status: VariantStatus;
   displayOrder: number;
@@ -248,8 +250,13 @@ export async function saveProduct(_previous: FormState, form: FormData): Promise
       errors[field("sku")] = `${sizeName}: keep the SKU to ${LIMITS.sku} characters or fewer.`;
     }
 
+    // A stock field left as it was loaded keeps whatever the database holds when this saves:
+    // marking orders paid or cancelled may have moved the count since the page loaded, and
+    // an oversold size stays below zero until the client enters a real count.
+    const stockLoaded = isNew ? null : form.get(field("stockLoaded"));
+    const stockUnchanged = typeof stockLoaded === "string" && stockText === stockLoaded.trim();
     let stock: number | null = null;
-    if (stockText !== "") {
+    if (!stockUnchanged && stockText !== "") {
       stock = parseWholeNumber(stockText, 0, 1_000_000);
       if (stock === null) {
         errors[field("stock")] = `${sizeName}: enter the stock as a whole number (0 or more).`;
@@ -305,6 +312,7 @@ export async function saveProduct(_previous: FormState, form: FormData): Promise
       saleStartsAt: starts.value,
       saleEndsAt: ends.value,
       stock,
+      stockUnchanged,
       trackInventory,
       status: statusText as VariantStatus,
       displayOrder: variantOrder ?? 0,
@@ -390,7 +398,7 @@ export async function saveProduct(_previous: FormState, form: FormData): Promise
           salePrice: variant.salePrice,
           saleStartsAt: variant.saleStartsAt,
           saleEndsAt: variant.saleEndsAt,
-          stock: variant.stock,
+          ...(variant.stockUnchanged ? {} : { stock: variant.stock }),
           trackInventory: variant.trackInventory,
           status: variant.status,
           displayOrder: variant.displayOrder,

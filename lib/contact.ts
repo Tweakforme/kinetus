@@ -40,8 +40,9 @@ function messageBody(details: ContactDetails, id: string): string {
 /**
  * Saves the message, then emails it (or logs it without a key) and records the outcome.
  * Throws only if the message could not be saved; a send failure is recorded, not raised.
+ * Returns whether the email was accepted, so the form never says "sent" when it was not.
  */
-export async function deliverContactMessage(details: ContactDetails, ip: string): Promise<void> {
+export async function deliverContactMessage(details: ContactDetails, ip: string): Promise<boolean> {
   const row = await prisma.contactMessage.create({
     data: { ...details, ip },
     select: { id: true },
@@ -83,4 +84,5 @@ export async function deliverContactMessage(details: ContactDetails, ip: string)
   } catch (error) {
     console.error(`[contact] ${row.id}: could not record the send outcome`, error);
   }
+  return sendError === null;
 }

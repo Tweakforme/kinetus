@@ -23,6 +23,9 @@
 // information sheet link, the discount / volume tier / tax / store setting tables (admin
 // configuration only; nothing consumes them yet), and AdminSession + AdminLoginAttempt
 // for server-side sessions and login rate limiting.
+//
+// Phase 9 (migration order_stock_tracking, additive only): OrderRequest.stockAdjusted, the
+// guard that makes stock moves on order status changes idempotent.
 
 generator client {
   provider = "prisma-client-js"
@@ -379,9 +382,15 @@ model OrderRequest {
   carrier                 String?
   shippedAt               DateTime?
   paidAt                  DateTime?
+  /// True while this order's tracked stock is deducted (Paid or Shipped). Entering Paid or
+  /// Shipped deducts only while it is false; New, Awaiting payment or Cancelled restores
+  /// only while it is true. Changing a status twice can therefore never deduct twice.
+  stockAdjusted           Boolean            @default(false)
   /// Set when both order emails were accepted by the mail provider.
   notificationSentAt      DateTime?
-  /// Why the order emails did not send (no API key, provider error). Null once sent.
+  /// Why the most recent order email did not send (no API key, provider error): the order
+  /// emails, or the shipping notification when it starts "Shipping notification: ". Null
+  /// once the order emails are sent.
   notificationError       String?
   internalNotes           String?
   createdAt               DateTime           @default(now())

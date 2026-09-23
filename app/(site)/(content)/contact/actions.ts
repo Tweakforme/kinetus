@@ -7,6 +7,8 @@ import { CONTACT_EMAIL } from "@/lib/site";
 
 export type ContactState = {
   status: "idle" | "sent" | "error";
+  /** With "sent": whether the email actually went out (the message is saved either way). */
+  emailed?: boolean;
   message?: string;
   errors?: ContactErrors;
   /** What was typed, so the form keeps it after a failed attempt. */
@@ -18,8 +20,8 @@ export type ContactState = {
 /**
  * Sends a contact message. Validates everything on the server whatever the browser did,
  * then applies the honeypot and a per-address limit, saves the message and emails it (or
- * records that it could not). A saved message always shows the sent state: it reaches the
- * client whether or not the email provider is configured yet.
+ * records that it could not). A saved message shows the sent state; the form says it was
+ * sent only when the email actually went out, and otherwise that it was received.
  */
 export async function sendContactMessage(
   _previous: ContactState,
@@ -39,7 +41,7 @@ export async function sendContactMessage(
 
   // Bots fill the hidden field; people never see it. Look successful, keep nothing.
   if (get(CONTACT_FIELD.honeypot) !== "") {
-    return { status: "sent", attempt };
+    return { status: "sent", emailed: true, attempt };
   }
 
   const validation = validateContact(get);
@@ -63,8 +65,9 @@ export async function sendContactMessage(
     };
   }
 
+  let emailed: boolean;
   try {
-    await deliverContactMessage(validation.details, ip);
+    emailed = await deliverContactMessage(validation.details, ip);
   } catch (error) {
     console.error("[contact] message could not be saved", error);
     return {
@@ -74,5 +77,5 @@ export async function sendContactMessage(
       attempt,
     };
   }
-  return { status: "sent", attempt };
+  return { status: "sent", emailed, attempt };
 }
