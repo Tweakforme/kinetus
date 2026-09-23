@@ -4,22 +4,15 @@ import {
   ProductsListingPage,
   productsListingMetadata,
 } from "@/components/collection/ProductsListingPage";
-import { pageCount, parsePageParam } from "@/lib/catalogue";
-import { getProductCount } from "@/lib/products";
+import { parsePageParam } from "@/lib/catalogue";
+import { parseSort } from "@/lib/sort";
 
 type ProductsPagedProps = {
   params: Promise<{ n: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-// Regenerated like the base /products route (on-demand tags and sale boundaries).
-
-/** Every page from 2 up to the last page of the full listing. */
-export async function generateStaticParams() {
-  const total = pageCount(await getProductCount());
-  return Array.from({ length: Math.max(0, total - 1) }, (_, index) => ({
-    n: String(index + 2),
-  }));
-}
+// Rendered per request like the base /products route (`?sort=`), from the data cache.
 
 export async function generateMetadata({ params }: ProductsPagedProps): Promise<Metadata> {
   const page = parsePageParam((await params).n);
@@ -30,10 +23,11 @@ export async function generateMetadata({ params }: ProductsPagedProps): Promise<
  * `/products/page/[n]` for n >= 2. Anything that is not a whole number from 2 up, or that
  * lies past the last page, is a 404; page 1 is only ever /products.
  */
-export default async function ProductsPagedPage({ params }: ProductsPagedProps) {
+export default async function ProductsPagedPage({ params, searchParams }: ProductsPagedProps) {
   const page = parsePageParam((await params).n);
   if (page === null) {
     notFound();
   }
-  return <ProductsListingPage page={page} />;
+  const sort = parseSort((await searchParams).sort);
+  return <ProductsListingPage page={page} sort={sort} />;
 }

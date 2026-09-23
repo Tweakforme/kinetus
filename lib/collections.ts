@@ -53,6 +53,8 @@ export type CollectionSummary = {
   slug: string;
   name: string;
   description: string | null;
+  /** Category icon (public/categories/*.webp or an admin upload); null for ranges. */
+  iconUrl: string | null;
   /** Count of PUBLISHED member products only. */
   productCount: number;
 };
@@ -72,6 +74,7 @@ export const getAllCollections = cachedQuery(
         slug: true,
         name: true,
         description: true,
+        iconUrl: true,
         _count: {
           select: { products: { where: { product: { status: ProductStatus.PUBLISHED } } } },
         },
@@ -83,21 +86,12 @@ export const getAllCollections = cachedQuery(
       slug: row.slug,
       name: row.name,
       description: row.description,
+      iconUrl: row.iconUrl,
       productCount: row._count.products,
     }));
   },
   () => [CACHE_TAGS.collections, CACHE_TAGS.products],
 );
-
-/** Slugs of every published collection, for generateStaticParams (build time, uncached). */
-export async function getAllCollectionSlugs(): Promise<string[]> {
-  const rows = await prisma.collection.findMany({
-    where: { status: CollectionStatus.PUBLISHED },
-    select: { slug: true },
-    orderBy: { slug: "asc" },
-  });
-  return rows.map((row) => row.slug);
-}
 
 /** Slug + last update of every published collection, for the sitemap. */
 export const getCollectionsForSitemap = cachedQuery(

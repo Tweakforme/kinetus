@@ -13,7 +13,8 @@ import { SITE_NAME } from "@/lib/site";
  */
 
 // TODO: confirm the sending address once the client's domain is verified in Resend.
-const DEFAULT_FROM = `${SITE_NAME} <orders@kinetusbiolabs.ca>`;
+// Shared with the contact form (lib/contact.ts).
+export const DEFAULT_FROM = `${SITE_NAME} <orders@kinetusbiolabs.ca>`;
 // TODO: confirm where order notifications go when StoreSetting.orderNotifyEmail is empty.
 const FALLBACK_NOTIFY_EMAIL = "info@kinetusbiolabs.ca";
 

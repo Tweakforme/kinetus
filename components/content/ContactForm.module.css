@@ -5,6 +5,12 @@
   gap: var(--kinetus-space-5);
 }
 
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-5);
+}
+
 .row {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -56,6 +62,10 @@
   border-color: var(--kinetus-border-chip);
 }
 
+.input[aria-invalid="true"] {
+  border-color: var(--kinetus-state-error);
+}
+
 /* The global focus ring stays; the border turns teal beneath it. */
 .input:focus {
   border-color: var(--kinetus-brand-teal);
@@ -93,16 +103,55 @@
   color: var(--kinetus-brand-teal-dark);
 }
 
-.status {
+.error {
   margin: 0;
-  color: var(--kinetus-state-success);
+  color: var(--kinetus-state-error);
   font-size: var(--kinetus-type-body-s-size);
   line-height: var(--kinetus-type-body-s-line-height);
   font-weight: 500;
 }
 
-.status:empty {
+/* Form-level message after a failed attempt: announced and focused. */
+.alert {
+  padding: var(--kinetus-space-4);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-state-error);
+  border-left-width: var(--kinetus-space-1);
+  border-radius: var(--kinetus-radius-md);
+  color: var(--kinetus-state-error);
+  font-weight: 500;
+}
+
+.alertEmpty {
   display: none;
+}
+
+/* Sent state replaces the form. */
+.sent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+  padding: var(--kinetus-space-6);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-left: var(--kinetus-space-1) solid var(--kinetus-state-success);
+  border-radius: var(--kinetus-radius-md);
+}
+
+.sentTitle {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-size: var(--kinetus-type-body-l-size);
+  font-weight: 600;
+}
+
+/* Honeypot: off-screen for people, still in the form for bots. */
+.trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {

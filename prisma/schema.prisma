@@ -242,6 +242,25 @@ model OrderSequence {
   last Int @default(0)
 }
 
+/// A message sent through the /contact form. Every submission is kept with its send
+/// status, so nothing is lost before the email provider is configured; the rows also
+/// serve as the form's rate-limit record.
+model ContactMessage {
+  id        String    @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  ip        String
+  /// Set when the email to the client was accepted by the mail provider.
+  sentAt    DateTime?
+  /// Why the email did not send (no API key, provider error). Null once sent.
+  sendError String?
+  createdAt DateTime  @default(now())
+
+  @@index([ip, createdAt])
+}
+
 /// One row per checkout submission, for rate limiting. Kept apart from AdminLoginAttempt
 /// so customer traffic can never lock out the admin, or the reverse.
 model CheckoutAttempt {

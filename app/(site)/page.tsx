@@ -3,6 +3,7 @@ import { ListingJsonLd } from "@/components/collection/ListingJsonLd";
 import { CategoryCards } from "@/components/home/CategoryCards";
 import { FeaturedGrid } from "@/components/home/FeaturedGrid";
 import { HomeHero } from "@/components/home/HomeHero";
+import { ShopByCategory } from "@/components/home/ShopByCategory";
 import styles from "@/components/home/HomePage.module.css";
 import { TrustRow } from "@/components/home/TrustRow";
 import {
@@ -55,7 +56,7 @@ export const metadata: Metadata = {
 
 /**
  * Homepage in the deck's order (slide 4): navy hero, "RESEARCH MATERIALS" divider and
- * the five category cards, the white trust row, then "FEATURED MATERIALS" with the
+ * the range cards, "SHOP BY CATEGORY" with the six category cards, the white trust row, then "FEATURED MATERIALS" with the
  * featured product grid and the "VIEW ALL PRODUCTS" button. The research-use band and
  * footer come from the root layout.
  */
@@ -73,6 +74,7 @@ export default async function Home() {
       <div className={styles.page}>
         <HomeHero />
         <CategoryCards />
+        <ShopByCategory headingId="home-categories-heading" />
         <TrustRow />
         <FeaturedGrid products={cards} />
       </div>

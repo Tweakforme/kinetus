@@ -11,7 +11,8 @@ import { getCollectionBySlug, getCollectionRedirectTarget } from "@/lib/collecti
 import { imagesForVariant } from "@/lib/product-images";
 import { revalidateAtNextPriceChange, toProductCardModel } from "@/lib/products";
 import { absoluteUrl, canonicalUrl, DEFAULT_DESCRIPTION } from "@/lib/seo";
-import { COLLECTION_SLUGS, collectionHref, SITE_NAME } from "@/lib/site";
+import { COLLECTION_SLUGS, collectionHref, RESEARCH_LINK, SITE_NAME } from "@/lib/site";
+import { sortListing, withSort, type SortKey } from "@/lib/sort";
 import { CatalogueListing } from "./CatalogueListing";
 import { DOCUMENTATION_SECTION_ID } from "./DocumentationSection";
 import {
@@ -27,6 +28,8 @@ type CollectionListingProps = {
   slug: string;
   /** 1-based page; the route has already validated it is a whole number. */
   page: number;
+  /** From `?sort=`; null keeps the collection's own order. */
+  sort: SortKey | null;
 };
 
 /** Shown on an empty range other than Research, above the documentation section. */
@@ -34,7 +37,8 @@ const EMPTY_RANGE_MESSAGE = "No products are published in this range yet.";
 
 /**
  * Metadata for `/collections/[slug]` (page 1) and `/collections/[slug]/page/[n]`.
- * Page 1's canonical is the base URL; page N's canonical is its own URL. Unknown
+ * Page 1's canonical is the base URL; page N's canonical is its own URL; neither ever
+ * carries `?sort=`. Unknown
  * collections and out-of-range pages return nothing; the page itself 404s.
  */
 export async function collectionListingMetadata(slug: string, page: number): Promise<Metadata> {
@@ -77,14 +81,14 @@ export async function collectionListingMetadata(slug: string, page: number): Pro
 }
 
 /**
- * Collection listing shared by the base route and the paginated route: hero copy from
- * COLLECTION_HERO (falling back to the collection name), the divider "{name} Catalogue",
+ * Collection listing shared by the base route and the paginated route: the collection's
+ * name as the hero headline and its subtitle (or the approved COLLECTION_HERO copy) below, the divider "{name} Catalogue",
  * the pill bar with this range current, twelve cards per page and pagination. Research
  * always shows the batch documentation section; any other empty range shows it with a
  * short line. Renamed slugs redirect permanently; unknown slugs and pages past the end
  * are 404s.
  */
-export async function CollectionListingPage({ slug, page }: CollectionListingProps) {
+export async function CollectionListingPage({ slug, page, sort }: CollectionListingProps) {
   const collection = await getCollectionBySlug(slug);
 
   if (!collection) {
@@ -92,11 +96,19 @@ export async function CollectionListingPage({ slug, page }: CollectionListingPro
     if (target) {
       permanentRedirect(pageHref(collectionHref(target), page));
     }
+    // The Research range is unpublished while the /research page stands in for it; its old
+    // URL goes there. If the client publishes the range again, the collection renders.
+    if (slug === COLLECTION_SLUGS.research) {
+      permanentRedirect(RESEARCH_LINK.href);
+    }
     notFound();
   }
 
   const now = new Date();
-  const cards = collection.products.map((link) => toProductCardModel(link.product, now));
+  const cards = sortListing(
+    collection.products.map((link) => toProductCardModel(link.product, now)),
+    sort,
+  );
   const slice = paginate(cards, page);
   if (page > slice.totalPages) {
     notFound();
@@ -111,9 +123,16 @@ export async function CollectionListingPage({ slug, page }: CollectionListingPro
 
   const base = collectionHref(collection.slug);
   const isResearch = collection.slug === COLLECTION_SLUGS.research;
-  const hero = COLLECTION_HERO[collection.slug] ?? {
+  // Headline is always the collection's name, so a rename in the admin flows through;
+  // the paragraph is its subtitle, falling back to the approved copy while that is empty.
+  // The button scrolls to this collection's own grid, so a collection without approved
+  // copy (the categories) says "View products", never "View all products".
+  const approved = COLLECTION_HERO[collection.slug];
+  const hero = {
     headline: collection.name,
-    ...DEFAULT_COLLECTION_HERO,
+    paragraph:
+      collection.subtitle?.trim() || approved?.paragraph || DEFAULT_COLLECTION_HERO.paragraph,
+    ctaLabel: approved?.ctaLabel ?? "View products",
   };
   const ctaHref = `${base}#${isResearch ? DOCUMENTATION_SECTION_ID : CATALOGUE_SECTION_ID}`;
 
@@ -138,7 +157,8 @@ export async function CollectionListingPage({ slug, page }: CollectionListingPro
         page={slice.page}
         totalPages={slice.totalPages}
         totalItems={slice.totalItems}
-        hrefFor={(target) => pageHref(base, target)}
+        hrefFor={(target) => withSort(pageHref(base, target), sort)}
+        sort={{ base, current: sort }}
         emptyMessage={isResearch ? undefined : EMPTY_RANGE_MESSAGE}
         showDocumentation={isResearch}
       />

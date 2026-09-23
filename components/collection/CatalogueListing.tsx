@@ -3,11 +3,13 @@ import { Container } from "@/components/layout/Container";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 import type { ProductCardModel } from "@/lib/products";
+import type { SortKey } from "@/lib/sort";
 import { ClassificationBar } from "./ClassificationBar";
 import { DocumentationSection } from "./DocumentationSection";
 import { CATALOGUE_SECTION_ID, LISTING_RENDER, resultsLine } from "./listingAssets";
 import { Pagination } from "./Pagination";
 import { ProductGrid } from "./ProductGrid";
+import { SortControl } from "./SortControl";
 import styles from "./CatalogueListing.module.css";
 
 export type CatalogueListingProps = {
@@ -39,6 +41,8 @@ export type CatalogueListingProps = {
   emptyMessage?: string;
   /** Force the batch documentation section (Research). Empty ranges always get it. */
   showDocumentation?: boolean;
+  /** The listing's page 1 URL and the active `?sort=`; shows the sort control. */
+  sort?: { base: string; current: SortKey | null };
 };
 
 /** Cards in the first desktop row load eagerly. */
@@ -62,6 +66,7 @@ export function CatalogueListing({
   hrefFor,
   emptyMessage,
   showDocumentation = false,
+  sort,
 }: CatalogueListingProps) {
   const hasProducts = products.length > 0;
 
@@ -95,9 +100,12 @@ export function CatalogueListing({
 
         {hasProducts ? (
           <>
-            <p className={`type-caption numeric ${styles.results}`}>
-              {resultsLine(page, totalItems)}
-            </p>
+            <div className={styles.toolbar}>
+              <p className={`type-caption numeric ${styles.results}`}>
+                {resultsLine(page, totalItems)}
+              </p>
+              {sort && totalItems > 1 && <SortControl base={sort.base} current={sort.current} />}
+            </div>
             <ProductGrid
               products={products}
               label={label}

@@ -1,16 +1,7 @@
 import Link from "next/link";
 import buttons from "@/components/ui/buttons.module.css";
-import { ALL_PRODUCTS_LINK, COLLECTION_SLUGS, collectionHref } from "@/lib/site";
+import { getCatalogueLinks } from "@/lib/navigation";
 import styles from "./ClassificationBar.module.css";
-
-/** The deck's classification pills (slide 5) mapped onto the catalogue's real ranges. */
-export const CLASSIFICATION_PILLS = [
-  { label: "All Products", href: ALL_PRODUCTS_LINK.href },
-  { label: "Peptides", href: collectionHref(COLLECTION_SLUGS.peptides) },
-  { label: "Blends", href: collectionHref(COLLECTION_SLUGS.blends) },
-  { label: "Lab Supplies", href: collectionHref(COLLECTION_SLUGS.labSupplies) },
-  { label: "Research", href: collectionHref(COLLECTION_SLUGS.research) },
-] as const;
 
 type ClassificationBarProps = {
   /** Href of the pill that reads as current; omit for none (search). */
@@ -21,18 +12,21 @@ type ClassificationBarProps = {
 };
 
 /**
- * Row of navy pills linking the full listing and the four ranges; the current one is
+ * The deck's classification pills (slide 5): the full listing and each published range,
+ * from the catalogue (lib/navigation.ts), so a renamed or unpublished range follows. Row
+ * of navy pills; the current one is
  * filled teal and carries aria-current. Wraps onto two rows at 390px so nothing scrolls.
  */
-export function ClassificationBar({
+export async function ClassificationBar({
   activeHref,
   label = "Catalogue ranges",
   className,
 }: ClassificationBarProps) {
+  const pills = await getCatalogueLinks();
   return (
     <nav className={className ? `${styles.bar} ${className}` : styles.bar} aria-label={label}>
       <ul className={styles.list}>
-        {CLASSIFICATION_PILLS.map((pill) => {
+        {pills.map((pill) => {
           const active = pill.href === activeHref;
           return (
             <li key={pill.href}>

@@ -1,0 +1,121 @@
+/*
+ * Hidden unless the inline script marked <html> (no age cookie). A full-screen navy
+ * ground above everything, including the sticky header and the drawer.
+ */
+.gate {
+  display: none;
+}
+
+:global(html[data-age-gate="show"]) .gate {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: var(--kinetus-space-5) var(--kinetus-container-margin-mobile);
+  background: radial-gradient(
+    circle at 70% 20%,
+    var(--kinetus-bg-deep-2),
+    var(--kinetus-bg-deep) 60%
+  );
+  color: var(--kinetus-text-inverse);
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kinetus-space-4);
+  width: 100%;
+  max-width: 520px;
+  margin: auto;
+  padding: var(--kinetus-space-8) var(--kinetus-space-5);
+  border: 1px solid var(--kinetus-border-on-dark);
+  border-radius: var(--kinetus-radius-card);
+  text-align: center;
+}
+
+.dialog:focus {
+  outline: none;
+}
+
+.logo {
+  width: auto;
+  height: 48px;
+}
+
+.tagline,
+.footnote {
+  margin: 0;
+  color: var(--kinetus-text-inverse-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.mark {
+  width: 88px;
+  height: 88px;
+  margin-top: var(--kinetus-space-4);
+  color: var(--kinetus-brand-cyan-bright);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--kinetus-font-display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.headingAccent {
+  display: block;
+  margin-top: var(--kinetus-space-2);
+  color: var(--kinetus-brand-cyan-bright);
+  font-size: 20px;
+  letter-spacing: 0.4em;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-1);
+}
+
+.body p {
+  margin: 0;
+  color: var(--kinetus-text-inverse);
+  font-size: var(--kinetus-type-body-size);
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  width: 100%;
+  margin-top: var(--kinetus-space-2);
+}
+
+.actions .button {
+  width: 100%;
+}
+
+.footnote {
+  margin-top: var(--kinetus-space-4);
+}
+
+@media (min-width: 768px) {
+  .dialog {
+    padding: var(--kinetus-space-10) var(--kinetus-space-12);
+  }
+
+  .heading {
+    font-size: 40px;
+  }
+}

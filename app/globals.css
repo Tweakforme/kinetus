@@ -99,6 +99,12 @@ h3 {
   border-radius: var(--kinetus-radius-sm);
 }
 
+/* Age gate showing (components/layout/AgeGate.tsx): the page behind it does not scroll. */
+html[data-age-gate="show"],
+html[data-age-gate="show"] body {
+  overflow: hidden;
+}
+
 /* Skip link: visually hidden until focused. */
 .skip-link {
   position: absolute;
