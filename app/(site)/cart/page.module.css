@@ -1,0 +1,100 @@
+/* Divider, then the lines and totals. Block flow wrapper (Container shrink-wrap trap). */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-8);
+}
+
+/* Lines and the code field left, totals right from 1024px (deck slide 21). */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-10);
+  align-items: start;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-8);
+  min-width: 0;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-5);
+  min-width: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-5);
+  padding: var(--kinetus-space-5);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-panel);
+}
+
+.checkout {
+  width: 100%;
+}
+
+.blocked,
+.notice {
+  margin: 0;
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+}
+
+.blocked {
+  color: var(--kinetus-state-error);
+  font-weight: 500;
+}
+
+.notice {
+  padding: var(--kinetus-space-3) var(--kinetus-space-4);
+  background: var(--kinetus-bg-subtle);
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-md);
+  color: var(--kinetus-text-primary);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kinetus-space-6);
+  padding: var(--kinetus-space-8) var(--kinetus-space-5);
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-card);
+  text-align: center;
+}
+
+.emptyText {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-size: var(--kinetus-type-body-l-size);
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: var(--kinetus-space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: var(--kinetus-space-12);
+  }
+
+  .side {
+    position: sticky;
+    top: calc(var(--kinetus-header-height) + var(--kinetus-space-6));
+  }
+}

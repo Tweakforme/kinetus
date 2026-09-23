@@ -8,7 +8,6 @@ import {
   ChevronDownIcon,
   CloseIcon,
   DocumentIcon,
-  EnvelopeIcon,
   MenuIcon,
   SearchIcon,
   TruckIcon,
@@ -37,7 +36,7 @@ type MobileNavProps = {
  * Mobile navigation: 48 x 48 menu trigger on the right of the header and a full-height
  * navy drawer (white text). Top bar with the white lockup and a close trigger, a search
  * field that submits GET /search?q=, accordion rows for items with children and plain
- * rows otherwise, the documentation and enquiry links, and the utility strings at the
+ * rows otherwise, the documentation link, and the utility strings at the
  * bottom. Focus is trapped inside the drawer while open, body scroll is locked, Escape
  * closes, and focus returns to the trigger.
  */
@@ -254,7 +253,7 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
               })}
             </ul>
 
-            <ul className={styles.secondary} aria-label="Documentation and enquiries">
+            <ul className={styles.secondary} aria-label="Documentation">
               <li>
                 <Link
                   href={HEADER_ICON_LINKS.documentation.href}
@@ -263,16 +262,6 @@ export function MobileNav({ items, forceVisible = false }: MobileNavProps) {
                 >
                   <DocumentIcon size={22} className={styles.secondaryIcon} />
                   <span>{HEADER_ICON_LINKS.documentation.label}</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={HEADER_ICON_LINKS.enquire.href}
-                  className={styles.secondaryLink}
-                  onClick={close}
-                >
-                  <EnvelopeIcon size={22} className={styles.secondaryIcon} />
-                  <span>{HEADER_ICON_LINKS.enquire.label}</span>
                 </Link>
               </li>
             </ul>

@@ -848,7 +848,7 @@ const TAX_RATES: { province: string; label: string; rateBps: number }[] = [
   { province: "MB", label: "Manitoba (GST + RST)", rateBps: 1200 },
   { province: "NB", label: "New Brunswick (HST)", rateBps: 1500 },
   { province: "NL", label: "Newfoundland and Labrador (HST)", rateBps: 1500 },
-  { province: "NS", label: "Nova Scotia (HST)", rateBps: 1500 },
+  { province: "NS", label: "Nova Scotia (HST)", rateBps: 1400 },
   { province: "NT", label: "Northwest Territories (GST)", rateBps: 500 },
   { province: "NU", label: "Nunavut (GST)", rateBps: 500 },
   { province: "ON", label: "Ontario (HST)", rateBps: 1300 },

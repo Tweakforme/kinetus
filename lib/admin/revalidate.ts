@@ -36,6 +36,12 @@ export function expireCollectionPages(...slugs: string[]): void {
   refreshAdmin();
 }
 
+/** After a volume tier save: every product page shows the tiers. */
+export function expireVolumeTierPages(): void {
+  revalidateTag(CACHE_TAGS.products, EXPIRE_NOW);
+  refreshAdmin();
+}
+
 /** Admin pages are rendered per request; this refreshes the one the save came from. */
 export function refreshAdmin(): void {
   revalidatePath("/admin", "layout");

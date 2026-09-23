@@ -1,0 +1,81 @@
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+}
+
+.heading {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-family: var(--kinetus-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+/* Label left, amount right on one baseline; long labels wrap, amounts never do. */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--kinetus-space-4);
+  padding-block: var(--kinetus-space-3);
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+  color: var(--kinetus-text-primary);
+  font-size: var(--kinetus-type-body-size);
+  line-height: 1.4;
+}
+
+.row dt {
+  min-width: 0;
+  font-weight: 500;
+}
+
+.row dd {
+  flex: 0 0 auto;
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.detail {
+  color: var(--kinetus-text-secondary);
+  font-weight: 400;
+}
+
+.discount dd {
+  color: var(--kinetus-state-success);
+}
+
+.total {
+  padding-top: var(--kinetus-space-4);
+  border-bottom: 0;
+  font-size: 20px;
+}
+
+.total dt,
+.total dd {
+  font-weight: 800;
+}
+
+.currency {
+  color: var(--kinetus-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.note {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+}

@@ -42,13 +42,14 @@ export default async function SettingsPage() {
       <div className={styles.pageHeader}>
         <div className={styles.pageHeaderText}>
           <h1 className={styles.pageTitle}>Settings</h1>
-          <p className={styles.pageIntro}>Sales tax and shipping.</p>
+          <p className={styles.pageIntro}>Sales tax, shipping and order payment details.</p>
         </div>
       </div>
 
       <div className={`${styles.notice} ${styles.noticeInfo}`}>
         <p>
-          These are configuration only: nothing on the site reads them yet. The shipping line at the
+          The cart and checkout use these values: the shipping charge and free-shipping rules apply
+          to every order, and tax is charged only while it is switched on. The shipping line at the
           top of every page and the Shipping Policy are fixed text and do not change when these
           values do.
         </p>
@@ -62,6 +63,9 @@ export default async function SettingsPage() {
           freeShippingThreshold: centsToInput(settings?.freeShippingThresholdCents ?? 19900),
           localFreeCity: settings?.localFreeCity ?? "",
           shipsInternationally: settings?.shipsInternationally ?? false,
+          orderNotifyEmail: settings?.orderNotifyEmail ?? "",
+          etransferEmail: settings?.etransferEmail ?? "",
+          etransferInstructions: settings?.etransferInstructions ?? "",
         }}
       />
       <TaxRatesForm

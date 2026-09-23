@@ -1,34 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useRef, type KeyboardEvent } from "react";
-import { DocumentIcon, EnvelopeIcon } from "@/components/icons/LineIcons";
+import { useId, useRef, useState, useTransition, type KeyboardEvent } from "react";
+import { addToCart } from "@/app/(site)/cart/actions";
+import { QuantityStepper } from "@/components/cart/QuantityStepper";
+import { CartIcon, DocumentIcon } from "@/components/icons/LineIcons";
+import { announceCartCount } from "@/components/layout/CartLink";
 import buttons from "@/components/ui/buttons.module.css";
+import { formatCad, tierPreview, type VolumeTier } from "@/lib/pricing";
 import { CONTACT_LINK } from "@/lib/site";
 import { useProductSelection } from "./ProductSelection";
 import styles from "./VariantPanel.module.css";
 
+type VariantPanelProps = {
+  /** Active volume discount tiers; the list is hidden when there are none. */
+  tiers: VolumeTier[];
+};
+
+type AddStatus = { tone: "ok" | "error"; message: string } | null;
+
 /**
- * The bordered panel of the product hero (deck slide 9): "SELECT SIZE" chips, a
- * hairline, the price with "CAD", then the two enquiry actions. The deck's ADD TO CART
- * and quantity stepper are replaced by "ENQUIRE TO ORDER" and its ADD TO WISHLIST by
- * "REQUEST BATCH DOCUMENTATION"; both go to the contact page.
+ * The bordered panel of the product hero (deck slide 9): "SELECT SIZE" chips, the
+ * quantity stepper, a hairline, the price with "CAD", the volume pricing lines, ADD TO
+ * CART, and "REQUEST BATCH DOCUMENTATION" (the deck's ADD TO WISHLIST) to the contact
+ * page.
  *
  * Chips follow the radio-group keyboard pattern (roving tabindex, arrow keys, Home/End).
  * The selection lives in ProductSelectionProvider so the size line in the copy column
- * follows it. Sale pricing was resolved and formatted on the server.
+ * follows it. Prices shown here are display only: the add action sends a variant id and
+ * a quantity, and the cart prices everything again on the server.
  */
-export function VariantPanel() {
+export function VariantPanel({ tiers }: VariantPanelProps) {
   const { variants, selected, select } = useProductSelection();
   const labelId = useId();
   const chipRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [quantity, setQuantity] = useState(1);
+  const [status, setStatus] = useState<AddStatus>(null);
+  const [pending, startTransition] = useTransition();
 
   const selectAt = (index: number) => {
     const variant = variants[index];
     if (!variant) {
       return;
     }
-    select(variant.id);
+    onSelectVariant(variant.id);
     chipRefs.current[index]?.focus();
   };
 
@@ -57,12 +72,37 @@ export function VariantPanel() {
     selectAt(next);
   };
 
+  const available = selected?.trackInventory ? Math.max(0, selected.stock ?? 0) : null;
+  const outOfStock = available === 0;
   const stockStatus =
-    selected && selected.trackInventory
-      ? (selected.stock ?? 0) > 0
+    selected && available !== null
+      ? available > 0
         ? { text: "In stock", tone: styles.inStock }
         : { text: "Out of stock", tone: styles.outOfStock }
       : null;
+  const maxQuantity = Math.min(99, available ?? 99);
+
+  const onSelectVariant = (id: string) => {
+    select(id);
+    setQuantity(1);
+    setStatus(null);
+  };
+
+  const onAdd = () => {
+    if (!selected || outOfStock || pending) {
+      return;
+    }
+    setStatus(null);
+    startTransition(async () => {
+      try {
+        const result = await addToCart(selected.id, quantity);
+        announceCartCount(result.count);
+        setStatus({ tone: result.status === "ok" ? "ok" : "error", message: result.message });
+      } catch {
+        setStatus({ tone: "error", message: "The item could not be added. Please try again." });
+      }
+    });
+  };
 
   return (
     <div className={styles.panel}>
@@ -86,7 +126,7 @@ export function VariantPanel() {
                     aria-checked={isSelected}
                     tabIndex={isSelected ? 0 : -1}
                     className={isSelected ? `${styles.chip} ${styles.chipSelected}` : styles.chip}
-                    onClick={() => select(variant.id)}
+                    onClick={() => onSelectVariant(variant.id)}
                     onKeyDown={(event) => onChipKeyDown(event, index)}
                   >
                     {variant.label}
@@ -95,6 +135,17 @@ export function VariantPanel() {
               })}
             </div>
           </div>
+
+          <QuantityStepper
+            label="Quantity"
+            value={quantity}
+            onChange={(next) => {
+              setQuantity(next);
+              setStatus(null);
+            }}
+            max={maxQuantity}
+            disabled={outOfStock}
+          />
 
           <hr className={styles.rule} />
 
@@ -116,11 +167,54 @@ export function VariantPanel() {
         </>
       )}
 
+      {selected && !outOfStock && tiers.length > 0 && (
+        <div className={styles.tiers}>
+          <p className={styles.tiersLabel}>Volume pricing</p>
+          <ul className={styles.tierList}>
+            {tiers.map((tier) => {
+              const preview = tierPreview(selected.priceCents, tier);
+              return (
+                <li key={tier.minQuantity} className={styles.tier}>
+                  <span className={styles.tierBuy}>Buy {tier.minQuantity}</span>
+                  <span className={styles.tierSave}>Save {tier.percentOff}%</span>
+                  <span className={`numeric ${styles.tierPrice}`}>
+                    {formatCad(preview.totalCents)}{" "}
+                    <span className={styles.tierEach}>({formatCad(preview.eachCents)} each)</span>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+          <p className={styles.tierNote}>Applies to the total quantity in your cart.</p>
+        </div>
+      )}
+
       <div className={styles.actions}>
-        <Link href={CONTACT_LINK.href} className={`${buttons.solid} ${styles.enquire}`}>
-          Enquire to order
-          <EnvelopeIcon size={22} />
-        </Link>
+        {selected && (
+          <button
+            type="button"
+            className={`${buttons.solid} ${styles.add}`}
+            onClick={onAdd}
+            disabled={outOfStock}
+            aria-disabled={pending || undefined}
+          >
+            {outOfStock ? "Out of stock" : pending ? "Adding" : "Add to cart"}
+            {!outOfStock && <CartIcon size={22} />}
+          </button>
+        )}
+        <p className={styles.addStatus} role="status" aria-live="polite">
+          {outOfStock && "This size is out of stock and cannot be ordered right now."}
+          {!outOfStock && status && (
+            <span className={status.tone === "error" ? styles.addError : styles.addOk}>
+              {status.message}{" "}
+              {status.tone === "ok" && (
+                <Link href="/cart" className={styles.viewCart}>
+                  View cart
+                </Link>
+              )}
+            </span>
+          )}
+        </p>
         <Link
           href={CONTACT_LINK.href}
           className={`${buttons.link} ${buttons.linkTeal} ${styles.documentation}`}

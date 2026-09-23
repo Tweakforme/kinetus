@@ -1,6 +1,7 @@
 import { DnaHelix } from "@/components/decor/DnaHelix";
 import { HexLattice } from "@/components/decor/HexLattice";
 import { Container } from "@/components/layout/Container";
+import type { VolumeTier } from "@/lib/pricing";
 import { productKindLabel, type ProductDetail } from "@/lib/products";
 import { COLLECTION_SLUGS, RESEARCH_USE_COPY } from "@/lib/site";
 import { ProductBreadcrumb } from "./ProductBreadcrumb";
@@ -16,6 +17,8 @@ type ProductHeroProps = {
   /** Images the page may show (product level plus active variants'), primary first. */
   images: ProductDetail["images"];
   variants: SelectableVariant[];
+  /** Active volume discount tiers, shown in the panel. */
+  tiers: VolumeTier[];
   /** Slugs of the product's published collections, used for the eyebrow. */
   collectionSlugs: string[];
   /** Id of the h1, for the section's accessible name. */
@@ -36,6 +39,7 @@ export function ProductHero({
   product,
   images,
   variants,
+  tiers,
   collectionSlugs,
   headingId,
 }: ProductHeroProps) {
@@ -78,7 +82,7 @@ export function ProductHero({
             </div>
 
             <div className={styles.panel}>
-              <VariantPanel />
+              <VariantPanel tiers={tiers} />
             </div>
 
             <div className={styles.detail}>

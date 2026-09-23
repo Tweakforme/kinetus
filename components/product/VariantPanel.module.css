@@ -1,6 +1,6 @@
 /*
  * Hero panel (deck slide 9): white card, faint border, 12px radius, soft shadow.
- * SELECT SIZE chips, hairline, price, solid enquiry button, documentation link.
+ * SELECT SIZE chips, quantity, hairline, price, volume pricing, ADD TO CART, documentation link.
  */
 .panel {
   display: flex;
@@ -138,8 +138,125 @@
   gap: var(--kinetus-space-2);
 }
 
-.enquire {
+.add {
   width: 100%;
+}
+
+/* Out of stock: the solid button, muted and inert. */
+.add:disabled,
+.add:disabled:hover {
+  background: var(--kinetus-bg-subtle);
+  border-color: var(--kinetus-border-default);
+  color: var(--kinetus-text-secondary);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
+.add[aria-disabled="true"] {
+  cursor: progress;
+}
+
+.addStatus {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.addStatus:empty {
+  display: none;
+}
+
+.addOk {
+  color: var(--kinetus-state-success);
+  font-weight: 500;
+}
+
+.addError {
+  color: var(--kinetus-state-error);
+  font-weight: 500;
+}
+
+.viewCart {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--kinetus-tap-target);
+  color: var(--kinetus-brand-teal);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: var(--kinetus-space-1);
+}
+
+/* Volume pricing: one row per tier, "Buy 2  Save 5%  $85.50 ($42.75 each)". */
+.tiers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-2);
+}
+
+.tiersLabel {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.tierList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--kinetus-border-subtle);
+  border-radius: var(--kinetus-radius-md);
+}
+
+.tier {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: baseline;
+  gap: var(--kinetus-space-3);
+  padding: var(--kinetus-space-3) var(--kinetus-space-4);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.tier + .tier {
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+.tierBuy {
+  color: var(--kinetus-text-heading);
+  font-weight: 600;
+}
+
+.tierSave {
+  color: var(--kinetus-brand-teal-deep);
+  font-weight: 600;
+}
+
+.tierPrice {
+  color: var(--kinetus-text-primary);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Wraps as a unit below the total when the panel is narrow. */
+.tierEach {
+  color: var(--kinetus-text-secondary);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.tierNote {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .documentation {

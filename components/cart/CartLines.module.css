@@ -1,0 +1,255 @@
+/*
+ * Cart line items (deck slide 21). Desktop: a table with a header row and hairlines
+ * between rows. Below 768px each row is a small grid:
+ *   thumb  product   remove
+ *   thumb  price     price
+ *   qty    qty       subtotal
+ */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.head {
+  display: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) var(--kinetus-tap-target);
+  grid-template-areas:
+    "thumb product remove"
+    "thumb price price"
+    "quantity quantity subtotal";
+  column-gap: var(--kinetus-space-4);
+  row-gap: var(--kinetus-space-2);
+  padding-block: var(--kinetus-space-5);
+  border-bottom: 1px solid var(--kinetus-border-subtle);
+  transition: opacity var(--motion-duration) var(--motion-ease);
+}
+
+.row:first-child {
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+.pending {
+  opacity: 0.6;
+}
+
+.row > td,
+.row > th {
+  padding: 0;
+  text-align: left;
+  font-weight: inherit;
+}
+
+.remove {
+  grid-area: remove;
+  justify-self: end;
+}
+
+.thumb {
+  grid-area: thumb;
+}
+
+.product {
+  grid-area: product;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-1);
+  min-width: 0;
+}
+
+.price {
+  grid-area: price;
+  display: flex;
+  align-items: baseline;
+  gap: var(--kinetus-space-2);
+  color: var(--kinetus-text-secondary);
+  font-size: var(--kinetus-type-body-s-size);
+}
+
+.quantity {
+  grid-area: quantity;
+  align-self: center;
+}
+
+.subtotal {
+  grid-area: subtotal;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  color: var(--kinetus-text-primary);
+  font-weight: 700;
+}
+
+/* Only the mobile card shows the "Price" / "Subtotal" labels; the table has a header. */
+.cellLabel {
+  color: var(--kinetus-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.removeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--kinetus-tap-target);
+  height: var(--kinetus-tap-target);
+  padding: 0;
+  border: 0;
+  border-radius: var(--kinetus-radius-sm);
+  background: transparent;
+  color: var(--kinetus-text-secondary);
+  cursor: pointer;
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.removeButton:hover:not(:disabled),
+.removeButton:active:not(:disabled) {
+  color: var(--kinetus-state-error);
+}
+
+.image,
+.imagePlaceholder {
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--kinetus-radius-md);
+  background: var(--kinetus-bg-subtle);
+  object-fit: contain;
+}
+
+/* 44px hit area without changing the row's spacing. */
+.productLink {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: var(--kinetus-tap-target);
+  margin-block: -11px;
+  color: var(--kinetus-text-heading);
+  font-size: var(--kinetus-type-body-size);
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.productLink:hover,
+.productLink:active {
+  color: var(--kinetus-brand-teal);
+  text-decoration: underline;
+}
+
+.variant {
+  color: var(--kinetus-brand-teal-deep);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.warning {
+  color: var(--kinetus-state-error);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: 1.4;
+}
+
+.was {
+  color: var(--kinetus-text-secondary);
+  font-size: 13px;
+}
+
+.alignEnd,
+.row > .alignEnd {
+  text-align: right;
+}
+
+@media (min-width: 768px) {
+  .head {
+    display: table-header-group;
+  }
+
+  .head th {
+    padding: 0 var(--kinetus-space-3) var(--kinetus-space-3);
+    color: var(--kinetus-text-heading);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .head th.alignEnd {
+    text-align: right;
+  }
+
+  .row {
+    display: table-row;
+    padding: 0;
+    border-top: 0;
+  }
+
+  .row:first-child {
+    border-top: 1px solid var(--kinetus-border-subtle);
+  }
+
+  .row > td,
+  .row > th {
+    padding: var(--kinetus-space-5) var(--kinetus-space-3);
+    vertical-align: middle;
+  }
+
+  .remove {
+    width: var(--kinetus-tap-target);
+    padding-inline: 0;
+  }
+
+  .thumb {
+    width: 64px;
+  }
+
+  .product {
+    display: table-cell;
+  }
+
+  .product > * {
+    display: block;
+  }
+
+  .product > .productLink {
+    display: flex;
+    width: fit-content;
+  }
+
+  .product > * + * {
+    margin-top: var(--kinetus-space-1);
+  }
+
+  .price,
+  .subtotal {
+    display: table-cell;
+    white-space: nowrap;
+  }
+
+  .price {
+    color: var(--kinetus-text-primary);
+    font-size: var(--kinetus-type-body-size);
+  }
+
+  .price .was {
+    display: block;
+  }
+
+  .subtotal .numeric {
+    display: block;
+  }
+
+  .cellLabel {
+    display: none;
+  }
+}

@@ -123,8 +123,9 @@ export const PRIMARY_NAV: NavItem[] = [
 ];
 
 /**
- * Header icon cluster (deck: search / account / cart). The site has no accounts or cart,
- * so the three slots are search, documentation and enquiries.
+ * Header icon cluster (deck: search / account / cart). The site has no accounts, so the
+ * slots are search, documentation and the cart (the cart sits outside the cluster so it
+ * stays visible at every width). Contact is a primary navigation item.
  */
 export const HEADER_ICON_LINKS = {
   search: { label: "Search the catalogue", href: "/search" },
@@ -132,7 +133,7 @@ export const HEADER_ICON_LINKS = {
     label: "Batch documentation",
     href: `${collectionHref(COLLECTION_SLUGS.research)}#documentation`,
   },
-  enquire: { label: "Enquire", href: "/contact" },
+  cart: { label: "Cart", href: "/cart" },
 } as const;
 
 /** Canonical full listing. */

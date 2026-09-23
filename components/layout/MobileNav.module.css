@@ -15,7 +15,9 @@
   transition: color var(--motion-duration) var(--motion-ease);
 }
 
+/* Pushed right; the cart link follows it at the far right of the header row. */
 .toggle {
+  margin-left: auto;
   color: var(--kinetus-text-heading);
 }
 

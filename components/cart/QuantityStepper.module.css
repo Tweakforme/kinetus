@@ -1,0 +1,82 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+}
+
+/* Matches the product panel's "SELECT SIZE" label. */
+.label {
+  color: var(--kinetus-text-heading);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* Three joined cells with hairline dividers (deck slide 9). */
+.stepper {
+  display: inline-grid;
+  grid-template-columns: 52px 56px 52px;
+  align-self: flex-start;
+  height: 52px;
+  border: 1px solid var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-md);
+  background: var(--kinetus-bg-base);
+  overflow: hidden;
+}
+
+.compact {
+  grid-template-columns: var(--kinetus-tap-target) var(--kinetus-space-12) var(--kinetus-tap-target);
+  height: var(--kinetus-tap-target);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--kinetus-text-heading);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration) var(--motion-ease),
+    color var(--motion-duration) var(--motion-ease);
+}
+
+.button:hover:not(:disabled),
+.button:active:not(:disabled) {
+  background: var(--kinetus-bg-subtle);
+  color: var(--kinetus-brand-teal);
+}
+
+.button:disabled {
+  color: var(--kinetus-border-chip);
+  cursor: not-allowed;
+}
+
+/* Focus ring inset so the stepper's overflow clip does not cut it off. */
+.button:focus-visible,
+.input:focus-visible {
+  outline-color: var(--kinetus-brand-cyan);
+  outline-offset: -3px;
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-inline: 1px solid var(--kinetus-border-default);
+  background: transparent;
+  color: var(--kinetus-text-primary);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.input:disabled {
+  color: var(--kinetus-text-secondary);
+}
