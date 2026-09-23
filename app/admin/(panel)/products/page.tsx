@@ -2,7 +2,7 @@ import { CollectionKind, Prisma, ProductStatus, VariantStatus } from "@prisma/cl
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { StatusBadge } from "@/components/admin/Badges";
+import { StatusBadge, WarningBadge } from "@/components/admin/Badges";
 import styles from "@/components/admin/admin.module.css";
 import { requireAdmin } from "@/lib/admin/auth";
 import { formatStoreDate } from "@/lib/admin/forms";
@@ -56,7 +56,7 @@ export default async function AdminProductsPage({ searchParams }: PageProps<"/ad
     include: {
       variants: {
         orderBy: [{ displayOrder: "asc" }, { createdAt: "asc" }],
-        select: { id: true, price: true, status: true },
+        select: { id: true, price: true, status: true, stock: true, trackInventory: true },
       },
       images: {
         orderBy: [{ isPrimary: "desc" }, { displayOrder: "asc" }, { createdAt: "asc" }],
@@ -186,6 +186,9 @@ export default async function AdminProductsPage({ searchParams }: PageProps<"/ad
               (variant) => variant.status === VariantStatus.ACTIVE,
             );
             const archived = product.variants.length - active.length;
+            const oversold = active.some(
+              (variant) => variant.trackInventory && (variant.stock ?? 0) < 0,
+            );
             const prices = active.map((variant) => variant.price);
             const low = prices.length > 0 ? Math.min(...prices) : null;
             const high = prices.length > 0 ? Math.max(...prices) : null;
@@ -229,6 +232,12 @@ export default async function AdminProductsPage({ searchParams }: PageProps<"/ad
                   <span className={styles.recordCell}>
                     <span className={styles.recordLabel}>Status: </span>
                     <StatusBadge status={product.status} />
+                    {oversold && (
+                      <>
+                        {" "}
+                        <WarningBadge>Oversold</WarningBadge>
+                      </>
+                    )}
                   </span>
                   <span className={styles.recordCell}>
                     <span className={styles.recordLabel}>Sizes: </span>

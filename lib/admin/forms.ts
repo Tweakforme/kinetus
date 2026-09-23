@@ -8,6 +8,8 @@ export type FormState = {
   status: "idle" | "success" | "error";
   /** One line shown at the top of the form. */
   message?: string;
+  /** More about the message, in plain text under it. */
+  detail?: string;
   /** Field name → error shown under that field. */
   errors?: Record<string, string>;
   /** Everything submitted, echoed back on error so no typing is lost. */

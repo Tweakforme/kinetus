@@ -143,6 +143,8 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px 96px;
+  /* Long unbroken text (a customer's email address) wraps instead of leaving its box. */
+  overflow-wrap: break-word;
 }
 
 @media (min-width: 768px) {
@@ -949,6 +951,495 @@
 
 .dangerZone {
   border-color: color-mix(in srgb, var(--kinetus-state-error) 45%, white);
+}
+
+/* ---------- Orders ---------- */
+
+/* The count of orders waiting on the client, on the Orders link in the admin bar. */
+.navCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  margin-left: 8px;
+  padding: 0 7px;
+  border-radius: var(--kinetus-radius-pill);
+  background: var(--kinetus-brand-cyan-bright);
+  color: var(--kinetus-bg-deep);
+  font-family: var(--kinetus-font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.badgeNew {
+  background: var(--kinetus-bg-deep);
+  border-color: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+}
+
+.badgeAwaiting {
+  background: var(--kinetus-bg-base);
+  border-color: var(--kinetus-brand-blue);
+  color: var(--kinetus-brand-blue);
+}
+
+.badgeWarn {
+  background: color-mix(in srgb, var(--kinetus-state-error) 8%, white);
+  border-color: var(--kinetus-state-error);
+  color: var(--kinetus-state-error);
+}
+
+/* The attention count at the top of the orders list: meant to be impossible to miss. */
+.attention {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 4px 18px;
+  margin: 0 0 20px;
+  padding: 18px 16px;
+  border-radius: var(--kinetus-radius-card);
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+}
+
+@media (min-width: 768px) {
+  .attention {
+    padding: 20px 28px;
+  }
+}
+
+.attentionCount {
+  margin: 0;
+  color: var(--kinetus-brand-cyan-bright);
+  font-family: var(--kinetus-font-mono);
+  font-size: 48px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+.attentionTitle {
+  margin: 0;
+  font-family: var(--kinetus-font-display);
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 700;
+}
+
+.attentionLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.attentionLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--kinetus-text-inverse);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.attention :focus-visible {
+  outline: 3px solid var(--kinetus-brand-cyan-bright);
+  outline-offset: 2px;
+}
+
+.attentionClear {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  background: var(--kinetus-bg-base);
+  color: var(--kinetus-text-secondary);
+}
+
+@media (min-width: 768px) {
+  .orderFilters {
+    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)) auto;
+  }
+}
+
+.recordStrong {
+  display: block;
+  color: var(--kinetus-text-heading);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.recordSub {
+  display: block;
+  color: var(--kinetus-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+
+.recordWarn {
+  display: block;
+  margin-top: 2px;
+  color: var(--kinetus-state-error);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.orderRecords .record,
+.itemRecords .record {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 1024px) {
+  .orderRecords .recordsHead,
+  .orderRecords .record {
+    grid-template-columns:
+      minmax(0, 1.5fr) minmax(0, 2fr) 56px 104px 150px
+      minmax(0, 1.4fr);
+    align-items: start;
+  }
+
+  .itemRecords .recordsHead,
+  .itemRecords .record {
+    grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr) 104px 56px 112px;
+    align-items: start;
+  }
+
+  .alignEnd {
+    justify-self: end;
+    text-align: right;
+  }
+}
+
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 16px 0 0;
+}
+
+.pagerText {
+  margin: 0;
+  color: var(--kinetus-text-secondary);
+}
+
+/* Order detail. */
+
+.pairs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .pairs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px 24px;
+  margin: 0;
+}
+
+@media (min-width: 560px) {
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.factsSingle {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.fact {
+  min-width: 0;
+}
+
+.fact dt {
+  color: var(--kinetus-text-secondary);
+  font-family: var(--kinetus-font-mono);
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fact dd {
+  margin: 2px 0 0;
+  color: var(--kinetus-text-primary);
+  font-size: 17px;
+  line-height: 24px;
+  overflow-wrap: anywhere;
+}
+
+/* Contact details the client copies: plain text, always selectable. */
+.selectable {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.contactLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 20px;
+  margin: 12px 0 0;
+}
+
+/* The shipping address laid out for a label. Double spaces (province, postal code) kept. */
+.address {
+  margin: 0 0 12px;
+  padding: 14px 16px;
+  border: 1px dashed var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-md);
+  background: var(--kinetus-bg-subtle);
+  color: var(--kinetus-text-heading);
+  font-size: 17px;
+  line-height: 26px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.copyRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+}
+
+@media (max-width: 767px) {
+  .copyRow .button {
+    flex: 1 1 100%;
+  }
+}
+
+.stockNote {
+  display: block;
+  margin-top: 4px;
+  color: var(--kinetus-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.stockNoteWarn {
+  color: var(--kinetus-state-error);
+  font-weight: 600;
+}
+
+/* Money breakdown, in the order the customer saw it. */
+.summary {
+  display: grid;
+  gap: 6px;
+  max-width: 420px;
+  margin: 16px 0 0 auto;
+  font-size: 16px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.summaryRow dt {
+  color: var(--kinetus-text-secondary);
+}
+
+.summaryRow dd {
+  margin: 0;
+  font-family: var(--kinetus-font-mono);
+}
+
+.summaryTotal {
+  padding-top: 8px;
+  border-top: 1px solid var(--kinetus-border-default);
+  font-weight: 700;
+}
+
+.summaryTotal dt {
+  color: var(--kinetus-text-heading);
+}
+
+.noteText {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.confirmations {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.confirmations li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.actionRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0 0;
+}
+
+@media (max-width: 767px) {
+  .actionRow .button {
+    flex: 1 1 100%;
+  }
+}
+
+.correct {
+  margin: 20px 0 0;
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+.correctSummary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-top: 8px;
+  color: var(--kinetus-brand-teal-dark);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.correctSummary:focus-visible {
+  outline: 3px solid var(--kinetus-brand-cyan);
+  outline-offset: 2px;
+}
+
+.correctRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: end;
+  gap: 12px 16px;
+  margin-top: 8px;
+}
+
+@media (min-width: 768px) {
+  .correctRow {
+    grid-template-columns: minmax(0, 320px) auto;
+    justify-content: start;
+  }
+}
+
+.detailsForm {
+  margin-top: 8px;
+}
+
+.detailsForm .grid {
+  margin-bottom: 16px;
+}
+
+/* Confirmation dialogs (native <dialog>: focus stays inside, Escape closes). */
+.dialog {
+  width: min(560px, calc(100% - 24px));
+  max-height: calc(100% - 24px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  background: var(--kinetus-bg-base);
+  box-shadow: var(--kinetus-shadow-panel);
+  color: var(--kinetus-text-primary);
+  overflow: auto;
+}
+
+.dialog::backdrop {
+  background: rgba(0, 19, 36, 0.6);
+}
+
+.dialogBody {
+  display: grid;
+  gap: 14px;
+  padding: 20px 16px;
+}
+
+@media (min-width: 768px) {
+  .dialogBody {
+    padding: 24px 28px;
+  }
+}
+
+.dialogTitle {
+  margin: 0;
+  color: var(--kinetus-text-heading);
+  font-family: var(--kinetus-font-display);
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.dialogText {
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.dialogStock {
+  padding: 12px 14px;
+  border-left: 4px solid var(--kinetus-brand-teal);
+  background: var(--kinetus-bg-subtle);
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.dialogStock p {
+  margin: 0;
+}
+
+.dialogStock p + p {
+  margin-top: 6px;
+}
+
+.dialogStockWarn {
+  border-left-color: var(--kinetus-state-error);
+}
+
+.dialogStockTitle {
+  color: var(--kinetus-text-heading);
+  font-weight: 700;
+}
+
+.dialogActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 767px) {
+  .dialogActions .button {
+    flex: 1 1 100%;
+  }
+}
+
+.dialog :focus-visible {
+  outline: 3px solid var(--kinetus-brand-cyan);
+  outline-offset: 2px;
 }
 
 /* ---------- Sign-in ---------- */

@@ -56,7 +56,8 @@ function storedFigures(order: {
  * client's Terms: an acknowledgement is not acceptance). References are sequential, so
  * the order's contents are shown only to the browser that placed it (a short-lived
  * cookie set at submission); anyone else with the link sees the reference and the next
- * steps only. Never listed or linked anywhere public.
+ * steps only. Never listed or linked anywhere public. It says an email was sent only when
+ * the order records one (notificationSentAt).
  */
 export default async function ConfirmationPage({ params }: ConfirmationPageProps) {
   const { reference } = await params;
@@ -121,7 +122,9 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
             )}
             {isPlacer && (
               <p className={styles.emailNote}>
-                A copy of this order was sent to {order.customerEmail}.
+                {order.notificationSentAt
+                  ? `A copy of this order was sent to ${order.customerEmail}.`
+                  : `${SITE_NAME} will be in touch by email shortly.`}
               </p>
             )}
           </section>
@@ -150,8 +153,9 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
           ) : (
             <aside className={styles.card} aria-label="Order details">
               <p className={styles.private}>
-                Order details are shown only in the browser that placed the order, and in the email
-                sent to the address given at checkout.
+                {order.notificationSentAt
+                  ? "Order details are shown only in the browser that placed the order, and in the email sent to the address given at checkout."
+                  : "Order details are shown only in the browser that placed the order."}
               </p>
             </aside>
           )}

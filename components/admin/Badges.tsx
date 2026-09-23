@@ -1,3 +1,4 @@
+import { ORDER_STATUS_LABEL, type OrderStatus } from "@/lib/order-status";
 import styles from "./admin.module.css";
 
 const TONE: Record<string, string> = {
@@ -21,6 +22,26 @@ export function StatusBadge({ status }: { status: string }) {
       {WORD[status] ?? status}
     </span>
   );
+}
+
+const ORDER_TONE: Record<OrderStatus, string> = {
+  NEW: styles.badgeNew,
+  AWAITING_PAYMENT: styles.badgeAwaiting,
+  PAID: styles.badgeLive,
+  SHIPPED: styles.badgeOn,
+  CANCELLED: styles.badgeArchived,
+};
+
+/** An order's status. New and Awaiting payment stand out: both are waiting on the client. */
+export function OrderStatusBadge({ status }: { status: OrderStatus }) {
+  return (
+    <span className={`${styles.badge} ${ORDER_TONE[status]}`}>{ORDER_STATUS_LABEL[status]}</span>
+  );
+}
+
+/** Something the client has to act on, such as a customer who was never emailed. */
+export function WarningBadge({ children }: { children: string }) {
+  return <span className={`${styles.badge} ${styles.badgeWarn}`}>{children}</span>;
 }
 
 /** On / Off for switches such as a discount code being live. */

@@ -2,8 +2,8 @@ import { Prisma } from "@prisma/client";
 import { headers } from "next/headers";
 import { checkDiscountCode, getPricingContext, resolveCart, type CartEntry } from "@/lib/cart";
 import { formatReference, type CheckoutDetails } from "@/lib/checkout-fields";
-import { prisma } from "@/lib/db";
-import { sendOrderEmails, type OrderForEmail } from "@/lib/order-email";
+import { prisma, rawTable } from "@/lib/db";
+import { sendOrderEmails, type OrderForEmail, type SendOutcome } from "@/lib/order-email";
 import { DISCOUNT_CODE_MESSAGES, priceCart } from "@/lib/pricing";
 
 /**
@@ -50,23 +50,6 @@ export async function markAttemptSucceeded(id: string): Promise<void> {
 
 const STORE_TIME_ZONE = "America/Edmonton";
 
-/**
- * The two raw statements below name their schema. Prisma's `?schema=` reaches its own
- * queries, but behind the connection pooler a raw statement runs with whatever
- * search_path the pooled session has, which is not guaranteed to be that schema.
- */
-const SCHEMA = (() => {
-  try {
-    return new URL(process.env.DATABASE_URL ?? "").searchParams.get("schema") || "public";
-  } catch {
-    return "public";
-  }
-})();
-
-function table(name: "OrderSequence" | "DiscountCode"): Prisma.Sql {
-  return Prisma.raw(`"${SCHEMA.replace(/"/g, '""')}"."${name}"`);
-}
-
 /** Order year in Calgary time, so a New Year's Eve evening order is not numbered next year. */
 function storeYear(now: Date): number {
   return Number(
@@ -81,7 +64,7 @@ function storeYear(now: Date): number {
  */
 async function nextReference(tx: Prisma.TransactionClient, year: number): Promise<string> {
   const rows = await tx.$queryRaw<Array<{ last: number }>>`
-    INSERT INTO ${table("OrderSequence")} AS seq ("year", "last") VALUES (${year}, 1)
+    INSERT INTO ${rawTable("OrderSequence")} AS seq ("year", "last") VALUES (${year}, 1)
     ON CONFLICT ("year") DO UPDATE SET "last" = seq."last" + 1
     RETURNING "last"`;
   const last = rows[0]?.last;
@@ -94,7 +77,7 @@ async function nextReference(tx: Prisma.TransactionClient, year: number): Promis
 /** Counts a redemption only while the code is still usable; false when it is not. */
 async function redeemCode(tx: Prisma.TransactionClient, code: string, now: Date): Promise<boolean> {
   const updated = await tx.$executeRaw`
-    UPDATE ${table("DiscountCode")}
+    UPDATE ${rawTable("DiscountCode")}
     SET "timesRedeemed" = "timesRedeemed" + 1, "updatedAt" = ${now}
     WHERE "code" = ${code}
       AND "isActive" = true
@@ -214,8 +197,11 @@ export async function placeOrder(input: PlaceOrderInput, now = new Date()): Prom
   );
 }
 
-/** Sends the order emails and records the outcome on the order. Never throws. */
-export async function notifyOrder(order: OrderForEmail): Promise<void> {
+/**
+ * Sends the order emails and records the outcome on the order. Never throws. Used at
+ * checkout and by the admin's Resend order notification button, which reports the outcome.
+ */
+export async function notifyOrder(order: OrderForEmail): Promise<SendOutcome> {
   try {
     const settings = await prisma.storeSetting.findUnique({
       where: { id: "store" },
@@ -232,7 +218,13 @@ export async function notifyOrder(order: OrderForEmail): Promise<void> {
         ? { notificationSentAt: new Date(), notificationError: null }
         : { notificationError: outcome.reason },
     });
+    return outcome;
   } catch (error) {
     console.error(`[order-email] ${order.referenceNumber}: notification step failed`, error);
+    return {
+      sent: false,
+      reason:
+        "The notification step failed before it finished, so the result is unknown. See the server log.",
+    };
   }
 }

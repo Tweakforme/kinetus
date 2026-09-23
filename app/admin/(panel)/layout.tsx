@@ -2,25 +2,28 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { AdminNav } from "@/components/admin/AdminNav";
 import styles from "@/components/admin/admin.module.css";
-import { requireAdmin } from "@/lib/admin/auth";
+import { ADMIN_HOME, requireAdmin } from "@/lib/admin/auth";
+import { countOrdersNeedingAttention } from "@/lib/admin/orders";
 import { logout } from "../actions";
 
 /**
- * Signed-in admin shell: the navy bar with the four sections, a link to the public site
- * and Log out. Pages and server actions each check the session themselves as well; a
- * layout is not re-rendered on every navigation, so it cannot be the only check.
+ * Signed-in admin shell: the navy bar with the sections (Orders carries the count of
+ * orders needing attention), a link to the public site and Log out. Pages and server
+ * actions each check the session themselves as well; a layout is not re-rendered on every
+ * navigation, so it cannot be the only check.
  */
 export default async function PanelLayout({ children }: { children: ReactNode }) {
   const admin = await requireAdmin();
+  const attentionCount = await countOrdersNeedingAttention();
 
   return (
     <>
       <header className={styles.topbar}>
         <div className={styles.topbarInner}>
-          <Link href="/admin/products" className={styles.brand}>
+          <Link href={ADMIN_HOME} className={styles.brand}>
             Kinetus <span className={styles.brandTag}>Admin</span>
           </Link>
-          <AdminNav />
+          <AdminNav attentionCount={attentionCount} />
           <div className={styles.account}>
             <span className={styles.accountEmail}>{admin.email}</span>
             <a href="/" className={styles.topbarLink} target="_blank" rel="noopener">

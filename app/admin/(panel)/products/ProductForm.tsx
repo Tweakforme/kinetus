@@ -401,11 +401,15 @@ function VariantCard({
   const value = (field: keyof VariantFormData, saved: string) => echoed?.[name(field)] ?? saved;
   const error = (field: string) => errors[name(field)];
   const legend = isNew ? "New size" : row.label;
+  const savedStock = row.stock === "" ? null : Number(row.stock);
+  const oversoldBy = !isNew && savedStock !== null && savedStock < 0 ? -savedStock : 0;
 
   return (
     <fieldset className={isNew ? `${styles.card} ${styles.cardMuted}` : styles.card}>
       <legend className={styles.cardLegend}>{legend}</legend>
       <input type="hidden" name="variantKeys" value={row.key} />
+      {/* The count as loaded: left unchanged, the save keeps the current count instead. */}
+      {!isNew && <input type="hidden" name={name("stockLoaded")} value={row.stock} />}
       <div className={`${styles.grid} ${styles.grid4}`}>
         <TextField
           label="Size"
@@ -485,7 +489,16 @@ function VariantCard({
           mono
           defaultValue={value("stock", row.stock)}
           error={error("stock")}
-          hint="Units on hand. Used only when stock is tracked."
+          hint={
+            oversoldBy > 0 ? (
+              <span className={styles.stockNoteWarn}>
+                Oversold by {oversoldBy}: more were marked paid than were in stock. Enter the real
+                count when you restock.
+              </span>
+            ) : (
+              "Units on hand. Used only when stock is tracked. Goes down when an order is marked paid and back up if it is cancelled."
+            )
+          }
         />
         <CheckboxField
           className={styles.span2}

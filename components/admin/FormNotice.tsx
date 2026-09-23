@@ -16,6 +16,7 @@ export function FormNotice({ state }: { state: FormState }) {
     return (
       <div role="status" className={`${styles.notice} ${styles.noticeSuccess}`}>
         <p>{state.message}</p>
+        {state.detail && <p>{state.detail}</p>}
       </div>
     );
   }
@@ -23,6 +24,7 @@ export function FormNotice({ state }: { state: FormState }) {
   return (
     <div role="alert" className={`${styles.notice} ${styles.noticeError}`}>
       <p className={styles.noticeTitle}>{state.message}</p>
+      {state.detail && <p>{state.detail}</p>}
       {errors.length > 0 && (
         <ul className={styles.noticeList}>
           {errors.map(([name, message]) => (

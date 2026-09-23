@@ -7,9 +7,11 @@ import { SITE_NAME } from "@/lib/site";
 
 /**
  * Order notification emails, sent through Resend: one to the client with everything
- * needed to work the order, one to the customer with the reference and what happens next.
- * Plain and neutral. Without RESEND_API_KEY nothing is sent: both payloads are logged to
- * the server console and the order records why, so the client can follow up by hand.
+ * needed to work the order, one to the customer with the reference and what happens next,
+ * and (only when the client presses the admin button) the customer's shipping
+ * notification. Plain and neutral. Without RESEND_API_KEY nothing is sent: the payloads are
+ * logged to the server console and the order records why, so the client can follow up by
+ * hand.
  */
 
 // TODO: confirm the sending address once the client's domain is verified in Resend.
@@ -187,24 +189,63 @@ export function customerMessage(order: OrderForEmail, settings: EmailSettings): 
 }
 
 /**
- * Sends both emails. Never throws: the order is already saved, so a failure is reported
- * in the result (and recorded on the order by the caller), not raised.
+ * The customer's shipping notification, sent only when the client presses Send shipping
+ * notification: the tracking number and carrier when recorded, what shipped and where.
  */
-export async function sendOrderEmails(
-  order: OrderForEmail,
-  settings: EmailSettings,
-): Promise<SendOutcome> {
-  const messages = [clientMessage(order, settings), customerMessage(order, settings)];
+export function shippingMessage(order: OrderForEmail): Message {
+  const tracking = [
+    order.carrier ? `Carrier: ${order.carrier}` : null,
+    order.trackingNumber ? `Tracking number: ${order.trackingNumber}` : null,
+  ].filter((line): line is string => line !== null);
+  const sections = [
+    { lines: [`Order ${order.referenceNumber} has shipped.`] },
+    ...(tracking.length > 0 ? [{ heading: "Tracking", lines: tracking }] : []),
+    { heading: "What was shipped", lines: itemLines(order) },
+    { heading: "Ship to", lines: addressLines(order) },
+  ];
+  return {
+    to: order.customerEmail,
+    subject: `${SITE_NAME} order ${order.referenceNumber} has shipped`,
+    text: toText(sections),
+    html: toHtml(sections),
+  };
+}
+
+/** Whether emails can be sent at all on this server. */
+export function emailConfigured(): boolean {
+  return Boolean(process.env.RESEND_API_KEY?.trim());
+}
+
+/** The reason recorded when there is no API key; the admin explains it in plain words. */
+export const NO_API_KEY_REASON = "RESEND_API_KEY is not set";
+
+/**
+ * Starts OrderRequest.notificationError when the failure was the shipping notification, so
+ * it is never mistaken for the order emails failing.
+ */
+export const SHIPPING_ERROR_PREFIX = "Shipping notification: ";
+
+/**
+ * Sends each message through Resend, or logs every payload when RESEND_API_KEY is not set.
+ * Never throws: the caller records the outcome on the order.
+ */
+async function deliver(reference: string, messages: Message[]): Promise<SendOutcome> {
   const apiKey = process.env.RESEND_API_KEY?.trim();
 
   if (!apiKey) {
     for (const message of messages) {
       console.info(
-        `[order-email] RESEND_API_KEY is not set; not sent. Payload for ${order.referenceNumber}:\n` +
+        `[order-email] ${NO_API_KEY_REASON}; not sent. Payload for ${reference}:\n` +
           JSON.stringify({ to: message.to, subject: message.subject, text: message.text }, null, 2),
       );
     }
-    return { sent: false, reason: "RESEND_API_KEY is not set; emails were logged, not sent." };
+    return {
+      sent: false,
+      reason:
+        messages.length === 1
+          ? `${NO_API_KEY_REASON}; the email was logged, not sent.`
+          : `${NO_API_KEY_REASON}; emails were logged, not sent.`,
+    };
   }
 
   const resend = new Resend(apiKey);
@@ -221,8 +262,27 @@ export async function sendOrderEmails(
     }
   }
   if (failures.length > 0) {
-    console.error(`[order-email] ${order.referenceNumber} not fully sent: ${failures.join("; ")}`);
+    console.error(`[order-email] ${reference} not fully sent: ${failures.join("; ")}`);
     return { sent: false, reason: failures.join("; ").slice(0, 500) };
   }
   return { sent: true };
+}
+
+/**
+ * Sends both order emails. Never throws: the order is already saved, so a failure is
+ * reported in the result (and recorded on the order by the caller), not raised.
+ */
+export function sendOrderEmails(
+  order: OrderForEmail,
+  settings: EmailSettings,
+): Promise<SendOutcome> {
+  return deliver(order.referenceNumber, [
+    clientMessage(order, settings),
+    customerMessage(order, settings),
+  ]);
+}
+
+/** Sends the shipping notification to the customer. Never throws. */
+export function sendShippingEmail(order: OrderForEmail): Promise<SendOutcome> {
+  return deliver(order.referenceNumber, [shippingMessage(order)]);
 }

@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef, useState, type FormEvent } from "rea
 import { sendContactMessage, type ContactState } from "@/app/(site)/(content)/contact/actions";
 import buttons from "@/components/ui/buttons.module.css";
 import { CONTACT_FIELD, validateContact, type ContactErrors } from "@/lib/contact-fields";
-import { CONTACT_EMAIL } from "@/lib/site";
+import { CONTACT_EMAIL, SITE_NAME } from "@/lib/site";
 import styles from "./ContactForm.module.css";
 
 const IDLE: ContactState = { status: "idle" };
@@ -71,10 +71,21 @@ export function ContactForm() {
     ) : null;
 
   if (state.status === "sent") {
+    // "Sent" only when the email went out; a message that was saved but not emailed was
+    // received, and the team will reply.
     return (
       <div ref={statusRef} tabIndex={-1} className={styles.sent} role="status">
-        <p className={styles.sentTitle}>Thank you. Your message has been sent.</p>
-        <p className={styles.note}>We typically respond within 1 business day.</p>
+        {state.emailed ? (
+          <>
+            <p className={styles.sentTitle}>Thank you. Your message has been sent.</p>
+            <p className={styles.note}>We typically respond within 1 business day.</p>
+          </>
+        ) : (
+          <>
+            <p className={styles.sentTitle}>Thank you. Your message has been received.</p>
+            <p className={styles.note}>{SITE_NAME} will be in touch by email shortly.</p>
+          </>
+        )}
       </div>
     );
   }
