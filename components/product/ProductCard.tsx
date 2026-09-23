@@ -1,12 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRightIcon,
-  ClipboardCheckIcon,
-  HexagonIcon,
-  MicroscopeIcon,
-  ShieldCheckIcon,
-} from "@/components/icons/LineIcons";
+import { ArrowRightIcon } from "@/components/icons/LineIcons";
 import buttons from "@/components/ui/buttons.module.css";
 import { blurPlaceholder } from "@/lib/images";
 import type { ProductCardModel } from "@/lib/products";
@@ -19,20 +13,10 @@ type ProductCardProps = {
 };
 
 /**
- * The four micro-badges of the deck's product card (slide 7) with the client's packaging
- * strings in place of "HPLC TESTED" and "LC-MS VERIFIED".
- */
-const BADGES = [
-  { Icon: ShieldCheckIcon, label: ["THIRD-PARTY", "TESTED"] },
-  { Icon: MicroscopeIcon, label: ["LAB VERIFIED", "PURITY & POTENCY"] },
-  { Icon: ClipboardCheckIcon, label: ["BATCH-SPECIFIC", "COA AVAILABLE"] },
-  { Icon: HexagonIcon, label: ["RESEARCH GRADE", "MATERIAL"] },
-] as const;
-
-/**
  * Deck product card (slide 7): landscape media with box and vial, uppercase name,
- * "10 mg · Lyophilized powder" subline, hairline, four micro-badges with tiny line icons,
- * large bold price with "CAD / VIAL" beside it, and "VIEW PRODUCT →". One fluid card.
+ * "10 mg · Lyophilized powder" subline, hairline, large bold price with "CAD / VIAL"
+ * beside it, and "VIEW PRODUCT →". One fluid card. The deck's four micro-badges are not
+ * shown, at the client's request.
  */
 export function ProductCard({ product, priority = false }: ProductCardProps) {
   const blur = product.imageUrl ? blurPlaceholder(product.imageUrl) : undefined;
@@ -60,19 +44,6 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {product.subline && <span className={styles.subline}>{product.subline}</span>}
 
         <span className={styles.rule} aria-hidden="true" />
-
-        <span className={styles.badges} aria-label="Packaging statements">
-          {BADGES.map(({ Icon, label }) => (
-            <span key={label.join(" ")} className={styles.badge}>
-              <Icon size={22} className={styles.badgeIcon} />
-              <span className={styles.badgeLabel}>
-                {label[0]}
-                <br />
-                {label[1]}
-              </span>
-            </span>
-          ))}
-        </span>
 
         {product.priceLabel && (
           <span className={styles.priceRow}>
