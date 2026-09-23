@@ -29,9 +29,10 @@ const RELATED_LINKS = [
 ];
 
 /**
- * Contact (deck slide 23): the enquiry form on the left, composing a mailto since no
- * backend exists, and a white details card on the right with the one confirmed channel,
- * the confirmed location, the documentation note and the related policy links.
+ * Contact (deck slide 23): the enquiry form on the left, which saves each message and
+ * emails it to the client (lib/contact.ts), and a white details card on the right with the
+ * one confirmed channel, the confirmed location, the documentation note and the related
+ * policy links.
  */
 export function ContactPage() {
   return (

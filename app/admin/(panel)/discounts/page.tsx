@@ -7,7 +7,7 @@ import { DiscountCodesForm, VolumeTiersForm } from "./DiscountForms";
 
 export const metadata: Metadata = { title: "Discounts" };
 
-/** /admin/discounts: the client's codes and the volume tiers. Configuration only. */
+/** /admin/discounts: the client's codes and the volume tiers, which the cart and checkout apply. */
 export default async function DiscountsPage() {
   await requireAdmin();
   const [codes, tiers] = await Promise.all([
@@ -35,8 +35,9 @@ export default async function DiscountsPage() {
             ` Exception: ${stacking.join(", ")} ${stacking.length === 1 ? "is" : "are"} set to combine with the volume discount.`}
         </p>
         <p>
-          These are configuration only. No checkout uses them yet, so nothing here changes a price
-          on the site.
+          The cart and checkout apply these to every order. When both discounts come to the same
+          amount, the volume discount applies. A code set to combine takes its percentage off what
+          remains after the volume discount.
         </p>
       </div>
 

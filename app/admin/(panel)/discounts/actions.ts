@@ -177,7 +177,7 @@ export async function saveDiscountCodes(_previous: FormState, form: FormData): P
   refreshAdmin();
   const active = parsed.filter((code) => code.isActive).length;
   return successState(
-    `Discount codes saved. ${active === 0 ? "No code is switched on." : `${active} switched on.`} Nothing on the site uses them until checkout is built.`,
+    `Discount codes saved. ${active === 0 ? "No code is switched on." : `${active} switched on.`} The cart and checkout use them from now on.`,
   );
 }
 
@@ -264,5 +264,7 @@ export async function saveVolumeTiers(_previous: FormState, form: FormData): Pro
   }, TRANSACTION_OPTIONS);
 
   expireVolumeTierPages();
-  return successState("Volume tiers saved. Nothing on the site uses them until checkout is built.");
+  return successState(
+    "Volume tiers saved. The cart, checkout and product pages use them from now on.",
+  );
 }

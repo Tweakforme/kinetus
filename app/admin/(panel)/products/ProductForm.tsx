@@ -518,7 +518,8 @@ function VariantCard({
           hint={
             <>
               The third-party test report for this product at this strength, starting with https://.
-              Stored for now; the site does not show it yet.
+              Once a size has one, the product appears on the Test Reports page, linked from its
+              product page.
               {row.testReportChanged ? ` Last changed ${row.testReportChanged}.` : ""}
             </>
           }

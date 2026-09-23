@@ -20,12 +20,15 @@
 //
 // Phase 7A (migration admin_and_catalogue_fields, additive only): variant-level images,
 // variant test report links, collection kind and artwork fields, a reserved product
-// information sheet link, the discount / volume tier / tax / store setting tables (admin
-// configuration only; nothing consumes them yet), and AdminSession + AdminLoginAttempt
-// for server-side sessions and login rate limiting.
+// information sheet link, the discount / volume tier / tax / store setting tables (edited
+// in the admin, applied by the cart and checkout since Phase 8), and AdminSession +
+// AdminLoginAttempt for server-side sessions and login rate limiting.
 //
 // Phase 9 (migration order_stock_tracking, additive only): OrderRequest.stockAdjusted, the
 // guard that makes stock moves on order status changes idempotent.
+//
+// Cleanup (migration contact_message_handled, additive only): ContactMessage.handledAt, set
+// when the client marks a contact message handled in the admin.
 
 generator client {
   provider = "prisma-client-js"
@@ -259,6 +262,8 @@ model ContactMessage {
   sentAt    DateTime?
   /// Why the email did not send (no API key, provider error). Null once sent.
   sendError String?
+  /// Set when the client marks the message handled in the admin; null while it waits.
+  handledAt DateTime?
   createdAt DateTime  @default(now())
 
   @@index([ip, createdAt])
@@ -287,8 +292,8 @@ model AdminLoginAttempt {
 }
 
 // ---------------------------------------------------------------------------------------
-// Commerce configuration (Phase 7A). Edited in the admin only. Nothing consumes these
-// tables yet: they exist so the client can configure them before checkout is built.
+// Commerce configuration (Phase 7A). Edited in the admin; the cart and checkout have
+// applied them since Phase 8 (lib/pricing.ts).
 // ---------------------------------------------------------------------------------------
 
 /// Codes are stored exactly as the client wrote them and match case-insensitively at

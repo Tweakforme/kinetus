@@ -123,7 +123,9 @@ export async function updateCartQuantity(
   quantity: unknown,
 ): Promise<CartActionResult> {
   const entries = await liveEntries();
-  const existing = isVariantId(variantId) ? entries.find((entry) => entry.variantId === variantId) : null;
+  const existing = isVariantId(variantId)
+    ? entries.find((entry) => entry.variantId === variantId)
+    : null;
   if (!existing || !isQuantity(quantity) || quantity > MAX_LINE_QUANTITY) {
     return { status: "error", message: "Choose a quantity from 1 to 99.", count: countOf(entries) };
   }
