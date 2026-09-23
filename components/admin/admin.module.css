@@ -25,11 +25,17 @@
   padding: 8px 16px;
 }
 
-@media (min-width: 960px) {
+@media (min-width: 768px) {
+  .topbarInner {
+    padding: 8px 32px;
+  }
+}
+
+/* One row once the six sections, their counts and the account buttons fit beside the brand. */
+@media (min-width: 1120px) {
   .topbarInner {
     grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-areas: "brand nav account";
-    padding: 8px 32px;
   }
 }
 
@@ -98,18 +104,6 @@
   align-items: center;
   justify-content: flex-end;
   gap: 4px 8px;
-}
-
-.accountEmail {
-  display: none;
-  color: var(--kinetus-text-inverse-muted);
-  font-size: 14px;
-}
-
-@media (min-width: 1200px) {
-  .accountEmail {
-    display: inline;
-  }
 }
 
 .topbarLink,
@@ -1091,8 +1085,35 @@
 }
 
 .orderRecords .record,
-.itemRecords .record {
+.itemRecords .record,
+.messageRecords .record {
   grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+  .messageFilters {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  }
+}
+
+/* The first lines of a contact message in the list; the full text is on its own page. */
+.messagePreview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  color: var(--kinetus-text-primary);
+}
+
+@media (min-width: 1024px) {
+  .messageRecords .recordsHead,
+  .messageRecords .record {
+    grid-template-columns:
+      minmax(0, 1.5fr) minmax(0, 2.4fr) 176px minmax(0, 1.3fr)
+      118px;
+    align-items: start;
+  }
 }
 
 @media (min-width: 1024px) {

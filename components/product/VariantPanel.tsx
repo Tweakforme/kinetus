@@ -7,6 +7,7 @@ import { QuantityStepper } from "@/components/cart/QuantityStepper";
 import { CartIcon, ClipboardCheckIcon, DocumentIcon } from "@/components/icons/LineIcons";
 import { announceCartCount } from "@/components/layout/CartLink";
 import buttons from "@/components/ui/buttons.module.css";
+import { createInFlight } from "@/lib/in-flight";
 import { formatCad, tierPreview, type VolumeTier } from "@/lib/pricing";
 import { CONTACT_LINK } from "@/lib/site";
 import { useProductSelection } from "./ProductSelection";
@@ -39,6 +40,7 @@ export function VariantPanel({ tiers, testReportsHref }: VariantPanelProps) {
   const [quantity, setQuantity] = useState(1);
   const [status, setStatus] = useState<AddStatus>(null);
   const [pending, startTransition] = useTransition();
+  const [addFlight] = useState(createInFlight);
 
   const selectAt = (index: number) => {
     const variant = variants[index];
@@ -91,7 +93,9 @@ export function VariantPanel({ tiers, testReportsHref }: VariantPanelProps) {
   };
 
   const onAdd = () => {
-    if (!selected || outOfStock || pending) {
+    // `pending` updates only after a re-render; the in-flight flag also stops a second
+    // activation in the same task, which would otherwise add the item twice.
+    if (!selected || outOfStock || pending || !addFlight.start()) {
       return;
     }
     setStatus(null);
@@ -102,6 +106,8 @@ export function VariantPanel({ tiers, testReportsHref }: VariantPanelProps) {
         setStatus({ tone: result.status === "ok" ? "ok" : "error", message: result.message });
       } catch {
         setStatus({ tone: "error", message: "The item could not be added. Please try again." });
+      } finally {
+        addFlight.finish();
       }
     });
   };

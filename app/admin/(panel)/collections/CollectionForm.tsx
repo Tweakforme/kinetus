@@ -208,8 +208,8 @@ function CollectionFields({
         </h2>
         <p className={styles.panelIntro}>
           Optional artwork for this collection. JPEG, PNG or WebP up to {maxUploadLabel}; images are
-          resized to 1600 pixels and icons to 512 pixels, then converted to WebP. The site does not
-          display collection artwork yet.
+          resized to 1600 pixels and icons to 512 pixels, then converted to WebP. A category&apos;s
+          icon appears in Shop by Category on the homepage; the image is not shown on the site.
         </p>
         <div className={`${styles.grid} ${styles.grid2}`}>
           <ArtworkField

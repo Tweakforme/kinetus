@@ -39,6 +39,15 @@ export function OrderStatusBadge({ status }: { status: OrderStatus }) {
   );
 }
 
+/** A contact message's handled mark. Not handled stands out: it is waiting on the client. */
+export function HandledBadge({ handled }: { handled: boolean }) {
+  return (
+    <span className={`${styles.badge} ${handled ? styles.badgeOn : styles.badgeNew}`}>
+      {handled ? "Handled" : "Not handled"}
+    </span>
+  );
+}
+
 /** Something the client has to act on, such as a customer who was never emailed. */
 export function WarningBadge({ children }: { children: string }) {
   return <span className={`${styles.badge} ${styles.badgeWarn}`}>{children}</span>;

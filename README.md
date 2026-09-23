@@ -2,9 +2,10 @@
 
 Next.js (App Router) · TypeScript · PostgreSQL (Prisma) · Vercel.
 
-**Status: Phase 7A.** Public catalogue and content pages, plus the admin at `/admin`
-(catalogue, collections, discounts and store settings). No cart, checkout or
-order-request flow yet.
+**Status: build complete (Phase 9).** Public catalogue and content pages, cart and
+checkout (orders are placed without payment; the client arranges Interac e-Transfer), and
+the admin at `/admin`: orders, contact messages, catalogue, collections, discounts and store
+settings.
 
 ## Scripts
 

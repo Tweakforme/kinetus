@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import { announceCountsChanged } from "@/components/admin/AdminNav";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { TextField } from "@/components/admin/Fields";
 import { FormNotice, SubmitButton } from "@/components/admin/FormNotice";
@@ -65,6 +66,8 @@ export function StatusActions({
   useEffect(() => {
     if (state.status !== "idle") {
       noticeRef.current?.focus();
+      // Saved or refused, the order may have moved in or out of the admin bar's count.
+      announceCountsChanged();
     }
   }, [state]);
 
