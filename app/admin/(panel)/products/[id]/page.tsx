@@ -12,6 +12,7 @@ import {
 } from "@/lib/admin/catalogue";
 import { ACCEPTED_IMAGE_TYPES, MAX_UPLOAD_BYTES, MAX_UPLOAD_LABEL } from "@/lib/admin/uploads";
 import { ImagesForm } from "../ImagesForm";
+import { InformationSheetForm } from "../InformationSheetForm";
 import { ProductForm } from "../ProductForm";
 
 export async function generateMetadata({
@@ -21,7 +22,12 @@ export async function generateMetadata({
   return { title: product ? `Edit ${product.name}` : "Product not found" };
 }
 
-/** /admin/products/[id]: the product form, then its images. */
+/**
+ * /admin/products/[id]: the product form, then its images and information sheet. Straight
+ * after Create product (?created=1) the order is reversed: the confirmation, then the
+ * image and sheet uploads, then the details, so photos can be added without scrolling
+ * past the form that was just saved.
+ */
 export default async function EditProductPage({
   params,
   searchParams,
@@ -34,6 +40,38 @@ export default async function EditProductPage({
   }
 
   const created = query.created === "1";
+  const uploadLimits = {
+    acceptTypes: ACCEPTED_IMAGE_TYPES,
+    maxUploadBytes: MAX_UPLOAD_BYTES,
+    maxUploadLabel: MAX_UPLOAD_LABEL,
+  };
+  const productForm = (
+    <ProductForm product={toProductFormData(product)} collections={collections} />
+  );
+  const uploadForms = (
+    <>
+      <ImagesForm
+        productId={product.id}
+        images={toImageFormData(product)}
+        sizes={product.variants.map((variant) => ({
+          id: variant.id,
+          label: variant.label,
+          archived: variant.status === "ARCHIVED",
+        }))}
+        {...uploadLimits}
+      />
+      <InformationSheetForm
+        productId={product.id}
+        productName={product.name}
+        sheet={
+          product.informationSheetUrl
+            ? { url: product.informationSheetUrl, alt: product.informationSheetAlt ?? "" }
+            : null
+        }
+        {...uploadLimits}
+      />
+    </>
+  );
 
   return (
     <>
@@ -62,29 +100,27 @@ export default async function EditProductPage({
         )}
       </div>
 
-      {created && (
-        <div role="status" className={`${styles.notice} ${styles.noticeSuccess}`}>
-          <p>
-            Product created as {product.status === "PUBLISHED" ? "Published" : "Draft"}. Add its
-            images below, then set Status to Published when it is ready.
-          </p>
-        </div>
+      {created ? (
+        <>
+          <div role="status" className={`${styles.notice} ${styles.noticeSuccess}`}>
+            <p className={styles.noticeTitle}>
+              Product created and saved as {product.status === "PUBLISHED" ? "Published" : "Draft"}.
+            </p>
+            <p>
+              Add its images now: choose a file, describe it and click Save images, once per image.
+              The information sheet follows, and the details you entered are further down. Set
+              Status to Published when it is ready.
+            </p>
+          </div>
+          {uploadForms}
+          {productForm}
+        </>
+      ) : (
+        <>
+          {productForm}
+          {uploadForms}
+        </>
       )}
-
-      <ProductForm product={toProductFormData(product)} collections={collections} />
-
-      <ImagesForm
-        productId={product.id}
-        images={toImageFormData(product)}
-        sizes={product.variants.map((variant) => ({
-          id: variant.id,
-          label: variant.label,
-          archived: variant.status === "ARCHIVED",
-        }))}
-        acceptTypes={ACCEPTED_IMAGE_TYPES}
-        maxUploadBytes={MAX_UPLOAD_BYTES}
-        maxUploadLabel={MAX_UPLOAD_LABEL}
-      />
     </>
   );
 }

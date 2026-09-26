@@ -1,0 +1,233 @@
+/*
+ * Information sheet viewer: a native modal dialog filling the viewport on the navy ground,
+ * a top bar (title, zoom, open in new tab, close) and the sheet area below, which scrolls
+ * in both directions. No display value is set on the dialog itself, so a closed dialog
+ * keeps the browser's display: none.
+ */
+.dialog {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+}
+
+.dialog::backdrop {
+  background: var(--kinetus-bg-deep);
+}
+
+/* The page behind does not scroll while the viewer is open. */
+:global(html):has(.dialog[open]) {
+  overflow: hidden;
+}
+
+.frame {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Mobile: title and close on the first row, the two tools on the second. */
+.bar {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kinetus-space-3) var(--kinetus-space-4);
+  padding: var(--kinetus-space-3) var(--kinetus-space-4);
+  border-bottom: 1px solid var(--kinetus-border-on-dark);
+}
+
+.title {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  margin: 0;
+  order: 1;
+}
+
+.eyebrow {
+  color: var(--kinetus-brand-cyan-bright);
+  font-size: var(--kinetus-type-label-size);
+  font-weight: var(--kinetus-type-label-weight);
+  letter-spacing: var(--kinetus-type-label-letter-spacing);
+  line-height: var(--kinetus-type-label-line-height);
+  text-transform: uppercase;
+}
+
+.name {
+  font-family: var(--kinetus-font-display);
+  font-size: var(--kinetus-type-mobile-h3-size);
+  font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.close {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: var(--kinetus-tap-target);
+  height: var(--kinetus-tap-target);
+  order: 2;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--kinetus-border-on-dark);
+  border-radius: var(--kinetus-radius-button);
+  color: var(--kinetus-text-inverse);
+  cursor: pointer;
+  transition: background-color var(--motion-duration) var(--motion-ease);
+}
+
+.tools {
+  display: flex;
+  flex: 1 0 100%;
+  flex-wrap: wrap;
+  gap: var(--kinetus-space-2);
+  order: 3;
+}
+
+.tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kinetus-space-2);
+  min-height: 44px;
+  padding: 0 var(--kinetus-space-4);
+  background: transparent;
+  border: 1px solid var(--kinetus-border-on-dark);
+  border-radius: var(--kinetus-radius-button);
+  color: var(--kinetus-text-inverse);
+  font-family: var(--kinetus-font-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--motion-duration) var(--motion-ease);
+}
+
+.close:hover,
+.close:active,
+.tool:hover,
+.tool:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tool:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/*
+ * The sheet area. Auto margins centre the sheet while it fits and fall back to zero once
+ * it is larger, so a zoomed sheet can be scrolled to every edge.
+ */
+.viewport {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--kinetus-space-4);
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--kinetus-bg-deep-2);
+}
+
+/* Fitted: the width of the screen on phones (a tall sheet scrolls down). */
+.image {
+  display: block;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: auto;
+  background: var(--kinetus-bg-base);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  cursor: zoom-in;
+}
+
+.image[data-state="loading"] {
+  visibility: hidden;
+}
+
+.image[data-state="failed"] {
+  display: none;
+}
+
+/* Full size: every pixel of the file, scrolled around. */
+.zoomed .image {
+  max-width: none;
+  max-height: none;
+  cursor: zoom-out;
+}
+
+.status {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: var(--kinetus-space-6);
+  color: var(--kinetus-text-inverse-muted);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+  text-align: center;
+}
+
+/* Phones: a line under the fitted sheet saying how to read it. */
+.hint {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: var(--kinetus-space-3) var(--kinetus-space-4);
+  border-top: 1px solid var(--kinetus-border-on-dark);
+  color: var(--kinetus-text-inverse-muted);
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: var(--kinetus-type-body-s-line-height);
+  text-align: center;
+}
+
+/* From tablet: one row (title, tools, close) and the whole sheet fitted on screen. */
+@media (min-width: 768px) {
+  .bar {
+    flex-wrap: nowrap;
+    padding: var(--kinetus-space-3) var(--kinetus-space-6);
+  }
+
+  .name {
+    font-size: var(--kinetus-type-h3-size);
+  }
+
+  .tools {
+    flex: 0 0 auto;
+    order: 2;
+  }
+
+  .close {
+    order: 3;
+  }
+
+  .viewport {
+    padding: var(--kinetus-space-6);
+  }
+
+  .image {
+    max-height: 100%;
+  }
+
+  .hint {
+    display: none;
+  }
+}

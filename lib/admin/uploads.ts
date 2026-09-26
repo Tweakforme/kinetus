@@ -12,6 +12,10 @@ import sharp from "sharp";
  *  - Optimised: turned upright from camera orientation data, scaled down to fit the given
  *    edge (1600 px for product renders, matching public/products), re-encoded as WebP
  *    (transparency kept), metadata removed.
+ *  - Information sheets (the client's write-up graphics) are dense with small print: they
+ *    keep up to 2000 px and are encoded at quality 90 with sharper colour sampling, which
+ *    keeps coloured table text crisp (checked against two of the client's 1536 x 1024
+ *    sheets: 299 KB and 330 KB, against 235 KB and 265 KB at the render settings).
  */
 
 export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
@@ -21,6 +25,9 @@ const ACCEPTED_FORMATS = new Set(["jpeg", "png", "webp"]);
 const MIN_EDGE = 200;
 /** Refuses images over 50 megapixels before decoding them. */
 const PIXEL_LIMIT = 50_000_000;
+
+/** Encoding for information sheets (product renders use storeImage's defaults). */
+export const SHEET_IMAGE_ENCODING = { maxEdge: 2000, quality: 90, smartSubsample: true };
 
 export type UploadResult =
   | { ok: true; url: string; width: number; height: number; bytes: number }
@@ -62,7 +69,15 @@ export async function imageFileError(file: File): Promise<string | null> {
  */
 export async function storeImage(
   file: File,
-  options: { folder: string; baseName: string; maxEdge: number },
+  options: {
+    folder: string;
+    baseName: string;
+    maxEdge: number;
+    /** WebP quality, 85 unless given. */
+    quality?: number;
+    /** Sharper colour sampling for small coloured text; off unless given. */
+    smartSubsample?: boolean;
+  },
 ): Promise<UploadResult> {
   try {
     const { data, info } = await sharp(Buffer.from(await file.arrayBuffer()), {
@@ -75,7 +90,12 @@ export async function storeImage(
         fit: "inside",
         withoutEnlargement: true,
       })
-      .webp({ quality: 85, alphaQuality: 90, effort: 5 })
+      .webp({
+        quality: options.quality ?? 85,
+        alphaQuality: 90,
+        effort: 5,
+        smartSubsample: options.smartSubsample ?? false,
+      })
       .toBuffer({ resolveWithObject: true });
 
     const blob = await put(`${options.folder}/${options.baseName}.webp`, data, {

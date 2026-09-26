@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import { ListingJsonLd } from "@/components/collection/ListingJsonLd";
-import { CategoryCards } from "@/components/home/CategoryCards";
 import { FeaturedGrid } from "@/components/home/FeaturedGrid";
 import { HomeHero } from "@/components/home/HomeHero";
+import { ShopAllBar } from "@/components/home/ShopAllBar";
 import { ShopByCategory } from "@/components/home/ShopByCategory";
 import styles from "@/components/home/HomePage.module.css";
-import { TrustRow } from "@/components/home/TrustRow";
+import { StickyTrustBar } from "@/components/layout/StickyTrustBar";
 import {
   getFeaturedProducts,
   revalidateAtNextPriceChange,
   toProductCardModel,
 } from "@/lib/products";
 import { canonicalUrl } from "@/lib/seo";
-import { SITE_NAME } from "@/lib/site";
+import { SITE_NAME, TRUST_BAR_SITE_WIDE } from "@/lib/site";
 
 // Statically generated. Regenerated when an admin save expires the product tags (see
 // lib/cache.ts), or when a featured product's scheduled sale starts or ends.
@@ -55,10 +55,14 @@ export const metadata: Metadata = {
 };
 
 /**
- * Homepage in the deck's order (slide 4): navy hero, "RESEARCH MATERIALS" divider and
- * the range cards, "SHOP BY CATEGORY" with the six category cards, the white trust row, then "FEATURED MATERIALS" with the
- * featured product grid and the "VIEW ALL PRODUCTS" button. The research-use band and
- * footer come from the root layout.
+ * Homepage (the client's homepage mockup and deck slide 4): navy hero, the SHOP ALL
+ * PRODUCTS bar, "SHOP BY CATEGORY" with the six category cards, then "FEATURED MATERIALS"
+ * with the featured product grid and the "VIEW ALL PRODUCTS" button. The supplier-facts
+ * bar closes the page, directly above the research-use band and footer that come from the
+ * root layout (unless TRUST_BAR_SITE_WIDE moves it there). It sits inside the lower part
+ * of the page, which bounds its stickiness: on wide screens it is pinned to the bottom of
+ * the window only while that part is on screen, so it never covers the hero or the SHOP
+ * ALL PRODUCTS bar.
  */
 export default async function Home() {
   const now = new Date();
@@ -73,10 +77,14 @@ export default async function Home() {
     <>
       <div className={styles.page}>
         <HomeHero />
-        <CategoryCards />
-        <ShopByCategory headingId="home-categories-heading" />
-        <TrustRow />
-        <FeaturedGrid products={cards} />
+        <ShopAllBar className={styles.shopAll} />
+        <div className={styles.lower}>
+          <div className={styles.sections}>
+            <ShopByCategory headingId="home-categories-heading" />
+            <FeaturedGrid products={cards} />
+          </div>
+          {!TRUST_BAR_SITE_WIDE && <StickyTrustBar />}
+        </div>
       </div>
       <ListingJsonLd
         listName="Featured products"

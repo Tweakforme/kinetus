@@ -1,23 +1,54 @@
 /*
  * Homepage rhythm. Block flow on purpose: the shared Container has auto side margins and
  * shrink-wraps inside a flex or grid parent. Sections are separated by 40px on mobile and
- * 56px from tablet up; the same space closes the page above the research-use band.
- * 56px is not a single step on the 4px token scale, so it is composed from two tokens.
+ * 56px from tablet up; the same space closes the sections above the supplier-facts bar
+ * (or the research-use band). 56px is not a single step on the 4px token scale, so it is
+ * composed from two tokens.
  */
 .page {
   --home-section-gap: var(--kinetus-space-10);
 
   display: block;
-  padding-bottom: var(--home-section-gap);
   background: var(--kinetus-bg-page);
 }
 
-.page > * + * {
+.page > * + *,
+.sections > * + * {
   margin-top: var(--home-section-gap);
+}
+
+/*
+ * Everything under the SHOP ALL PRODUCTS bar. It is also the containing block of the
+ * sticky supplier-facts bar, its last child, which can therefore never be pinned higher
+ * than this part of the page begins: it stays clear of the hero and the SHOP ALL bar.
+ */
+.lower {
+  display: block;
+}
+
+.sections {
+  display: block;
+  padding-bottom: var(--home-section-gap);
+}
+
+/* The SHOP ALL PRODUCTS bar follows the hero closely instead of a full section gap. */
+.page > .shopAll {
+  margin-top: var(--kinetus-space-5);
 }
 
 @media (min-width: 768px) {
   .page {
     --home-section-gap: calc(var(--kinetus-space-12) + var(--kinetus-space-2));
+  }
+}
+
+/*
+ * From 1024px the bar straddles the hero's lower edge, as on the client's mockup. The
+ * hero keeps at least 40px of padding under its content, so the 24px overlap never
+ * reaches the copy or the button.
+ */
+@media (min-width: 1024px) {
+  .page > .shopAll {
+    margin-top: calc(-1 * var(--kinetus-space-6));
   }
 }

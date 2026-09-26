@@ -292,6 +292,8 @@ export type VariantView = {
   compareAtCents: number | null;
   trackInventory: boolean;
   stock: number | null;
+  /** This size's third-party test report link, set by the client in the admin. */
+  testReportUrl: string | null;
 };
 
 export function toVariantViews(variants: ProductDetail["variants"], now: Date): VariantView[] {
@@ -304,6 +306,7 @@ export function toVariantViews(variants: ProductDetail["variants"], now: Date): 
       compareAtCents: onSale ? variant.price : null,
       trackInventory: variant.trackInventory,
       stock: variant.stock,
+      testReportUrl: variant.testReportUrl,
     };
   });
 }

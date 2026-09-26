@@ -1,0 +1,100 @@
+/*
+ * Supplier facts band. Below the sticky breakpoint it is the white band the homepage used
+ * to carry mid-page, now at the foot of the page above the research-use band: hairline on
+ * top, the four TrustBar items stacked (phones), two by two (tablet) or four across.
+ */
+.band {
+  padding-block: var(--kinetus-space-5);
+  background: var(--kinetus-bg-base);
+  border-top: 1px solid var(--kinetus-border-subtle);
+}
+
+.trust {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .band {
+    padding-block: var(--kinetus-space-6);
+  }
+}
+
+/*
+ * Between 768 and 1023px four items across leave ~60px for the text, so the row is two
+ * by two here. The `.band` prefix outranks TrustBar's own single-class rules; the odd
+ * items start each row without the hairline rule.
+ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .band .trust {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--kinetus-space-5);
+  }
+
+  .band .trust > li:nth-child(odd) {
+    padding-left: var(--kinetus-space-2);
+    border-left: 0;
+  }
+}
+
+/*
+ * Sticky: only where each item's copy fits in two lines, which keeps the pinned bar at
+ * 83px (1280px wide and up; at 1024px it grows to 119px), and where the window is tall
+ * enough to leave most of it to the page (720px and up). Pinned to the bottom of the
+ * window, but never above the top of its parent: on the homepage that is the part below
+ * the SHOP ALL PRODUCTS bar. It sits under the header (z-index 90), its menus and the
+ * mobile drawer, and under the age gate and any dialog. Keyboard focus scrolls clear of it
+ * (scroll-padding-bottom).
+ */
+@media (min-width: 1280px) and (min-height: 720px) {
+  .band {
+    position: sticky;
+    bottom: 0;
+    z-index: 80;
+    padding-block: var(--kinetus-space-3);
+    border-top-color: var(--kinetus-border-default);
+    box-shadow: 0 -8px 24px rgba(7, 27, 52, 0.08);
+  }
+
+  .band .trust > li {
+    align-items: center;
+    gap: var(--kinetus-space-3);
+  }
+
+  .band .trust svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  :global(html):has(.band) {
+    scroll-padding-bottom: var(--kinetus-space-24);
+  }
+
+  /*
+   * Below the window's edge at the top of the page, so the first screen is never covered;
+   * it rises into place over the first 120px of scrolling. Browsers without scroll-linked
+   * animation, and visitors who ask for reduced motion, see it pinned from the start.
+   */
+  @supports (animation-timeline: scroll()) {
+    .band {
+      animation: trust-bar-rise linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0px 120px;
+    }
+  }
+}
+
+@keyframes trust-bar-rise {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .band {
+    animation: none;
+  }
+}

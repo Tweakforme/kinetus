@@ -29,6 +29,10 @@
 //
 // Cleanup (migration contact_message_handled, additive only): ContactMessage.handledAt, set
 // when the client marks a contact message handled in the admin.
+//
+// Revision round 1 (migration product_information_sheet, additive only):
+// Product.informationSheetAlt, the alt text for the information sheet image, whose URL
+// column (informationSheetUrl) was reserved in Phase 7A.
 
 generator client {
   provider = "prisma-client-js"
@@ -99,8 +103,11 @@ model Product {
   featured          Boolean @default(false)
   displayOrder      Int     @default(0)
 
-  // Reserved for a future product information sheet. Nothing publishes it yet.
+  // Product information sheet (the client's write-up graphic), uploaded in the admin and
+  // opened from the product page's Product Information button. Both are null until the
+  // client uploads one; the alt text is required with the image.
   informationSheetUrl String?
+  informationSheetAlt String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

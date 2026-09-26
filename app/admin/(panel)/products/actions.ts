@@ -25,7 +25,13 @@ import {
 } from "@/lib/admin/forms";
 import { recordSlugChange } from "@/lib/admin/redirects";
 import { expireProductPages } from "@/lib/admin/revalidate";
-import { chosenFile, deleteStoredImages, imageFileError, storeImage } from "@/lib/admin/uploads";
+import {
+  chosenFile,
+  deleteStoredImages,
+  imageFileError,
+  SHEET_IMAGE_ENCODING,
+  storeImage,
+} from "@/lib/admin/uploads";
 import { formatCad } from "@/lib/products";
 import { prisma } from "@/lib/db";
 
@@ -632,4 +638,116 @@ export async function saveProductImages(_previous: FormState, form: FormData): P
     "Images saved.",
   ].filter(Boolean);
   return successState(parts.join(" "));
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Information sheet                                                         */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Uploads, replaces or removes the product's information sheet, or saves its alt text.
+ * The sheet goes through the same checks and Blob storage as product images; alt text is
+ * required with it. The product page shows its Product Information button only while a
+ * sheet is stored.
+ */
+export async function saveInformationSheet(
+  _previous: FormState,
+  form: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+
+  const productId = text(form, "productId");
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    select: { id: true, slug: true, informationSheetUrl: true },
+  });
+  if (!product) {
+    return { status: "error", message: "This product no longer exists. Go back to the list." };
+  }
+
+  const file = chosenFile(form, "sheet.file");
+  const alt = text(form, "sheet.alt");
+  const remove = checkbox(form, "sheet.remove");
+  const current = product.informationSheetUrl;
+  const errors: Record<string, string> = {};
+
+  if (remove && current) {
+    if (file) {
+      errors["sheet.remove"] =
+        "Choose one: tick Remove the sheet, or choose a new file to replace it, not both.";
+      return errorState(errors, form, "Nothing was saved. Choose the new file again if needed.");
+    }
+    await prisma.product.update({
+      where: { id: product.id },
+      data: { informationSheetUrl: null, informationSheetAlt: null },
+    });
+    await deleteStoredImages([current]);
+    expireProductPages(product.slug);
+    return successState(
+      "Information sheet removed. The product page no longer shows the Product Information button.",
+    );
+  }
+
+  if (!file && !current) {
+    errors["sheet.file"] = alt
+      ? "Choose the sheet image to upload, or clear the alt text."
+      : "Choose the sheet image to upload.";
+  }
+  if (file || current) {
+    if (!alt) {
+      errors["sheet.alt"] =
+        "Describe the sheet. Alt text is required, for example: BPC-157 product information sheet.";
+    } else if (alt.length > LIMITS.alt) {
+      errors["sheet.alt"] = `Keep the alt text to ${LIMITS.alt} characters or fewer.`;
+    }
+  }
+  if (file) {
+    const fileProblem = await imageFileError(file);
+    if (fileProblem) {
+      errors["sheet.file"] = fileProblem;
+    }
+  }
+  if (Object.keys(errors).length > 0) {
+    return errorState(
+      errors,
+      form,
+      file
+        ? "Nothing was saved. Fix the fields marked below, then choose the sheet file again."
+        : undefined,
+    );
+  }
+
+  if (!file) {
+    await prisma.product.update({
+      where: { id: product.id },
+      data: { informationSheetAlt: alt },
+    });
+    expireProductPages(product.slug);
+    return successState("Alt text saved.");
+  }
+
+  const stored = await storeImage(file, {
+    folder: `information-sheets/${product.slug}`,
+    baseName: `${product.slug}-information-sheet`,
+    ...SHEET_IMAGE_ENCODING,
+  });
+  if (!stored.ok) {
+    return errorState({ "sheet.file": stored.error }, form);
+  }
+  try {
+    await prisma.product.update({
+      where: { id: product.id },
+      data: { informationSheetUrl: stored.url, informationSheetAlt: alt },
+    });
+  } catch (error) {
+    await deleteStoredImages([stored.url]);
+    throw error;
+  }
+  await deleteStoredImages([current]);
+  expireProductPages(product.slug);
+  return successState(
+    current
+      ? "Information sheet replaced. The product page shows the new sheet on its next visit."
+      : "Information sheet uploaded. The product page shows the Product Information button on its next visit.",
+  );
 }

@@ -46,13 +46,24 @@ export function ProductForm({ product, collections, initialState = IDLE_STATE }:
         collections={collections}
         isNew={isNew}
       />
+      {isNew && (
+        <section className={styles.panel} aria-labelledby="new-images-heading">
+          <h2 id="new-images-heading" className={styles.panelTitle}>
+            Images and information sheet
+          </h2>
+          <p className={styles.panelIntro}>
+            Added as soon as the product exists. Create product saves it as a Draft and opens its
+            image upload straight away, with the information sheet below it.
+          </p>
+        </section>
+      )}
       <SaveBar
         state={state}
         label={isNew ? "Create product" : "Save changes"}
         idleText={
           isNew
-            ? "New products start as Draft. Add images after creating the product."
-            : "Saves everything above. Images below have their own Save button."
+            ? "New products start as Draft. The image upload opens as soon as it is created."
+            : "Saves everything above. Images and the information sheet have their own Save buttons."
         }
       />
     </form>
