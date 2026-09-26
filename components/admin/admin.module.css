@@ -903,6 +903,39 @@
   mix-blend-mode: darken;
 }
 
+/* Information sheet: a landscape preview beside the fields. */
+.sheetCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .sheetCard {
+    grid-template-columns: 240px minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.sheetPreview {
+  max-width: 320px;
+  aspect-ratio: 3 / 2;
+}
+
+.sheetEmpty {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 3 / 2;
+  margin: 0;
+  border: 1px dashed var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-sm);
+  background: var(--kinetus-bg-subtle);
+  color: var(--kinetus-text-secondary);
+  font-size: 14px;
+}
+
 .sizeSummary {
   display: grid;
   gap: 4px;

@@ -11,7 +11,7 @@
   gap: var(--kinetus-space-10);
 }
 
-/* White lockup and the two-line note. */
+/* Logo panel and the two-line note. */
 .top {
   display: flex;
   flex-direction: column;
@@ -19,11 +19,14 @@
   gap: var(--kinetus-space-5);
 }
 
+/* A small white panel behind the full-colour logo; the whole panel is the home link. */
 .lockupLink {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
-  border-radius: var(--kinetus-radius-sm);
+  padding: var(--kinetus-space-3) var(--kinetus-space-4);
+  background: var(--kinetus-bg-base);
+  border-radius: var(--kinetus-radius-md);
 }
 
 /* 56px tall (no token; the deck's footer lockup); width follows the aspect ratio. */

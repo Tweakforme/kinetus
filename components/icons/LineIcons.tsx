@@ -105,6 +105,18 @@ export function DocumentIcon(props: IconProps) {
   );
 }
 
+/** A document with a magnifier over its corner (test reports). */
+export function DocumentSearchIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M13 21H5V3h8l4 4v4" />
+      <path d="M13 3v4h4M8 8.5h3M8 12h6M8 15.5h3.5" />
+      <circle cx="16" cy="16" r="3.5" />
+      <path d="M18.6 18.6L21 21" />
+    </Base>
+  );
+}
+
 export function ClipboardCheckIcon(props: IconProps) {
   return (
     <Base {...props}>
@@ -304,15 +316,6 @@ export function DropletIcon(props: IconProps) {
   return (
     <Base {...props}>
       <path d="M12 3s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11z" />
-    </Base>
-  );
-}
-
-export function TagIcon(props: IconProps) {
-  return (
-    <Base {...props}>
-      <path d="M3.5 12.5V4.5h8l9 9-8 8z" />
-      <circle cx="7.5" cy="8.5" r="1.3" />
     </Base>
   );
 }

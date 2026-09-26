@@ -5,8 +5,8 @@ import type { VolumeTier } from "@/lib/pricing";
 import { productKindLabel, type ProductDetail } from "@/lib/products";
 import { COLLECTION_SLUGS, RESEARCH_USE_COPY } from "@/lib/site";
 import { ProductBreadcrumb } from "./ProductBreadcrumb";
-import { ProductFeatureRow } from "./ProductFeatureRow";
 import { ProductGallery } from "./ProductGallery";
+import { ProductResources } from "./ProductResources";
 import { ProductSelectionProvider, type SelectableVariant } from "./ProductSelection";
 import { ProductSizeLine } from "./ProductSizeLine";
 import { VariantPanel } from "./VariantPanel";
@@ -34,8 +34,10 @@ const HANDLING_COPY = `Supplied in a sealed glass vial and labelled with a batch
  * Product hero (deck slides 9 and 13): white ground, ghosted hex lattice behind the
  * render and a ghosted DNA helix at the page's right edge, three columns at desktop
  * (copy / render / sticky panel). The selected size drives the size line here, the price
- * in the panel and the render (each strength shows its own render, or the product-level
- * fallback) through ProductSelectionProvider; the heading and copy stay server-rendered.
+ * in the panel, the render (each strength shows its own render, or the product-level
+ * fallback) and the Test Reports button through ProductSelectionProvider; the heading and
+ * copy stay server-rendered. The Product Information and Test Reports buttons sit under
+ * the copy, where the client's mockup places its two badges.
  */
 export function ProductHero({
   product,
@@ -91,7 +93,19 @@ export function ProductHero({
             <div className={styles.detail}>
               <p className={styles.subhead}>{subhead}</p>
               <p className={styles.paragraph}>{HANDLING_COPY}</p>
-              <ProductFeatureRow form={product.form} />
+              <ProductResources
+                productName={product.name}
+                sheet={
+                  product.informationSheetUrl
+                    ? {
+                        url: product.informationSheetUrl,
+                        alt:
+                          product.informationSheetAlt ??
+                          `${product.name} product information sheet`,
+                      }
+                    : null
+                }
+              />
             </div>
           </div>
         </ProductSelectionProvider>

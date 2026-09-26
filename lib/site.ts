@@ -29,6 +29,13 @@ export const SHIPPING_LINE = "FREE SHIPPING ON ORDERS OVER $199 (CAN)";
 /** Packaging tagline, verbatim. */
 export const TAGLINE = "PRECISION SCIENCE. PEAK POTENTIAL.";
 
+/**
+ * Where the sticky supplier-facts bar (components/layout/StickyTrustBar.tsx) appears.
+ * false: the homepage only (the conservative reading of the client's request); true:
+ * every public page, rendered by SiteChrome above the research-use band.
+ */
+export const TRUST_BAR_SITE_WIDE: boolean = false;
+
 /** Hero eyebrow, verbatim from the approved deck (slides 4 and 12). */
 export const HERO_EYEBROW = "PRECISION SCIENCE. ANALYTICAL CONFIDENCE.";
 

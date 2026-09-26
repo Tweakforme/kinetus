@@ -14,8 +14,13 @@ import {
 import { getCatalogueLinks } from "@/lib/navigation";
 import styles from "./Footer.module.css";
 
-/** White lockup (772 x 184, with tagline) at 56px tall on the navy ground. */
-const LOCKUP = { src: "/brand/kinetus-logo-horizontal-white.png", width: 236, height: 56 };
+/**
+ * The full-colour horizontal logo (772 x 183, as in the header) at 56px tall, on a small
+ * white panel so it renders as designed on the navy ground. The client's pack has no white
+ * or single-colour version, and the flat white copy made from it lost the wordmark's
+ * letterforms and the mark's modelling.
+ */
+const LOCKUP = { src: "/brand/kinetus-logo-horizontal.png", width: 236, height: 56 };
 
 type FooterColumnProps = {
   heading: string;
@@ -40,10 +45,10 @@ function FooterColumn({ heading, links }: FooterColumnProps) {
 }
 
 /**
- * Site footer: navy ground, white text. White lockup and a two-line note on top, then
- * Catalogue / Company / Policies / Contact columns (the catalogue column lists the
- * published ranges; the rest are fixed links from lib/site.ts), then
- * the copyright line, a red maple leaf and the research-use statement under a hairline.
+ * Site footer: navy ground, white text. The logo on its white panel and a two-line note
+ * on top, then Catalogue / Company / Policies / Contact columns (the catalogue column
+ * lists the published ranges; the rest are fixed links from lib/site.ts), then the
+ * copyright line, a red maple leaf and the research-use statement under a hairline.
  * Two columns on mobile, four on desktop.
  */
 export async function Footer() {

@@ -7,7 +7,11 @@ import { ProductForm } from "../ProductForm";
 
 export const metadata: Metadata = { title: "New product" };
 
-/** /admin/products/new: starts as Draft; images are added once the product exists. */
+/**
+ * /admin/products/new: starts as Draft. Images and the information sheet are stored
+ * against the product, so they are added once it exists: Create product saves it and opens
+ * its page with the image upload first (see ../[id]/page.tsx).
+ */
 export default async function NewProductPage() {
   await requireAdmin();
   const collections = await getCollectionOptions();
@@ -22,7 +26,8 @@ export default async function NewProductPage() {
           <h1 className={styles.pageTitle}>New product</h1>
           <p className={styles.pageIntro}>
             Fill in at least the name, one size with its price, and the range. The product stays off
-            the site until you set its status to Published.
+            the site until you set its status to Published. Create product saves it and opens its
+            image upload straight away.
           </p>
         </div>
       </div>

@@ -1,9 +1,9 @@
 /*
  * Product hero (deck slides 9 and 13). Mobile: one column in the order breadcrumb,
- * eyebrow, name, size line, render, panel, subhead + paragraph, icon row. Tablet: copy
- * left, render right, panel beneath. Desktop: copy 30% / render 40% / panel 30% with the
- * copy split into two rows that meet at the render's midline, so the copy block sits
- * centred beside the vial while the panel stays at the top and sticks.
+ * eyebrow, name, size line, render, panel, subhead + paragraph, document buttons.
+ * Tablet: copy left, render right, panel beneath. Desktop: copy 30% / render 40% / panel
+ * 30% with the copy split into two rows that meet at the render's midline, so the copy
+ * block sits centred beside the vial while the panel stays at the top and sticks.
  */
 .hero {
   position: relative;

@@ -43,11 +43,38 @@
 }
 
 /*
- * Tablet and desktop: one row that always fills the width, however many facts the
- * catalogue records (a product with no form has four, not five). Flex rather than a
- * fixed column count, so a shorter band never leaves an empty, unclosed cell.
+ * Tablet: three columns, so six facts make two full rows (one row of six left ~80px per
+ * cell and the labels ran into each other). Rules between the columns and above the
+ * second row.
  */
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 1023px) {
+  .band {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .item,
+  .item:nth-child(even),
+  .item:nth-child(n + 3) {
+    border-top: 0;
+    border-left: 1px solid var(--kinetus-border-default);
+  }
+
+  .item:nth-child(3n + 1) {
+    padding-left: var(--kinetus-space-2);
+    border-left: 0;
+  }
+
+  .item:nth-child(n + 4) {
+    border-top: 1px solid var(--kinetus-border-subtle);
+  }
+}
+
+/*
+ * Desktop: one row that always fills the width, however many facts the catalogue records
+ * (a product with no form has five, not six). Flex rather than a fixed column count, so a
+ * shorter band never leaves an empty, unclosed cell.
+ */
+@media (min-width: 1024px) {
   .band {
     display: flex;
     flex-wrap: nowrap;
@@ -57,7 +84,7 @@
   .item:nth-child(even),
   .item:nth-child(n + 3) {
     flex: 1 1 0;
-    padding: var(--kinetus-space-5) var(--kinetus-space-4);
+    padding: var(--kinetus-space-6) var(--kinetus-space-5);
     border-top: 0;
     border-left: 1px solid var(--kinetus-border-default);
   }
@@ -65,17 +92,5 @@
   .item:first-child {
     padding-left: var(--kinetus-space-2);
     border-left: 0;
-  }
-}
-
-@media (min-width: 1024px) {
-  .item,
-  .item:nth-child(even),
-  .item:nth-child(n + 3) {
-    padding: var(--kinetus-space-6) var(--kinetus-space-5);
-  }
-
-  .item:first-child {
-    padding-left: var(--kinetus-space-2);
   }
 }

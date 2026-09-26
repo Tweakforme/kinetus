@@ -9,10 +9,11 @@ type ProductInfoBandProps = {
 };
 
 /**
- * Information band under the hero: structural facts only (form, presentations, batch
- * reference, documentation, research use), separated by hairline rules. A fact the
- * catalogue does not record is omitted rather than shown as a placeholder, so no cell
- * ever reads "Not specified" to a customer.
+ * Information band under the hero: structural facts only (form, presentations, container,
+ * batch reference, documentation, research use), separated by hairline rules. It carries
+ * the unit facts the hero's icon row used to show; third-party testing is stated in the
+ * packaging card further down. A fact the catalogue does not record is omitted rather
+ * than shown as a placeholder, so no cell ever reads "Not specified" to a customer.
  */
 export function ProductInfoBand({ form, presentations }: ProductInfoBandProps) {
   const items = [
@@ -20,6 +21,7 @@ export function ProductInfoBand({ form, presentations }: ProductInfoBandProps) {
     ...(presentations.length > 0
       ? [{ label: "Presentation", value: presentations.join(" · ") }]
       : []),
+    { label: "Container", value: "Sealed glass vial" },
     { label: "Batch reference", value: "Printed on every unit" },
     { label: "Documentation", value: "Batch-specific COA on request" },
     { label: "Research use", value: RESEARCH_USE_COPY_LINES[0].replace(/\.$/, "") },

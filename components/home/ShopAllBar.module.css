@@ -1,0 +1,127 @@
+/*
+ * SHOP ALL PRODUCTS bar (client homepage mockup): centred, up to 840px wide, teal with a
+ * lighter hairline edge and a soft teal glow. Cart icon | hairline | label over a
+ * letterspaced line | circled arrow. The Container stays in block flow; the bar inside it
+ * is the flex row.
+ */
+.wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-3);
+  max-width: 840px;
+  min-height: 76px;
+  margin-inline: auto;
+  padding: var(--kinetus-space-4);
+  background: linear-gradient(
+    180deg,
+    var(--kinetus-brand-teal) 0%,
+    var(--kinetus-brand-teal-dark) 100%
+  );
+  border: 1px solid var(--kinetus-brand-cyan-bright);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow:
+    0 10px 28px rgba(1, 114, 136, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: var(--kinetus-text-inverse);
+  text-decoration: none;
+  transition:
+    box-shadow var(--motion-duration) var(--motion-ease),
+    transform var(--motion-duration) var(--motion-ease);
+}
+
+.bar:hover,
+.bar:active {
+  box-shadow:
+    0 14px 36px rgba(1, 114, 136, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+
+/* 32px on phones so the label keeps to one line at 390px; 40px from tablet. */
+.cart {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+}
+
+.rule {
+  flex: 0 0 auto;
+  align-self: stretch;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--kinetus-space-1);
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--kinetus-font-display);
+  font-size: var(--kinetus-type-mobile-h3-size);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.sub {
+  color: var(--kinetus-text-inverse-muted);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+/* Circled arrow, as on the mockup and the category cards. */
+.arrow {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid currentColor;
+  border-radius: var(--kinetus-radius-pill);
+  transition: background-color var(--motion-duration) var(--motion-ease);
+}
+
+.bar:hover .arrow {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+@media (min-width: 768px) {
+  .bar {
+    gap: var(--kinetus-space-6);
+    min-height: 96px;
+    padding: var(--kinetus-space-5) var(--kinetus-space-8);
+  }
+
+  .cart {
+    width: 40px;
+    height: 40px;
+  }
+
+  .title {
+    font-size: var(--kinetus-type-h2-size);
+  }
+
+  .sub {
+    font-size: var(--kinetus-type-label-size);
+    letter-spacing: 0.16em;
+  }
+
+  .arrow {
+    width: 48px;
+    height: 48px;
+  }
+}
