@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useId, useRef, useState, useTransition, type KeyboardEvent } from "react";
 import { addToCart } from "@/app/(site)/cart/actions";
 import { QuantityStepper } from "@/components/cart/QuantityStepper";
-import { CartIcon, ClipboardCheckIcon, DocumentIcon } from "@/components/icons/LineIcons";
+import { CartIcon, DocumentIcon } from "@/components/icons/LineIcons";
 import { announceCartCount } from "@/components/layout/CartLink";
 import buttons from "@/components/ui/buttons.module.css";
 import { createInFlight } from "@/lib/in-flight";
@@ -16,8 +16,6 @@ import styles from "./VariantPanel.module.css";
 type VariantPanelProps = {
   /** Active volume discount tiers; the list is hidden when there are none. */
   tiers: VolumeTier[];
-  /** /documentation#<slug> when the product has a test report link, otherwise omitted. */
-  testReportsHref?: string;
 };
 
 type AddStatus = { tone: "ok" | "error"; message: string } | null;
@@ -33,7 +31,7 @@ type AddStatus = { tone: "ok" | "error"; message: string } | null;
  * follows it. Prices shown here are display only: the add action sends a variant id and
  * a quantity, and the cart prices everything again on the server.
  */
-export function VariantPanel({ tiers, testReportsHref }: VariantPanelProps) {
+export function VariantPanel({ tiers }: VariantPanelProps) {
   const { variants, selected, select } = useProductSelection();
   const labelId = useId();
   const chipRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -230,15 +228,6 @@ export function VariantPanel({ tiers, testReportsHref }: VariantPanelProps) {
           <DocumentIcon size={20} />
           Request batch documentation
         </Link>
-        {testReportsHref && (
-          <Link
-            href={testReportsHref}
-            className={`${buttons.link} ${buttons.linkTeal} ${styles.documentation}`}
-          >
-            <ClipboardCheckIcon size={20} />
-            View test reports
-          </Link>
-        )}
       </div>
     </div>
   );

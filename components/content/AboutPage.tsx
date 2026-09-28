@@ -48,6 +48,67 @@ const PILLARS: { Icon: IconComponent; label: string }[] = [
   { Icon: InfoIcon, label: "Research Use Only" },
 ];
 
+/**
+ * The client's six value badges ("About us Graphics"), each titled as printed on the badge
+ * ("Science driven symbol.png" reads "Science Driven. Quality Focused."). `copy` is the
+ * client's text under each badge: none has been supplied, and nothing is shown until it is.
+ */
+const VALUES: { src: string; width: number; height: number; title: string; copy: string | null }[] =
+  [
+    {
+      src: "/images/about/built-around-research.webp",
+      width: 192,
+      height: 192,
+      title: "Built Around Research",
+      copy: null,
+    },
+    {
+      src: "/images/about/commitment-to-quality.webp",
+      width: 192,
+      height: 192,
+      title: "Commitment to Quality",
+      copy: null,
+    },
+    {
+      src: "/images/about/our-mission.webp",
+      width: 192,
+      height: 192,
+      title: "Our Mission",
+      copy: null,
+    },
+    {
+      src: "/images/about/proudly-canadian.webp",
+      width: 192,
+      height: 192,
+      title: "Proudly Canadian",
+      copy: null,
+    },
+    {
+      src: "/images/about/research-with-confidence.webp",
+      width: 192,
+      height: 192,
+      title: "Research with Confidence",
+      copy: null,
+    },
+    {
+      src: "/images/about/science-driven-symbol.webp",
+      width: 192,
+      height: 160,
+      title: "Science Driven. Quality Focused.",
+      copy: null,
+    },
+  ];
+
+/** Badges are shown at 96px wide at most. */
+const VALUE_BADGE_WIDTH = 96;
+
+/** The client's Product Information poster, shown on this page as decoration only. */
+const INFORMATION_PANEL = {
+  src: "/images/about/product-information-panel.webp",
+  width: 1024,
+  height: 1536,
+};
+
 const EXPLORE_LINKS = [
   { ...ALL_PRODUCTS_LINK, primary: true },
   { label: "Frequently asked questions", href: "/faq", primary: false },
@@ -56,8 +117,9 @@ const EXPLORE_LINKS = [
 
 /**
  * About (deck slide 19): the welcome copy beside a ghosted hex mesh and the four-icon
- * row, then the client's "Why Choose Kinetus BioLabs" document verbatim (minus the
- * comparison table) under the four anchors the navigation links to.
+ * row, the client's six value badges with the Product Information poster, then the
+ * client's "Why Choose Kinetus BioLabs" document verbatim (minus the comparison table)
+ * under the four anchors the navigation links to.
  */
 export function AboutPage({ doc }: AboutPageProps) {
   const lockupBlur = blurPlaceholder(LOCKUP.src);
@@ -120,6 +182,44 @@ export function AboutPage({ doc }: AboutPageProps) {
               ))}
             </ul>
           </div>
+        </Container>
+      </section>
+
+      <section
+        id="values"
+        className={styles.values}
+        aria-labelledby="values-heading"
+        data-reveal=""
+      >
+        <Container>
+          <h2 id="values-heading" className="visually-hidden">
+            Values
+          </h2>
+          <ul className={styles.valueGrid}>
+            {VALUES.map((value) => (
+              <li key={value.title} className={styles.value}>
+                {/* Decorative: the badge repeats the title set beneath it. */}
+                <Image
+                  src={value.src}
+                  alt=""
+                  width={VALUE_BADGE_WIDTH}
+                  height={Math.round((VALUE_BADGE_WIDTH * value.height) / value.width)}
+                  className={styles.valueBadge}
+                />
+                <h3 className={styles.valueTitle}>{value.title}</h3>
+                {value.copy && <p className={styles.valueCopy}>{value.copy}</p>}
+              </li>
+            ))}
+          </ul>
+          <Image
+            src={INFORMATION_PANEL.src}
+            alt=""
+            aria-hidden="true"
+            width={INFORMATION_PANEL.width}
+            height={INFORMATION_PANEL.height}
+            sizes="(min-width: 768px) 560px, 100vw"
+            className={styles.informationPanel}
+          />
         </Container>
       </section>
 

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ComponentType, ReactNode } from "react";
+import type { ComponentType, CSSProperties, ReactNode } from "react";
 import { HexMesh } from "@/components/decor/HexMesh";
 import {
   ClipboardCheckIcon,
@@ -31,6 +31,11 @@ type PageHeroProps = {
   features?: HeroFeature[];
   cta?: { label: string; href: string };
   image: { src: string; alt: string };
+  /**
+   * A photograph behind the hero (the homepage). It carries its own navy field and
+   * falloff, so the gradient layers are left out; the hex mesh stays above it.
+   */
+  backgroundImage?: string;
   /** Render the headline as an h1 (pages) or a p (never). Defaults to h1. */
   as?: "h1" | "h2";
 };
@@ -65,22 +70,29 @@ export function PageHero({
   features = DEFAULT_HERO_FEATURES,
   cta,
   image,
+  backgroundImage,
   as: Heading = "h1",
 }: PageHeroProps) {
   const blur = blurPlaceholder(image.src);
   const headlineClass =
     variant === "home" ? `type-hero ${styles.headline}` : `type-hero-mixed ${styles.headline}`;
+  const classes = [
+    styles.hero,
+    variant === "home" ? styles.home : styles.category,
+    backgroundImage ? styles.withPhoto : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const photo = backgroundImage
+    ? ({ "--hero-photo": `url("${backgroundImage}")` } as CSSProperties)
+    : undefined;
 
   return (
-    <section
-      className={`${styles.hero} ${variant === "home" ? styles.home : styles.category}`}
-      aria-labelledby={headingId}
-      data-reveal=""
-    >
+    <section className={classes} style={photo} aria-labelledby={headingId} data-reveal="">
       <div className={styles.backdrop} aria-hidden="true">
-        <div className={styles.glow} />
+        {!backgroundImage && <div className={styles.glow} />}
         <HexMesh className={styles.mesh} cell={30} />
-        <div className={styles.vignette} />
+        {!backgroundImage && <div className={styles.vignette} />}
       </div>
 
       <div className={styles.inner}>

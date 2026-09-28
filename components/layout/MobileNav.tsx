@@ -23,8 +23,11 @@ import styles from "./MobileNav.module.css";
 
 const DESKTOP_MEDIA_QUERY = "(min-width: 1024px)";
 
-/** White lockup (772 x 184) at 44px tall for the drawer's navy top bar. */
-const LOCKUP = { src: "/brand/kinetus-logo-horizontal-white.png", width: 186, height: 44 };
+/**
+ * The full-colour logo (772 x 183) at 40px tall on a small white panel, as in the footer:
+ * the flat white copy lost the wordmark's letterforms on the navy drawer.
+ */
+const LOCKUP = { src: "/brand/kinetus-logo-horizontal.png", width: 169, height: 40 };
 
 type MobileNavProps = {
   items: NavItem[];

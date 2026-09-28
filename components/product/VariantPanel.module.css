@@ -259,10 +259,24 @@
   line-height: 1.4;
 }
 
-.documentation {
+/*
+ * The link may wrap: at 1024px the panel column is narrower than the label on one line,
+ * which used to run past the panel's edge. The label keeps 14px; the icon never shrinks.
+ * Scoped under .actions so it outranks the shared button-link rule, whose stylesheet can
+ * load after this one (it did in production builds, which left the link at 13px, unwrapped).
+ */
+.actions .documentation {
   gap: var(--kinetus-space-2);
+  max-width: 100%;
+  min-width: 0;
   font-size: 14px;
   letter-spacing: 0.06em;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.actions .documentation svg {
+  flex: 0 0 auto;
 }
 
 @media (min-width: 768px) {

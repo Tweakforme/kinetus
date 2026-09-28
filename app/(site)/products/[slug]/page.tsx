@@ -32,7 +32,6 @@ import {
   pageImages,
   revalidateAtNextPriceChange,
   specificationRows,
-  testReportsHref,
   toProductCardModel,
   toVariantViews,
 } from "@/lib/products";
@@ -168,11 +167,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
         images={pageImages(product)}
         variants={variants}
         tiers={tiers}
-        testReportsHref={
-          product.variants.some((variant) => variant.testReportUrl)
-            ? testReportsHref(product.slug)
-            : undefined
-        }
         collectionSlugs={collectionSlugs}
         headingId={HEADING_ID}
       />

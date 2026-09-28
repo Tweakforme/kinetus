@@ -10,6 +10,50 @@
   color: var(--kinetus-text-inverse);
 }
 
+/*
+ * Homepage photograph (public/images/hero/kinetus-hero-lab.jpg, 2880 x 800). Its navy
+ * field on the left, the falloff and the light wash upper right are part of the image, so
+ * nothing is laid over it on desktop, where it is anchored left so that navy field stays
+ * under the copy at every width (anchored right, the crop removed it on screens narrower
+ * than about 1860px and the copy lost contrast). Tablet and mobile add a navy scrim for
+ * the headline, where the photo is texture rather than subject. Navy shows until the
+ * image arrives.
+ */
+.withPhoto {
+  background-color: var(--kinetus-bg-deep);
+  background-image:
+    linear-gradient(180deg, rgba(0, 19, 36, 0.93) 0%, rgba(0, 19, 36, 0.8) 100%), var(--hero-photo);
+  background-position:
+    0 0,
+    72% center;
+  background-size: auto, cover;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .withPhoto {
+    background-image:
+      linear-gradient(
+        90deg,
+        rgba(0, 19, 36, 0.9) 0%,
+        rgba(0, 19, 36, 0.55) 55%,
+        rgba(0, 19, 36, 0.25) 100%
+      ),
+      var(--hero-photo);
+    background-position:
+      0 0,
+      65% center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .withPhoto {
+    background-image: var(--hero-photo);
+    background-position: left center;
+    background-size: cover;
+  }
+}
+
 .backdrop {
   position: absolute;
   inset: 0;

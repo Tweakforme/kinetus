@@ -60,12 +60,15 @@ export const metadata: Metadata = {
 /**
  * Document shell only: fonts, global styles and the skip link. The public site's chrome
  * lives in app/(site)/layout.tsx and the admin's in app/admin/layout.tsx; both render the
- * <main id="main-content"> the skip link targets.
+ * <main id="main-content"> the skip link targets. `suppressHydrationWarning` on <html>:
+ * the age gate's inline script sets data-age-gate there before React hydrates, so that
+ * attribute differs from the server render on purpose.
  */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en-CA"
+      suppressHydrationWarning
       className={`${inter.variable} ${robotoCondensed.variable} ${plexMono.variable}`}
     >
       <body>
