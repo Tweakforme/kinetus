@@ -19,8 +19,6 @@ type ProductHeroProps = {
   variants: SelectableVariant[];
   /** Active volume discount tiers, shown in the panel. */
   tiers: VolumeTier[];
-  /** Link to the product's test reports, when it has any. */
-  testReportsHref?: string;
   /** Slugs of the product's published collections, used for the eyebrow. */
   collectionSlugs: string[];
   /** Id of the h1, for the section's accessible name. */
@@ -44,7 +42,6 @@ export function ProductHero({
   images,
   variants,
   tiers,
-  testReportsHref,
   collectionSlugs,
   headingId,
 }: ProductHeroProps) {
@@ -87,7 +84,7 @@ export function ProductHero({
             </div>
 
             <div className={styles.panel}>
-              <VariantPanel tiers={tiers} testReportsHref={testReportsHref} />
+              <VariantPanel tiers={tiers} />
             </div>
 
             <div className={styles.detail}>

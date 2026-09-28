@@ -232,11 +232,6 @@ export const getTestReports = cachedQuery(
   () => [CACHE_TAGS.products],
 );
 
-/** /documentation#<slug>: where a product page links when the product has a report. */
-export function testReportsHref(slug: string): string {
-  return `/documentation#${slug}`;
-}
-
 /**
  * Active volume discount tiers, shown on every product page. Tagged `products`, so a tier
  * save in the admin expires the product pages (lib/admin/revalidate.ts).

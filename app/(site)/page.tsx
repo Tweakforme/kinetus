@@ -80,7 +80,7 @@ export default async function Home() {
         <ShopAllBar className={styles.shopAll} />
         <div className={styles.lower}>
           <div className={styles.sections}>
-            <ShopByCategory headingId="home-categories-heading" />
+            <ShopByCategory headingId="home-categories-heading" showAllProducts={false} />
             <FeaturedGrid products={cards} />
           </div>
           {!TRUST_BAR_SITE_WIDE && <StickyTrustBar />}

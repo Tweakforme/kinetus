@@ -12,7 +12,11 @@ import {
 import { PACKAGING, SITE_NAME } from "@/lib/site";
 import styles from "./AgeGate.module.css";
 
-const LOGO = { src: "/brand/kinetus-logo-horizontal-white.png", width: 236, height: 56 };
+/**
+ * The full-colour logo (772 x 183) on a small white panel, as in the footer: the flat white
+ * copy lost the wordmark's letterforms on the navy ground.
+ */
+const LOGO = { src: "/brand/kinetus-logo-horizontal.png", width: 203, height: 48 };
 
 function isShown(): boolean {
   return document.documentElement.getAttribute(AGE_GATE_ATTRIBUTE) === "show";
@@ -99,13 +103,15 @@ export function AgeGate() {
         aria-describedby={bodyId}
         tabIndex={-1}
       >
-        <Image
-          src={LOGO.src}
-          alt={SITE_NAME}
-          width={LOGO.width}
-          height={LOGO.height}
-          className={styles.logo}
-        />
+        <span className={styles.logoPanel}>
+          <Image
+            src={LOGO.src}
+            alt={SITE_NAME}
+            width={LOGO.width}
+            height={LOGO.height}
+            className={styles.logo}
+          />
+        </span>
         <p className={styles.tagline}>{PACKAGING.tagline}</p>
 
         <svg className={styles.mark} viewBox="0 0 96 96" aria-hidden="true" focusable="false">

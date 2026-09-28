@@ -17,12 +17,18 @@ type ShopByCategoryProps = {
   title?: string;
   /** Optional text under the divider (the /research intro). */
   intro?: ReactNode;
+  /**
+   * The closing "Shop all products" card. The homepage leaves it out: its SHOP ALL
+   * PRODUCTS bar, just above this section, carries the same link and wording.
+   */
+  showAllProducts?: boolean;
 };
 
 /**
  * "Shop by Category" (the client's Shop by Category mockup): one card per published
  * CATEGORY collection, icon | hairline | name | chevron, three per row on desktop, then a
- * full-width "Shop all products" card. Names, order and icons come from the admin. The
+ * full-width "Shop all products" card (not on the homepage, see showAllProducts). Names,
+ * order and icons come from the admin. The
  * mockup's "SCIENCE. PURITY. PERFORMANCE." and "ADVANCING RESEARCH. IMPROVING TOMORROW."
  * lines are not on the permitted list and are left out. Shared by the homepage and
  * /research.
@@ -32,6 +38,7 @@ export async function ShopByCategory({
   as = "h2",
   title = "Shop by Category",
   intro,
+  showAllProducts = true,
 }: ShopByCategoryProps) {
   const categories = await getAllCollections(CollectionKind.CATEGORY);
   if (categories.length === 0) {
@@ -70,21 +77,23 @@ export async function ShopByCategory({
             </Link>
           </li>
         ))}
-        <li className={styles.wide}>
-          <Link href={ALL_PRODUCTS_LINK.href} className={`${styles.card} ${styles.allCard}`}>
-            <span className={styles.icon}>
-              <FlaskIcon size={48} className={styles.iconFallback} />
-            </span>
-            <span className={styles.rule} aria-hidden="true" />
-            <span className={styles.allText}>
-              <span className={styles.name}>Shop all products</span>
-              <span className={styles.allSub}>Explore the complete research catalogue</span>
-            </span>
-            <span className={styles.chevron} aria-hidden="true">
-              <ChevronRightIcon size={20} />
-            </span>
-          </Link>
-        </li>
+        {showAllProducts && (
+          <li className={styles.wide}>
+            <Link href={ALL_PRODUCTS_LINK.href} className={`${styles.card} ${styles.allCard}`}>
+              <span className={styles.icon}>
+                <FlaskIcon size={48} className={styles.iconFallback} />
+              </span>
+              <span className={styles.rule} aria-hidden="true" />
+              <span className={styles.allText}>
+                <span className={styles.name}>Shop all products</span>
+                <span className={styles.allSub}>Explore the complete research catalogue</span>
+              </span>
+              <span className={styles.chevron} aria-hidden="true">
+                <ChevronRightIcon size={20} />
+              </span>
+            </Link>
+          </li>
+        )}
       </ul>
     </Container>
   );

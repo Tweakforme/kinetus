@@ -41,6 +41,14 @@
   outline: none;
 }
 
+/* The colour logo on a small white panel (see the footer). */
+.logoPanel {
+  display: inline-flex;
+  padding: var(--kinetus-space-2) var(--kinetus-space-4);
+  background: var(--kinetus-bg-base);
+  border-radius: var(--kinetus-radius-md);
+}
+
 .logo {
   width: auto;
   height: 48px;

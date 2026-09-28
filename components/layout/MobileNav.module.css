@@ -70,7 +70,7 @@
   flex: 0 0 auto;
 }
 
-/* Drawer top bar mirrors the header row: 72px, white lockup left, close trigger right. */
+/* Drawer top bar mirrors the header row: 72px, logo panel left, close trigger right. */
 .topBar {
   border-bottom: 1px solid var(--kinetus-border-on-dark);
 }
@@ -83,14 +83,17 @@
   min-height: 72px;
 }
 
+/* The colour logo on a small white panel (see the footer); the whole panel is the link. */
 .logoLink {
   display: inline-flex;
   align-items: center;
-  border-radius: var(--kinetus-radius-sm);
+  padding: var(--kinetus-space-1) var(--kinetus-space-3);
+  background: var(--kinetus-bg-base);
+  border-radius: var(--kinetus-radius-md);
 }
 
 .logo {
-  height: 44px;
+  height: 40px;
   width: auto;
 }
 
