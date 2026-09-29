@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef, useState } from "react";
-import { DocumentIcon, DocumentSearchIcon } from "@/components/icons/LineIcons";
+import { HEADER_ICON_LINKS } from "@/lib/site";
 import { InformationSheetDialog } from "./InformationSheetDialog";
 import { useProductSelection } from "./ProductSelection";
 import styles from "./ProductResources.module.css";
@@ -10,10 +11,18 @@ import styles from "./ProductResources.module.css";
 export type InformationSheet = { url: string; alt: string };
 
 /**
- * The client's Test Reports seal, keyed to a transparent background and trimmed to the
- * octagon (240 x 229, twice its display size). Shown at 120px as decoration only.
+ * The client's badge artwork, supplied keyed and trimmed at twice these sizes
+ * (260 x 395 and 380 x 375). Shown at these sizes from 768px and at 80% below.
  */
-const TEST_REPORTS_SEAL = { src: "/images/seals/test-reports-seal.png", width: 120, height: 114 };
+const INFORMATION_BADGE = {
+  src: "/images/buttons/btn-product-information.png",
+  width: 130,
+  height: 198,
+};
+const REPORTS_BADGE = { src: "/images/buttons/btn-test-reports.png", width: 190, height: 188 };
+
+/** The test reports and batch documentation page: where a size without a report links. */
+const DOCUMENTATION_HREF = HEADER_ICON_LINKS.documentation.href;
 
 type ProductResourcesProps = {
   productName: string;
@@ -22,15 +31,12 @@ type ProductResourcesProps = {
 };
 
 /**
- * The two document buttons under the product copy (the client's mockup shows them as
- * metallic octagon badges; these are built from the site's own button tokens instead).
- * PRODUCT INFORMATION (teal) opens the product's information sheet in a full-screen
- * viewer; TEST REPORTS (bordered) opens the selected size's third-party report in a new
- * tab. Each button exists only when there is something behind it: no sheet, no Product
- * Information button; a size without a report link, no Test Reports button. With neither,
- * nothing is rendered. The client's Test Reports seal sits under the buttons as decoration
- * (not a link), and only beside a Test Reports button, so it never suggests a report the
- * selected size does not have.
+ * The client's two badges under the product copy, as on his product-page mockup: side by
+ * side and centred on each other. PRODUCT INFORMATION opens the product's information
+ * sheet in the full-screen viewer, and is shown only when a sheet has been uploaded. TEST
+ * REPORTS is always shown: it opens the selected size's third-party report in a new tab
+ * when the size has one, and otherwise the test reports and batch documentation page,
+ * where batch-specific COAs are available on request, as the packaging states.
  */
 export function ProductResources({ productName, sheet }: ProductResourcesProps) {
   const { selected } = useProductSelection();
@@ -38,52 +44,44 @@ export function ProductResources({ productName, sheet }: ProductResourcesProps) 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const reportUrl = selected?.testReportUrl ?? null;
 
-  if (!sheet && !reportUrl) {
-    return null;
-  }
+  const reportsBadge = (
+    <Image
+      src={REPORTS_BADGE.src}
+      alt="View test reports"
+      width={REPORTS_BADGE.width}
+      height={REPORTS_BADGE.height}
+      className={`${styles.image} ${styles.reportsImage}`}
+    />
+  );
 
   return (
-    <div className={styles.block}>
-      <div className={styles.resources}>
-        {sheet && (
-          <button
-            ref={triggerRef}
-            type="button"
-            className={`${styles.button} ${styles.primary}`}
-            aria-haspopup="dialog"
-            onClick={() => setOpen(true)}
-          >
-            <DocumentIcon size={30} className={styles.icon} />
-            <span className={styles.label}>Product information</span>
-          </button>
-        )}
-        {reportUrl && selected && (
-          <a
-            href={reportUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${styles.button} ${styles.secondary}`}
-          >
-            <DocumentSearchIcon size={30} className={styles.icon} />
-            <span className={styles.label}>
-              Test reports
-              <span className="visually-hidden">
-                {" "}
-                for {productName} {selected.label} (opens in a new tab)
-              </span>
-            </span>
-          </a>
-        )}
-      </div>
-      {reportUrl && (
-        <Image
-          src={TEST_REPORTS_SEAL.src}
-          alt=""
-          aria-hidden="true"
-          width={TEST_REPORTS_SEAL.width}
-          height={TEST_REPORTS_SEAL.height}
-          className={styles.seal}
-        />
+    <div className={styles.resources}>
+      {sheet && (
+        <button
+          ref={triggerRef}
+          type="button"
+          className={styles.badge}
+          aria-haspopup="dialog"
+          onClick={() => setOpen(true)}
+        >
+          <Image
+            src={INFORMATION_BADGE.src}
+            alt="View product information"
+            width={INFORMATION_BADGE.width}
+            height={INFORMATION_BADGE.height}
+            className={`${styles.image} ${styles.informationImage}`}
+          />
+        </button>
+      )}
+      {reportUrl ? (
+        <a href={reportUrl} target="_blank" rel="noopener noreferrer" className={styles.badge}>
+          {reportsBadge}
+          <span className="visually-hidden"> (opens in a new tab)</span>
+        </a>
+      ) : (
+        <Link href={DOCUMENTATION_HREF} className={styles.badge}>
+          {reportsBadge}
+        </Link>
       )}
       {sheet && (
         <InformationSheetDialog

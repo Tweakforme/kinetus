@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentType, CSSProperties, ReactNode } from "react";
+import { preload } from "react-dom";
 import { HexMesh } from "@/components/decor/HexMesh";
 import {
   ClipboardCheckIcon,
@@ -30,15 +31,22 @@ type PageHeroProps = {
   paragraph: ReactNode;
   features?: HeroFeature[];
   cta?: { label: string; href: string };
-  image: { src: string; alt: string };
+  /** The keyed product render right of centre. Heroes with a photograph have none. */
+  image?: { src: string; alt: string };
   /**
-   * A photograph behind the hero (the homepage). It carries its own navy field and
-   * falloff, so the gradient layers are left out; the hex mesh stays above it.
+   * A photograph behind the hero (HERO_PHOTO). It carries its own navy field, falloff
+   * and vials, so the gradient layers and the hex mesh are left out.
    */
   backgroundImage?: string;
   /** Render the headline as an h1 (pages) or a p (never). Defaults to h1. */
   as?: "h1" | "h2";
 };
+
+/**
+ * The hero photograph (2880 x 682) on the homepage and the Peptides and Blends listings:
+ * the navy field and falloff on the left, three vials right of centre.
+ */
+export const HERO_PHOTO = "/images/hero/kinetus-hero.jpg";
 
 /**
  * The four packaging strings as the deck's four hero icons (slide 4). The deck's
@@ -59,7 +67,8 @@ void PACKAGING;
  * 17): dark gradient deeper left and lighter right, faint hexagonal mesh in the upper
  * right, the client's keyed product render composited right of centre, cyan letterspaced
  * eyebrow, very large white headline, three-line white paragraph, thin-line icon row and
- * a solid teal button. Everything stacks on mobile.
+ * a solid teal button. Everything stacks on mobile. With a photograph, the photograph
+ * replaces the gradient, the mesh and the render.
  */
 export function PageHero({
   variant,
@@ -73,7 +82,12 @@ export function PageHero({
   backgroundImage,
   as: Heading = "h1",
 }: PageHeroProps) {
-  const blur = blurPlaceholder(image.src);
+  if (backgroundImage) {
+    // A CSS background is requested only once the stylesheet applies; this lets it
+    // arrive with the page.
+    preload(backgroundImage, { as: "image", fetchPriority: "high" });
+  }
+  const blur = image ? blurPlaceholder(image.src) : undefined;
   const headlineClass =
     variant === "home" ? `type-hero ${styles.headline}` : `type-hero-mixed ${styles.headline}`;
   const classes = [
@@ -89,11 +103,13 @@ export function PageHero({
 
   return (
     <section className={classes} style={photo} aria-labelledby={headingId} data-reveal="">
-      <div className={styles.backdrop} aria-hidden="true">
-        {!backgroundImage && <div className={styles.glow} />}
-        <HexMesh className={styles.mesh} cell={30} />
-        {!backgroundImage && <div className={styles.vignette} />}
-      </div>
+      {!backgroundImage && (
+        <div className={styles.backdrop} aria-hidden="true">
+          <div className={styles.glow} />
+          <HexMesh className={styles.mesh} cell={30} />
+          <div className={styles.vignette} />
+        </div>
+      )}
 
       <div className={styles.inner}>
         <div className={styles.copy}>
@@ -134,18 +150,20 @@ export function PageHero({
           )}
         </div>
 
-        <div className={styles.render}>
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
-            sizes="(min-width: 1024px) 46vw, (min-width: 768px) 60vw, 100vw"
-            className={styles.image}
-            priority
-            placeholder={blur ? "blur" : "empty"}
-            blurDataURL={blur}
-          />
-        </div>
+        {image && (
+          <div className={styles.render}>
+            <Image
+              src={image.src}
+              alt={image.alt}
+              fill
+              sizes="(min-width: 1024px) 46vw, (min-width: 768px) 60vw, 100vw"
+              className={styles.image}
+              priority
+              placeholder={blur ? "blur" : "empty"}
+              blurDataURL={blur}
+            />
+          </div>
+        )}
       </div>
     </section>
   );

@@ -31,7 +31,11 @@
   border-color: var(--kinetus-brand-teal);
 }
 
-.button {
+/*
+ * Matches the 56px field. Scoped under .form so it outranks the shared .solid button
+ * (min-height: 52px) whatever order the two stylesheets load in.
+ */
+.form .button {
   flex: 0 0 auto;
   min-height: 56px;
 }
