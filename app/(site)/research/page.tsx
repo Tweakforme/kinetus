@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ListingPage } from "@/components/collection/ListingPage";
 import { ShopByCategory } from "@/components/home/ShopByCategory";
-import { canonicalUrl } from "@/lib/seo";
+import { canonicalUrl, defaultShareImage } from "@/lib/seo";
 import { RESEARCH_USE_COPY, SITE_NAME } from "@/lib/site";
 
 const TITLE = "Research";
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     url: canonical,
     title: TITLE,
     description: DESCRIPTION,
-    images: [{ url: canonicalUrl("/kinetus-logo.png"), alt: SITE_NAME }],
+    images: [defaultShareImage()],
   },
 };
 

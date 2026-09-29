@@ -43,10 +43,12 @@ type PageHeroProps = {
 };
 
 /**
- * The hero photograph (2880 x 682) on the homepage and the Peptides and Blends listings:
- * the navy field and falloff on the left, three vials right of centre.
+ * The hero photograph (2880 x 882) on the homepage and the Peptides and Blends listings:
+ * the navy field and falloff on the left, three vials right of centre, headroom above and
+ * below. Files in public/ are not fingerprinted, so a new version gets a new name rather
+ * than replacing this one in place.
  */
-export const HERO_PHOTO = "/images/hero/kinetus-hero.jpg";
+export const HERO_PHOTO = "/images/hero/kinetus-hero-v2.jpg";
 
 /**
  * The four packaging strings as the deck's four hero icons (slide 4). The deck's

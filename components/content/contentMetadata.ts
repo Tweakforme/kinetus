@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { canonicalUrl } from "@/lib/seo";
+import { canonicalUrl, defaultShareImage } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 
 /**
@@ -9,7 +9,7 @@ import { SITE_NAME } from "@/lib/site";
  */
 export function contentMetadata(title: string, description: string, path: string): Metadata {
   const canonical = canonicalUrl(path);
-  const shareImage = { url: canonicalUrl("/kinetus-logo.png"), alt: SITE_NAME };
+  const shareImage = defaultShareImage();
   return {
     title,
     description,

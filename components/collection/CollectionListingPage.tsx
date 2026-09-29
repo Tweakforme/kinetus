@@ -11,7 +11,7 @@ import {
 import { getCollectionBySlug, getCollectionRedirectTarget } from "@/lib/collections";
 import { imagesForVariant } from "@/lib/product-images";
 import { revalidateAtNextPriceChange, toProductCardModel } from "@/lib/products";
-import { absoluteUrl, canonicalUrl, DEFAULT_DESCRIPTION } from "@/lib/seo";
+import { absoluteUrl, canonicalUrl, DEFAULT_DESCRIPTION, defaultShareImage } from "@/lib/seo";
 import { COLLECTION_SLUGS, collectionHref, RESEARCH_LINK, SITE_NAME } from "@/lib/site";
 import { sortListing, withSort, type SortKey } from "@/lib/sort";
 import { CatalogueListing } from "./CatalogueListing";
@@ -60,7 +60,7 @@ export async function collectionListingMetadata(slug: string, page: number): Pro
     .find((image) => image !== undefined);
   const shareImages = firstImage
     ? [{ url: absoluteUrl(firstImage.url), alt: firstImage.altText }]
-    : [{ url: canonicalUrl("/kinetus-logo.png"), alt: SITE_NAME }];
+    : [defaultShareImage()];
 
   return {
     title,

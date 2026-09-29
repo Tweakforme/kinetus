@@ -14,7 +14,7 @@ import buttons from "@/components/ui/buttons.module.css";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 import { getAllCollections } from "@/lib/collections";
-import { canonicalUrl } from "@/lib/seo";
+import { canonicalUrl, defaultShareImage } from "@/lib/seo";
 import { ALL_PRODUCTS_LINK, collectionHref, SITE_NAME } from "@/lib/site";
 import styles from "./page.module.css";
 
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     url: canonical,
     title: TITLE,
     description: INTRO,
-    images: [{ url: canonicalUrl("/kinetus-logo.png"), alt: SITE_NAME }],
+    images: [defaultShareImage()],
   },
   twitter: {
     card: "summary",

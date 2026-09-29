@@ -12,7 +12,7 @@ const PARAGRAPH =
  * Each headline line is kept whole from the desktop breakpoint up so the break always
  * falls after "PEPTIDES." as on the deck.
  *
- * Behind it, the hero photograph (2880 x 682) with the navy field, the falloff and the
+ * Behind it, the hero photograph (2880 x 882) with the navy field, the falloff and the
  * vials built in. It is a CSS background, so PageHero preloads it.
  */
 export function HomeHero() {

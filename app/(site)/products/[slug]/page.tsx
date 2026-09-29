@@ -35,7 +35,7 @@ import {
   toProductCardModel,
   toVariantViews,
 } from "@/lib/products";
-import { absoluteUrl, canonicalUrl, DEFAULT_DESCRIPTION } from "@/lib/seo";
+import { absoluteUrl, canonicalUrl, DEFAULT_DESCRIPTION, defaultShareImage } from "@/lib/seo";
 import { PACKAGING, SITE_NAME } from "@/lib/site";
 import styles from "./page.module.css";
 
@@ -92,7 +92,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   // locale and the social card are restated here.
   const shareImages = primaryImage
     ? [{ url: absoluteUrl(primaryImage.url), alt: primaryImage.altText }]
-    : [{ url: canonicalUrl("/kinetus-logo.png"), alt: SITE_NAME }];
+    : [defaultShareImage()];
 
   return {
     title,
