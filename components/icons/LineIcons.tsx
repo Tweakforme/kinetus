@@ -105,18 +105,6 @@ export function DocumentIcon(props: IconProps) {
   );
 }
 
-/** A document with a magnifier over its corner (test reports). */
-export function DocumentSearchIcon(props: IconProps) {
-  return (
-    <Base {...props}>
-      <path d="M13 21H5V3h8l4 4v4" />
-      <path d="M13 3v4h4M8 8.5h3M8 12h6M8 15.5h3.5" />
-      <circle cx="16" cy="16" r="3.5" />
-      <path d="M18.6 18.6L21 21" />
-    </Base>
-  );
-}
-
 export function ClipboardCheckIcon(props: IconProps) {
   return (
     <Base {...props}>

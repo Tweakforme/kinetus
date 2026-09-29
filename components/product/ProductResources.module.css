@@ -1,108 +1,73 @@
 /*
- * Product Information and Test Reports buttons. The mockup's octagon badges are read as
- * two framed tiles: icon above a condensed uppercase label, side by side from 768px.
- * Below 768px they stack as full-width buttons, icon beside the label. Teal fill for the
- * primary action, a teal hairline border for the secondary one; type and colours are the
- * button set's tokens (components/ui/buttons.module.css).
+ * The client's two badges as the product page's document controls (his product-page
+ * mockup): side by side, centred on each other, 24px apart. Left-aligned under the copy
+ * from 768px; below 768px at 80% of their size and centred. The row is a size container:
+ * where it is narrower than the pair (344px with the gap), both badges scale down together
+ * and stay side by side. That happens at 768-799px and 1024-1155px, where the product
+ * page's copy column is 299-343px wide. They would stack, still centred, only in a row too
+ * narrow even for that (not reached from 320px up).
  */
-
-/* The buttons, then the client's Test Reports seal under them (with a report only). */
-.block {
-  display: flex;
-  flex-direction: column;
-  gap: var(--kinetus-space-5);
-}
-
 .resources {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--kinetus-space-3);
-}
-
-/* Decorative, 120px: centred under the stacked buttons on phones, left-aligned from 768px. */
-.seal {
-  align-self: center;
-  width: 120px;
-  height: auto;
-}
-
-.button {
+  container-type: inline-size;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--kinetus-space-3);
-  min-width: 0;
-  min-height: 56px;
-  padding: var(--kinetus-space-3) var(--kinetus-space-5);
-  border: 1px solid transparent;
-  border-radius: var(--kinetus-radius-button);
-  font-family: var(--kinetus-font-display);
-  font-size: var(--kinetus-type-button-size);
-  font-weight: var(--kinetus-type-button-weight);
-  letter-spacing: var(--kinetus-type-button-letter-spacing);
-  line-height: 1.1;
-  text-align: left;
-  text-transform: uppercase;
-  text-decoration: none;
+  justify-content: center;
+  gap: var(--kinetus-space-6);
+}
+
+/* The artwork is the whole control: no frame, padding or background of its own. */
+.badge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  padding: 0;
+  background: none;
+  border: 0;
   cursor: pointer;
+  line-height: 0;
+  /* 150ms, and none under reduced motion (the global guard zeroes --motion-duration). */
   transition:
-    background-color var(--motion-duration) var(--motion-ease),
-    border-color var(--motion-duration) var(--motion-ease),
-    color var(--motion-duration) var(--motion-ease),
-    box-shadow var(--motion-duration) var(--motion-ease),
-    transform var(--motion-duration) var(--motion-ease);
+    opacity calc(var(--motion-duration) * 0.75) ease,
+    transform calc(var(--motion-duration) * 0.75) ease;
 }
 
-.primary {
-  background: var(--kinetus-brand-teal);
-  border-color: var(--kinetus-brand-teal);
-  color: var(--kinetus-text-inverse);
-  box-shadow: 0 6px 18px rgba(1, 114, 136, 0.28);
-}
-
-.primary:hover,
-.primary:active {
-  background: var(--kinetus-brand-teal-dark);
-  border-color: var(--kinetus-brand-teal-dark);
+.badge:hover {
+  opacity: 0.88;
   transform: translateY(-1px);
 }
 
-.secondary {
-  background: var(--kinetus-bg-base);
-  border-color: var(--kinetus-brand-teal);
-  color: var(--kinetus-brand-teal-deep);
+.badge:focus-visible {
+  outline: 2px solid var(--kinetus-brand-teal);
+  outline-offset: 2px;
 }
 
-.secondary:hover,
-.secondary:active {
-  background: var(--kinetus-brand-teal-light);
-  color: var(--kinetus-brand-teal-dark);
+.image {
+  display: block;
+  height: auto;
 }
 
-.icon {
-  flex: 0 0 auto;
+/*
+ * 80% of 130 x 198 and 190 x 188 below 768px, full size from 768px; each capped at its
+ * share (130 : 190) of the row minus the gap, less 1px so rounding never forces a wrap.
+ */
+.informationImage {
+  width: min(104px, calc((100cqw - var(--kinetus-space-6) - 1px) * 130 / 320));
 }
 
-.label {
-  min-width: 0;
-  overflow-wrap: break-word;
+.reportsImage {
+  width: min(152px, calc((100cqw - var(--kinetus-space-6) - 1px) * 190 / 320));
 }
 
-/* Tiles side by side: icon above the label, both centred. */
 @media (min-width: 768px) {
   .resources {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: flex-start;
   }
 
-  .seal {
-    align-self: flex-start;
+  .informationImage {
+    width: min(130px, calc((100cqw - var(--kinetus-space-6) - 1px) * 130 / 320));
   }
 
-  .button {
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--kinetus-space-2);
-    min-height: 104px;
-    padding: var(--kinetus-space-4) var(--kinetus-space-3);
-    text-align: center;
+  .reportsImage {
+    width: min(190px, calc((100cqw - var(--kinetus-space-6) - 1px) * 190 / 320));
   }
 }

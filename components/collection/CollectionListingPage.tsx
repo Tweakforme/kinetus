@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
+import { HERO_PHOTO } from "@/components/ui/PageHero";
 import {
   COLLECTION_HERO,
   DEFAULT_COLLECTION_HERO,
@@ -34,6 +35,9 @@ type CollectionListingProps = {
 
 /** Shown on an empty range other than Research, above the documentation section. */
 const EMPTY_RANGE_MESSAGE = "No products are published in this range yet.";
+
+/** Ranges whose hero is the photograph (vials included) rather than the render. */
+const PHOTO_HERO_RANGES = new Set<string>([COLLECTION_SLUGS.peptides, COLLECTION_SLUGS.blends]);
 
 /**
  * Metadata for `/collections/[slug]` (page 1) and `/collections/[slug]/page/[n]`.
@@ -86,7 +90,7 @@ export async function collectionListingMetadata(slug: string, page: number): Pro
  * the pill bar with this range current, twelve cards per page and pagination. Research
  * always shows the batch documentation section; any other empty range shows it with a
  * short line. Renamed slugs redirect permanently; unknown slugs and pages past the end
- * are 404s.
+ * are 404s. Peptides and Blends (every page of them) show the hero photograph.
  */
 export async function CollectionListingPage({ slug, page, sort }: CollectionListingProps) {
   const collection = await getCollectionBySlug(slug);
@@ -144,6 +148,7 @@ export async function CollectionListingPage({ slug, page, sort }: CollectionList
           headingId: "collection-heading",
           paragraph: hero.paragraph,
           cta: { label: hero.ctaLabel, href: ctaHref },
+          backgroundImage: PHOTO_HERO_RANGES.has(collection.slug) ? HERO_PHOTO : undefined,
         }}
         divider={{
           id: "collection-catalogue-heading",

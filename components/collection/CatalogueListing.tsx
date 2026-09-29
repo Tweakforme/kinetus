@@ -18,6 +18,8 @@ export type CatalogueListingProps = {
     headingId: string;
     paragraph: ReactNode;
     cta: { label: string; href: string };
+    /** A photograph behind the hero in place of the render (Peptides and Blends). */
+    backgroundImage?: string;
   };
   divider: {
     id: string;
@@ -78,7 +80,8 @@ export function CatalogueListing({
         headingId={hero.headingId}
         paragraph={hero.paragraph}
         cta={hero.cta}
-        image={LISTING_RENDER}
+        image={hero.backgroundImage ? undefined : LISTING_RENDER}
+        backgroundImage={hero.backgroundImage}
       />
 
       <Container

@@ -11,46 +11,76 @@
 }
 
 /*
- * Homepage photograph (public/images/hero/kinetus-hero-lab.jpg, 2880 x 800). Its navy
- * field on the left, the falloff and the light wash upper right are part of the image, so
- * nothing is laid over it on desktop, where it is anchored left so that navy field stays
- * under the copy at every width (anchored right, the crop removed it on screens narrower
- * than about 1860px and the copy lost contrast). Tablet and mobile add a navy scrim for
- * the headline, where the photo is texture rather than subject. Navy shows until the
+ * Hero photograph (public/images/hero/kinetus-hero.jpg, 2880 x 682) on the homepage and
+ * the Peptides and Blends listings: the navy field and falloff on its left and the three
+ * vials (about 50-70% across) are part of the image, placed at the client's positions.
+ * Up to about 2180px the band is taller in proportion than the photo, so `cover` crops
+ * its sides and the copy reaches past the navy field onto the vials. A navy scrim keeps
+ * every text block at 4.5:1 (3:1 for the headline) or better: top to bottom below
+ * 1024px, where the copy spans the band, and from 1024px under the copy only, clear from
+ * 58% across so the main vial and the lab stay as photographed. Navy shows until the
  * image arrives.
  */
 .withPhoto {
   background-color: var(--kinetus-bg-deep);
   background-image:
-    linear-gradient(180deg, rgba(0, 19, 36, 0.93) 0%, rgba(0, 19, 36, 0.8) 100%), var(--hero-photo);
+    linear-gradient(180deg, rgba(0, 19, 36, 0.88) 0%, rgba(0, 19, 36, 0.72) 100%), var(--hero-photo);
   background-position:
     0 0,
-    72% center;
+    60% center;
   background-size: auto, cover;
   background-repeat: no-repeat;
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .withPhoto {
-    background-image:
-      linear-gradient(
-        90deg,
-        rgba(0, 19, 36, 0.9) 0%,
-        rgba(0, 19, 36, 0.55) 55%,
-        rgba(0, 19, 36, 0.25) 100%
-      ),
-      var(--hero-photo);
     background-position:
       0 0,
-      65% center;
+      58% center;
   }
 }
 
 @media (min-width: 1024px) {
   .withPhoto {
-    background-image: var(--hero-photo);
-    background-position: left center;
-    background-size: cover;
+    background-image:
+      linear-gradient(
+        90deg,
+        rgba(0, 19, 36, 0.9) 0%,
+        rgba(0, 19, 36, 0.9) 40%,
+        rgba(0, 19, 36, 0.65) 53%,
+        transparent 58%
+      ),
+      var(--hero-photo);
+    background-position:
+      0 0,
+      55% center;
+    background-size:
+      100% 100%,
+      cover;
+  }
+}
+
+@media (min-width: 1440px) {
+  .withPhoto {
+    background-position:
+      0 0,
+      center;
+  }
+}
+
+/*
+ * From 2180px the band is wider in proportion than the photo, and `cover` would crop the
+ * vial caps and bases. The photo keeps the band's height instead, anchored right; the
+ * strip that opens on its left is the navy fallback, under the scrim.
+ */
+@media (min-width: 2180px) {
+  .withPhoto {
+    background-position:
+      0 0,
+      right center;
+    background-size:
+      100% 100%,
+      auto 100%;
   }
 }
 
@@ -275,6 +305,30 @@
 
   .featureLabel {
     white-space: nowrap;
+  }
+}
+
+/*
+ * Over the photograph the one-line icon row would run past the copy column onto the main
+ * vial until the container reaches its full width, so there it stays the 2 x 2 grid used
+ * below 1280px.
+ */
+@media (min-width: 1280px) and (max-width: 1439px) {
+  .withPhoto .features {
+    display: grid;
+  }
+
+  .withPhoto .feature {
+    margin-right: 0;
+  }
+
+  .withPhoto .feature:nth-child(even) {
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  .withPhoto .featureLabel {
+    white-space: normal;
   }
 }
 
