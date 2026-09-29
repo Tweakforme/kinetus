@@ -13,9 +13,27 @@ function blobStoreHostname(): string | null {
 
 const blobHost = blobStoreHostname();
 
+/**
+ * The only host search engines may index. Every response served on any other host (the
+ * kinetus.vercel.app alias, each deployment's own *.vercel.app URL, previews) carries
+ * X-Robots-Tag: noindex, nofollow. It must be the exact host the site is served from.
+ */
+const PRODUCTION_HOST = "kinetusbiolabs.ca";
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: blobHost ? [{ protocol: "https", hostname: blobHost, pathname: "/**" }] : [],
+  },
+  async headers() {
+    return [
+      {
+        // Every path: pages, route handlers, robots.txt and the sitemap, files in public/.
+        // The host value is an anchored pattern, so the dots are escaped.
+        source: "/:path*",
+        missing: [{ type: "host", value: PRODUCTION_HOST.replaceAll(".", "\\.") }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
   },
   experimental: {
     serverActions: {
