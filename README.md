@@ -16,7 +16,7 @@ settings.
 | `npm run lint`              | ESLint (Next core-web-vitals + TypeScript)                  |
 | `npm run typecheck`         | `tsc --noEmit`                                              |
 | `npm run format`            | Prettier (write); `npm run format:check` to verify          |
-| `npm run admin:create`      | Create the admin account or reset its password (see below)  |
+| `npm run admin:create`      | Create or replace the admin account (see below)             |
 | `npx prisma validate`       | Validate `prisma/schema.prisma`                             |
 | `npx prisma migrate deploy` | Apply migrations (requires `DATABASE_URL` and `DIRECT_URL`) |
 | `npx prisma db seed`        | Seed the catalogue and configuration (see "Seed" below)     |
@@ -40,13 +40,17 @@ Copy `.env.example` to `.env` and set:
   other `/admin` request to it unless the session cookie's signature and expiry check out;
   every admin page and server action then checks the session row in the database
   (`lib/admin/auth.ts`), so logging out or resetting the password takes effect at once.
-- One admin account. Create it, or reset its password (which signs out every session):
+- One admin account. Create it:
 
   ```bash
-  ADMIN_EMAIL=you@example.com ADMIN_PASSWORD="a long passphrase" npm run admin:create
+  npm run admin:create -- --email you@example.com --password "a long passphrase"
   ```
 
-  `--email` and `--password` work too; add `--replace` to move the account to a new email.
+  If an admin account already exists (this email or another), the script stops; add
+  `--replace` to give that account the new email and password, which signs out every
+  session. Passwords need 12 characters or more. `ADMIN_EMAIL` and `ADMIN_PASSWORD` work in
+  place of the flags. In PowerShell, quote the double dash (`npm run admin:create '--' ...`):
+  unquoted, PowerShell drops it and npm keeps the flags for itself.
 
 - Sign-in is rate limited: 5 failures per address or 10 per email in 15 minutes.
 - Catalogue pages are static and have no timer. Admin saves expire the cache tags in
