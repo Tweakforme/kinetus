@@ -1,6 +1,9 @@
 /**
- * SEO helpers reused by every phase: site origin resolution and canonical URLs.
+ * SEO helpers reused by every phase: site origin resolution, canonical URLs and the
+ * default share image.
  */
+
+import { SITE_NAME } from "@/lib/site";
 
 // TODO: confirm default meta description copy with AJ/Mike before launch.
 export const DEFAULT_DESCRIPTION =
@@ -49,4 +52,18 @@ export function canonicalUrl(path: string = "/"): string {
     return `${origin}/`;
   }
   return `${origin}${stripTrailingSlash(normalised)}`;
+}
+
+/**
+ * The site-wide share card (public/images/og/kinetus-og.jpg, 1200 x 630, about 90 KB),
+ * used for og:image and twitter:image on every page without its own product render.
+ * Messaging apps skip large share images; the previous ones were 1.8 MB and 964 KB.
+ */
+export function defaultShareImage() {
+  return {
+    url: canonicalUrl("/images/og/kinetus-og.jpg"),
+    width: 1200,
+    height: 630,
+    alt: SITE_NAME,
+  };
 }

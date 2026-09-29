@@ -7,7 +7,7 @@ import { Container } from "@/components/layout/Container";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 import { formatStoreDate } from "@/lib/admin/forms";
 import { getTestReports } from "@/lib/products";
-import { canonicalUrl } from "@/lib/seo";
+import { canonicalUrl, defaultShareImage } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 import styles from "./page.module.css";
 
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     url: canonical,
     title: TITLE,
     description: DESCRIPTION,
-    images: [{ url: canonicalUrl("/kinetus-logo.png"), alt: SITE_NAME }],
+    images: [defaultShareImage()],
   },
 };
 

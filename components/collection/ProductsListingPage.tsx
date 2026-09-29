@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { DEFAULT_COLLECTION_HERO, pageHref, paginate } from "@/lib/catalogue";
 import { getAllProducts, revalidateAtNextPriceChange, toProductCardModel } from "@/lib/products";
-import { canonicalUrl } from "@/lib/seo";
+import { canonicalUrl, defaultShareImage } from "@/lib/seo";
 import { ALL_PRODUCTS_LINK, SITE_NAME } from "@/lib/site";
 import { sortListing, withSort, type SortKey } from "@/lib/sort";
 import { CatalogueListing } from "./CatalogueListing";
@@ -46,7 +46,7 @@ export function productsListingMetadata(page: number): Metadata {
       url: canonical,
       title,
       description: PRODUCTS_DESCRIPTION,
-      images: [{ url: canonicalUrl("/kinetus-logo.png"), alt: SITE_NAME }],
+      images: [defaultShareImage()],
     },
     twitter: {
       card: "summary",

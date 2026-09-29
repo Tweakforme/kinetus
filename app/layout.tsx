@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Inter, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
-import { DEFAULT_DESCRIPTION, getSiteUrl } from "@/lib/seo";
+import { DEFAULT_DESCRIPTION, defaultShareImage, getSiteUrl } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 
 // Inter for body, labels and product names. Exposed as --font-inter and consumed by
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     locale: "en_CA",
     title: SITE_NAME,
     description: DEFAULT_DESCRIPTION,
-    images: [{ url: "/kinetus-logo.png", width: 1515, height: 1038, alt: SITE_NAME }],
+    images: [defaultShareImage()],
   },
   twitter: {
     card: "summary",
