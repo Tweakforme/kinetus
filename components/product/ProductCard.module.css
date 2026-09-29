@@ -119,7 +119,13 @@
   text-transform: uppercase;
 }
 
-.cta {
+/*
+ * The whole card is the link, so this label needs no 48px touch target of its own.
+ * Scoped under .card so it outranks the shared .link style (buttons.module.css), which
+ * loads after this stylesheet in production builds and otherwise set min-height: 48px,
+ * making every card 30px taller than designed.
+ */
+.card .cta {
   min-height: 0;
   margin-top: var(--kinetus-space-2);
 }
