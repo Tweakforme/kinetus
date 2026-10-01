@@ -11,15 +11,15 @@ import styles from "./ProductResources.module.css";
 export type InformationSheet = { url: string; alt: string };
 
 /**
- * The client's badge artwork, supplied keyed and trimmed at twice these sizes
- * (260 x 395 and 380 x 375). Shown at these sizes from 768px and at 80% below.
+ * The client's badge artwork, supplied keyed and trimmed at four times these sizes
+ * (260 x 395 and 380 x 375), shown at these sizes at every width.
  */
 const INFORMATION_BADGE = {
   src: "/images/buttons/btn-product-information.png",
-  width: 130,
-  height: 198,
+  width: 65,
+  height: 99,
 };
-const REPORTS_BADGE = { src: "/images/buttons/btn-test-reports.png", width: 190, height: 188 };
+const REPORTS_BADGE = { src: "/images/buttons/btn-test-reports.png", width: 95, height: 94 };
 
 /** The test reports and batch documentation page: where a size without a report links. */
 const DOCUMENTATION_HREF = HEADER_ICON_LINKS.documentation.href;
@@ -31,8 +31,8 @@ type ProductResourcesProps = {
 };
 
 /**
- * The client's two badges under the product copy, as on his product-page mockup: side by
- * side and centred on each other. PRODUCT INFORMATION opens the product's information
+ * The client's two badges in the product hero's left column, under the copy and beside
+ * the gallery: side by side and centred on each other. PRODUCT INFORMATION opens the product's information
  * sheet in the full-screen viewer, and is shown only when a sheet has been uploaded. TEST
  * REPORTS is always shown: it opens the selected size's third-party report in a new tab
  * when the size has one, and otherwise the test reports and batch documentation page,

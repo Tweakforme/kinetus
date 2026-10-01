@@ -1,7 +1,7 @@
 import { COLLECTION_SLUGS } from "@/lib/site";
 
-/** Cards per listing page: three rows of four, as the deck's grid (slide 7). */
-export const PAGE_SIZE = 12;
+/** Cards per listing page (the client's change list: 20 per page). */
+export const PAGE_SIZE = 20;
 
 export type PageSlice<T> = {
   items: T[];
@@ -27,7 +27,10 @@ export function pageCount(totalItems: number): number {
   return Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
 }
 
-/** Parses a route page number; returns null when it is not a whole number >= 2. */
+/**
+ * Parses an old `/page/[n]` route segment (now only redirected to `?page=n`); null when
+ * it is not a whole number >= 2.
+ */
 export function parsePageParam(value: string): number | null {
   if (!/^\d+$/.test(value)) {
     return null;
@@ -36,9 +39,25 @@ export function parsePageParam(value: string): number | null {
   return page >= 2 ? page : null;
 }
 
-/** `/base` for page 1, `/base/page/N` otherwise. */
+/**
+ * Parses `?page=` on a listing: absent is page 1; anything but a whole number >= 1 is
+ * null (the route 404s). A page past the end is left to the listing to 404.
+ */
+export function parsePageQuery(value: string | string[] | undefined): number | null {
+  const raw = Array.isArray(value) ? value[0] : value;
+  if (raw === undefined) {
+    return 1;
+  }
+  if (!/^\d+$/.test(raw)) {
+    return null;
+  }
+  const page = Number(raw);
+  return page >= 1 ? page : null;
+}
+
+/** `/base` for page 1, `/base?page=N` otherwise. */
 export function pageHref(base: string, page: number): string {
-  return page <= 1 ? base : `${base}/page/${page}`;
+  return page <= 1 ? base : `${base}?page=${page}`;
 }
 
 /**

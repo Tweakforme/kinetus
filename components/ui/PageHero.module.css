@@ -70,12 +70,100 @@
 }
 
 /*
- * From 2180px the photo keeps the band's height instead of covering its width, anchored
- * right, so it is never cropped top and bottom there; the strip that opens on its left is
- * the navy fallback, under the scrim.
+ * HERO_PHOTO only (its left edge is the navy fallback colour): from 2180px the photo keeps
+ * the band's height instead of covering its width, anchored right, so it is never cropped
+ * top and bottom there; the strip that opens on its left is the navy fallback, under the
+ * scrim. The client's page heroes keep `cover` at every width.
  */
+/*
+ * The client's page heroes (PAGE_HERO_PHOTOS, exactly 2:1), on their own layer: the frame
+ * fills the band and is a size container, so the photo's sizing follows the band's actual
+ * shape, never the viewport. While the band is narrower than 2:1 the photo covers it at
+ * the homepage's positions; once it is wider, the photo keeps the band's height, anchored
+ * right, and the band's navy (#001324) fills the left and fades into the photo's edge, so
+ * it never zooms past its own aspect. The scrims are the homepage's, drawn on the same
+ * layer above the photo. Nothing here transitions, so resizing never fades or jumps.
+ */
+.fitPhoto {
+  background-color: var(--kinetus-bg-deep);
+}
+
+.photoFrame {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  container-type: size;
+  pointer-events: none;
+}
+
+.photo {
+  --photo-scrim: linear-gradient(180deg, rgba(0, 19, 36, 0.88) 0%, rgba(0, 19, 36, 0.72) 100%);
+  --photo-scrim-size: auto;
+  --photo-x: 60%;
+
+  position: absolute;
+  inset: 0;
+  background-color: var(--kinetus-bg-deep);
+  background-image: var(--photo-scrim), var(--hero-photo);
+  background-position:
+    0 0,
+    var(--photo-x) center;
+  background-size: var(--photo-scrim-size), cover;
+  background-repeat: no-repeat;
+  transition: none;
+  animation: none;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .photo {
+    --photo-x: 58%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .photo {
+    --photo-scrim: linear-gradient(
+      90deg,
+      rgba(0, 19, 36, 0.9) 0%,
+      rgba(0, 19, 36, 0.9) 40%,
+      rgba(0, 19, 36, 0.65) 53%,
+      transparent 58%
+    );
+    --photo-scrim-size: 100% 100%;
+    --photo-x: 55%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .photo {
+    --photo-x: center;
+  }
+}
+
+/* Band wider than the photo: 2:1 is its aspect, 200cqh its width at the band's height. */
+@container (min-aspect-ratio: 2/1) {
+  .photo {
+    background-image:
+      var(--photo-scrim),
+      linear-gradient(
+        90deg,
+        var(--kinetus-bg-deep) calc(100cqw - 200cqh),
+        rgba(0, 19, 36, 0) calc(100cqw - 160cqh)
+      ),
+      var(--hero-photo);
+    background-position:
+      0 0,
+      0 0,
+      right center;
+    background-size:
+      var(--photo-scrim-size),
+      100% 100%,
+      auto 100%;
+  }
+}
+
 @media (min-width: 2180px) {
-  .withPhoto {
+  .wideHeadroom {
     background-position:
       0 0,
       right center;
@@ -315,20 +403,24 @@
  * below 1280px.
  */
 @media (min-width: 1280px) and (max-width: 1439px) {
-  .withPhoto .features {
+  .withPhoto .features,
+  .fitPhoto .features {
     display: grid;
   }
 
-  .withPhoto .feature {
+  .withPhoto .feature,
+  .fitPhoto .feature {
     margin-right: 0;
   }
 
-  .withPhoto .feature:nth-child(even) {
+  .withPhoto .feature:nth-child(even),
+  .fitPhoto .feature:nth-child(even) {
     padding-right: 0;
     border-right: 0;
   }
 
-  .withPhoto .featureLabel {
+  .withPhoto .featureLabel,
+  .fitPhoto .featureLabel {
     white-space: normal;
   }
 }

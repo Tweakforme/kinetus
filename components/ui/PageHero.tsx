@@ -51,6 +51,20 @@ type PageHeroProps = {
 export const HERO_PHOTO = "/images/hero/kinetus-hero-v2.jpg";
 
 /**
+ * The client's page heroes (1376 x 688 WebP): his originals with only the bottom 80px
+ * cropped off. Peptides, Lab Supplies and the category listings use them through
+ * CollectionListingPage; /products uses allMaterials.
+ */
+export const PAGE_HERO_PHOTOS = {
+  about: "/images/hero/hero-about.webp",
+  research: "/images/hero/hero-research.webp",
+  peptides: "/images/hero/hero-peptides.webp",
+  labSupplies: "/images/hero/hero-lab-supplies.webp",
+  contact: "/images/hero/hero-contact.webp",
+  allMaterials: "/images/hero/hero-all-materials.webp",
+} as const;
+
+/**
  * The four packaging strings as the deck's four hero icons (slide 4). The deck's
  * "HPLC & LC-MS/MS VERIFIED" is replaced by "BATCH-SPECIFIC COA AVAILABLE".
  */
@@ -92,10 +106,15 @@ export function PageHero({
   const blur = image ? blurPlaceholder(image.src) : undefined;
   const headlineClass =
     variant === "home" ? `type-hero ${styles.headline}` : `type-hero-mixed ${styles.headline}`;
+  // The client's 2:1 page heroes are drawn on their own layer (see .photoFrame); the
+  // homepage photograph stays the section's background.
+  const fitted = Boolean(backgroundImage) && backgroundImage !== HERO_PHOTO;
   const classes = [
     styles.hero,
     variant === "home" ? styles.home : styles.category,
-    backgroundImage ? styles.withPhoto : null,
+    backgroundImage && !fitted ? styles.withPhoto : null,
+    backgroundImage === HERO_PHOTO ? styles.wideHeadroom : null,
+    fitted ? styles.fitPhoto : null,
   ]
     .filter(Boolean)
     .join(" ");
@@ -110,6 +129,12 @@ export function PageHero({
           <div className={styles.glow} />
           <HexMesh className={styles.mesh} cell={30} />
           <div className={styles.vignette} />
+        </div>
+      )}
+
+      {fitted && (
+        <div className={styles.photoFrame} aria-hidden="true">
+          <div className={styles.photo} />
         </div>
       )}
 

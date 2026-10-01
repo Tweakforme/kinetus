@@ -244,14 +244,6 @@
   color: var(--kinetus-text-inverse);
 }
 
-/* Documentation and enquiry links (the header's icon cluster on desktop). */
-.secondary {
-  list-style: none;
-  margin: var(--kinetus-space-4) 0 0;
-  padding: 0;
-}
-
-.secondaryLink,
 .shipping {
   display: flex;
   align-items: center;
@@ -262,13 +254,6 @@
   transition: color var(--motion-duration) var(--motion-ease);
 }
 
-.secondaryLink {
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.secondaryLink:hover,
-.secondaryLink:active,
 .shipping:hover,
 .shipping:active {
   color: var(--kinetus-text-inverse);

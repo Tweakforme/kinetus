@@ -12,8 +12,7 @@ const LOGO = { src: "/brand/kinetus-logo-horizontal.png", width: 270, height: 64
 
 /**
  * Site header (deck slide 4): the utility bar, then a sticky white bar with the horizontal
- * logo on the left, the primary navigation with dropdowns, the search /
- * documentation icon cluster, below the desktop breakpoint the hamburger that opens the
+ * logo on the left, the primary navigation with dropdowns, the search, below the desktop breakpoint the hamburger that opens the
  * drawer, and the cart link at the far right at every width. Navigation comes from the
  * published ranges (lib/navigation.ts, cached under the `nav` tag) plus fixed items. The utility bar is outside the sticky element so it scrolls away.
  */

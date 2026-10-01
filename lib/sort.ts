@@ -18,9 +18,12 @@ export function parseSort(raw: string | string[] | undefined): SortKey | null {
   return SORT_OPTIONS.find((option) => option.value === value)?.value ?? null;
 }
 
-/** Appends `?sort=` to a listing href; no parameter for the catalogue order. */
+/** Adds `sort=` to a listing href (after any `?page=`); nothing for the catalogue order. */
 export function withSort(href: string, sort: SortKey | null): string {
-  return sort ? `${href}?sort=${sort}` : href;
+  if (!sort) {
+    return href;
+  }
+  return `${href}${href.includes("?") ? "&" : "?"}sort=${sort}`;
 }
 
 type Sortable = { name: string; lowestPriceCents: number | null };

@@ -4,23 +4,6 @@
 }
 
 /* 26px heading-colour line icons in 44px hit areas (no 44px token; the deck's icon boxes). */
-.iconLink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--kinetus-radius-sm);
-  color: var(--kinetus-text-heading);
-  text-decoration: none;
-  transition: color var(--motion-duration) var(--motion-ease);
-}
-
-.iconLink:hover,
-.iconLink:active {
-  color: var(--kinetus-brand-teal);
-}
-
 @media (min-width: 1024px) {
   /* Spans the header height so the search panel opens at the header's bottom edge. */
   .cluster {

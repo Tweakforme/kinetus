@@ -5,6 +5,7 @@ import { getAllProducts, revalidateAtNextPriceChange, toProductCardModel } from 
 import { canonicalUrl, defaultShareImage } from "@/lib/seo";
 import { ALL_PRODUCTS_LINK, SITE_NAME } from "@/lib/site";
 import { sortListing, withSort, type SortKey } from "@/lib/sort";
+import { PAGE_HERO_PHOTOS } from "@/components/ui/PageHero";
 import { CatalogueListing } from "./CatalogueListing";
 import {
   CATALOGUE_NOTE,
@@ -28,7 +29,7 @@ export const PRODUCTS_DESCRIPTION = `The complete list of research materials cur
 const BASE = ALL_PRODUCTS_LINK.href;
 
 /**
- * Metadata for `/products` (page 1) and `/products/page/[n]`; each page is its own
+ * Metadata for `/products` (page 1) and `/products?page=N`; each page is its own
  * canonical, always without `?sort=`, so sorted views never compete with it.
  */
 export function productsListingMetadata(page: number): Metadata {
@@ -59,7 +60,7 @@ export function productsListingMetadata(page: number): Metadata {
 /**
  * The canonical full listing, in the same layout as every collection page: hero "All
  * Research Materials", the "Research Materials" divider with nodes, the pill bar with
- * "All Products" current, twelve cards per page and pagination. Pages past the end 404.
+ * "All Products" current, twenty cards per page and pagination. Pages past the end 404.
  */
 export async function ProductsListingPage({ page, sort }: ProductsListingProps) {
   const now = new Date();
@@ -88,6 +89,7 @@ export async function ProductsListingPage({ page, sort }: ProductsListingProps) 
           headingId: "products-heading",
           paragraph: DEFAULT_COLLECTION_HERO.paragraph,
           cta: { label: DEFAULT_COLLECTION_HERO.ctaLabel, href: `${BASE}#${CATALOGUE_SECTION_ID}` },
+          backgroundImage: PAGE_HERO_PHOTOS.allMaterials,
         }}
         divider={{
           id: "products-catalogue-heading",

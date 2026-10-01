@@ -11,6 +11,7 @@ import {
   ShieldCheckIcon,
 } from "@/components/icons/LineIcons";
 import { Container } from "@/components/layout/Container";
+import { PAGE_HERO_PHOTOS, PageHero } from "@/components/ui/PageHero";
 import buttons from "@/components/ui/buttons.module.css";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 import type { AboutDocument } from "@/content/types";
@@ -18,7 +19,6 @@ import { blurPlaceholder } from "@/lib/images";
 import { canonicalUrl } from "@/lib/seo";
 import { ALL_PRODUCTS_LINK, CONTACT_EMAIL, CONTACT_LINK, LOCATION, SITE_NAME } from "@/lib/site";
 import { ContentBlocks } from "./ContentBlocks";
-import { ContentHeader } from "./ContentHeader";
 import { ContentJsonLd } from "./ContentJsonLd";
 import layout from "./ContentLayout.module.css";
 import styles from "./AboutPage.module.css";
@@ -102,13 +102,6 @@ const VALUES: { src: string; width: number; height: number; title: string; copy:
 /** Badges are shown at 96px wide at most. */
 const VALUE_BADGE_WIDTH = 96;
 
-/** The client's Product Information poster, shown on this page as decoration only. */
-const INFORMATION_PANEL = {
-  src: "/images/about/product-information-panel.webp",
-  width: 1024,
-  height: 1536,
-};
-
 const EXPLORE_LINKS = [
   { ...ALL_PRODUCTS_LINK, primary: true },
   { label: "Frequently asked questions", href: "/faq", primary: false },
@@ -126,11 +119,14 @@ export function AboutPage({ doc }: AboutPageProps) {
 
   return (
     <article className={`${layout.page} ${styles.page}`}>
-      <ContentHeader
+      <PageHero
+        variant="category"
         eyebrow="About Us"
-        title={`About ${SITE_NAME}`}
-        lede={doc.lede}
-        breadcrumbLabel="About"
+        headline={`About ${SITE_NAME}`}
+        headingId="about-heading"
+        paragraph={doc.lede}
+        features={[]}
+        backgroundImage={PAGE_HERO_PHOTOS.about}
       />
 
       <section
@@ -211,15 +207,6 @@ export function AboutPage({ doc }: AboutPageProps) {
               </li>
             ))}
           </ul>
-          <Image
-            src={INFORMATION_PANEL.src}
-            alt=""
-            aria-hidden="true"
-            width={INFORMATION_PANEL.width}
-            height={INFORMATION_PANEL.height}
-            sizes="(min-width: 768px) 560px, 100vw"
-            className={styles.informationPanel}
-          />
         </Container>
       </section>
 

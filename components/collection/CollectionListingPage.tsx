@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { CollectionKind } from "@prisma/client";
 import { notFound, permanentRedirect } from "next/navigation";
-import { HERO_PHOTO } from "@/components/ui/PageHero";
+import { HERO_PHOTO, PAGE_HERO_PHOTOS } from "@/components/ui/PageHero";
 import {
   COLLECTION_HERO,
   DEFAULT_COLLECTION_HERO,
@@ -36,11 +37,18 @@ type CollectionListingProps = {
 /** Shown on an empty range other than Research, above the documentation section. */
 const EMPTY_RANGE_MESSAGE = "No products are published in this range yet.";
 
-/** Ranges whose hero is the photograph (vials included) rather than the render. */
-const PHOTO_HERO_RANGES = new Set<string>([COLLECTION_SLUGS.peptides, COLLECTION_SLUGS.blends]);
+/**
+ * Ranges whose hero is a photograph rather than the render, and which photograph. Every
+ * category (CATEGORY collection) uses the all-materials photograph.
+ */
+const PHOTO_HEROES: Record<string, string> = {
+  [COLLECTION_SLUGS.peptides]: PAGE_HERO_PHOTOS.peptides,
+  [COLLECTION_SLUGS.blends]: HERO_PHOTO,
+  [COLLECTION_SLUGS.labSupplies]: PAGE_HERO_PHOTOS.labSupplies,
+};
 
 /**
- * Metadata for `/collections/[slug]` (page 1) and `/collections/[slug]/page/[n]`.
+ * Metadata for `/collections/[slug]` (page 1) and `/collections/[slug]?page=N`.
  * Page 1's canonical is the base URL; page N's canonical is its own URL; neither ever
  * carries `?sort=`. Unknown
  * collections and out-of-range pages return nothing; the page itself 404s.
@@ -87,10 +95,10 @@ export async function collectionListingMetadata(slug: string, page: number): Pro
 /**
  * Collection listing shared by the base route and the paginated route: the collection's
  * name as the hero headline and its subtitle (or the approved COLLECTION_HERO copy) below, the divider "{name} Catalogue",
- * the pill bar with this range current, twelve cards per page and pagination. Research
+ * the pill bar with this range current, twenty cards per page and pagination. Research
  * always shows the batch documentation section; any other empty range shows it with a
  * short line. Renamed slugs redirect permanently; unknown slugs and pages past the end
- * are 404s. Peptides and Blends (every page of them) show the hero photograph.
+ * are 404s. Peptides, Blends and Lab Supplies (every page of them) show a hero photograph.
  */
 export async function CollectionListingPage({ slug, page, sort }: CollectionListingProps) {
   const collection = await getCollectionBySlug(slug);
@@ -148,7 +156,11 @@ export async function CollectionListingPage({ slug, page, sort }: CollectionList
           headingId: "collection-heading",
           paragraph: hero.paragraph,
           cta: { label: hero.ctaLabel, href: ctaHref },
-          backgroundImage: PHOTO_HERO_RANGES.has(collection.slug) ? HERO_PHOTO : undefined,
+          backgroundImage:
+            PHOTO_HEROES[collection.slug] ??
+            (collection.kind === CollectionKind.CATEGORY
+              ? PAGE_HERO_PHOTOS.allMaterials
+              : undefined),
         }}
         divider={{
           id: "collection-catalogue-heading",

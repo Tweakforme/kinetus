@@ -7,10 +7,10 @@ import {
 } from "@/components/icons/LineIcons";
 import { Container } from "@/components/layout/Container";
 import buttons from "@/components/ui/buttons.module.css";
+import { PAGE_HERO_PHOTOS, PageHero } from "@/components/ui/PageHero";
 import { canonicalUrl } from "@/lib/seo";
 import { CONTACT_EMAIL, FOOTER_POLICY_LINKS, LOCATION, SITE_NAME } from "@/lib/site";
 import { ContactForm } from "./ContactForm";
-import { ContentHeader } from "./ContentHeader";
 import { ContentJsonLd } from "./ContentJsonLd";
 import layout from "./ContentLayout.module.css";
 import styles from "./ContactPage.module.css";
@@ -37,7 +37,15 @@ const RELATED_LINKS = [
 export function ContactPage() {
   return (
     <article className={layout.page}>
-      <ContentHeader eyebrow={SITE_NAME} title="Contact" lede={LEDE} />
+      <PageHero
+        variant="category"
+        eyebrow={SITE_NAME}
+        headline="Contact"
+        headingId="contact-heading"
+        paragraph={LEDE}
+        features={[]}
+        backgroundImage={PAGE_HERO_PHOTOS.contact}
+      />
 
       <Container className={styles.body} data-reveal="">
         <section className={styles.formColumn} aria-labelledby="inquiries-heading">

@@ -353,8 +353,13 @@ model StoreSetting {
   localFreeCity              String?  @default("Calgary")
   shipsInternationally       Boolean  @default(false)
   /// Shown to customers on the order confirmation page and in their email.
-  etransferEmail             String?
+  etransferEmail             String?  @default("info@kinetusbiolabs.ca")
   etransferInstructions      String?
+  /// Payment Instructions on the order confirmation page; each line is hidden while empty.
+  payeeName                  String?
+  securityQuestion           String?
+  securityAnswer             String?
+  holdPeriodText             String?
   /// Where new-order notifications go.
   orderNotifyEmail           String?
   createdAt                  DateTime @default(now())

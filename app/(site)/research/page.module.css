@@ -1,0 +1,21 @@
+/*
+ * The client's categories graphic, centred directly under the hero, up to its native
+ * 1536px. Below 900px it keeps a 900px width inside a horizontally scrollable strip, so
+ * its small type stays legible; the page itself never scrolls sideways.
+ */
+.categories {
+  max-width: 1536px;
+  margin-inline: auto;
+}
+
+.categoriesScroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.categoriesImage {
+  display: block;
+  width: 100%;
+  min-width: 900px;
+  height: auto;
+}
