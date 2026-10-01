@@ -201,16 +201,6 @@
   line-height: var(--kinetus-type-body-s-line-height);
 }
 
-/* Poster: full width on phones, 420-560px from tablet (legible body text), centred. */
-.informationPanel {
-  display: block;
-  width: 100%;
-  max-width: 560px;
-  height: auto;
-  margin: var(--kinetus-space-12) auto 0;
-  mix-blend-mode: darken;
-}
-
 /* ---------- Quality standards (the client's "Quality Over Hype") ---------- */
 .quality {
   display: block;
@@ -421,10 +411,6 @@
 @media (min-width: 768px) {
   .valueGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .informationPanel {
-    min-width: 420px;
   }
 
   .pillars {

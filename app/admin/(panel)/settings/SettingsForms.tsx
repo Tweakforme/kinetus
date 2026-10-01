@@ -17,6 +17,10 @@ export type SettingsData = {
   orderNotifyEmail: string;
   etransferEmail: string;
   etransferInstructions: string;
+  payeeName: string;
+  securityQuestion: string;
+  securityAnswer: string;
+  holdPeriodText: string;
 };
 
 export type TaxRateRow = {
@@ -138,6 +142,41 @@ export function StoreSettingsForm({ settings }: { settings: SettingsData }) {
             defaultValue={value("etransferInstructions", settings.etransferInstructions)}
             error={errors.etransferInstructions}
             hint="Shown to customers on the order confirmation page and in their order email, for example the security question to use. Plain text."
+          />
+          <div className={`${styles.grid} ${styles.grid2}`}>
+            <TextField
+              label="e-Transfer payee name"
+              name="payeeName"
+              maxLength={200}
+              defaultValue={value("payeeName", settings.payeeName)}
+              error={errors.payeeName}
+              hint="Shown under Payment Instructions on the order confirmation page. Hidden while empty."
+            />
+            <TextField
+              label="Security question"
+              name="securityQuestion"
+              maxLength={200}
+              defaultValue={value("securityQuestion", settings.securityQuestion)}
+              error={errors.securityQuestion}
+              hint="Hidden while empty."
+            />
+            <TextField
+              label="Security answer"
+              name="securityAnswer"
+              maxLength={200}
+              defaultValue={value("securityAnswer", settings.securityAnswer)}
+              error={errors.securityAnswer}
+              hint="Hidden while empty."
+            />
+          </div>
+          <TextArea
+            label="Hold period"
+            name="holdPeriodText"
+            rows={2}
+            maxLength={500}
+            defaultValue={value("holdPeriodText", settings.holdPeriodText)}
+            error={errors.holdPeriodText}
+            hint="For example how long an order is held while payment arrives. Shown on the order confirmation page; hidden while empty. Plain text."
           />
         </div>
       </section>

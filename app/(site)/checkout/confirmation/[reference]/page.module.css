@@ -69,43 +69,59 @@
   text-transform: uppercase;
 }
 
-.subheading {
+.card > p {
   margin: 0;
-  color: var(--kinetus-text-heading);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.steps {
-  display: flex;
-  flex-direction: column;
-  gap: var(--kinetus-space-3);
-  margin: 0;
-  padding-left: var(--kinetus-space-5);
   color: var(--kinetus-text-primary);
   line-height: 1.5;
 }
 
-.etransfer {
+/* Payment Instructions: label over value on mobile, side by side from 768px. */
+.payment {
   display: flex;
   flex-direction: column;
-  gap: var(--kinetus-space-2);
+  gap: var(--kinetus-space-3);
+  margin: 0;
   padding: var(--kinetus-space-4);
   background: var(--kinetus-bg-subtle);
   border: 1px solid var(--kinetus-border-subtle);
   border-radius: var(--kinetus-radius-md);
 }
 
-.etransfer p {
-  margin: 0;
-  line-height: 1.5;
+.payment:empty {
+  display: none;
 }
 
-.etransferEmail {
+.paymentRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kinetus-space-1);
+}
+
+.paymentRow dt {
+  color: var(--kinetus-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.paymentRow dd {
+  margin: 0;
+  color: var(--kinetus-text-heading);
   font-weight: 700;
   overflow-wrap: anywhere;
+}
+
+@media (min-width: 768px) {
+  .paymentRow {
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+    gap: var(--kinetus-space-4);
+    align-items: baseline;
+  }
+}
+
+.include {
+  font-weight: 600;
 }
 
 .instructions {

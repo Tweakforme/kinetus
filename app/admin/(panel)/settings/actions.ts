@@ -66,6 +66,18 @@ export async function saveStoreSettings(_previous: FormState, form: FormData): P
   if (etransferInstructions !== null && etransferInstructions.length > 1000) {
     errors.etransferInstructions = "Keep the instructions to 1000 characters or fewer.";
   }
+  const payeeName = optionalText(form, "payeeName");
+  const securityQuestion = optionalText(form, "securityQuestion");
+  const securityAnswer = optionalText(form, "securityAnswer");
+  const holdPeriodText = optionalText(form, "holdPeriodText");
+  for (const [field, value] of Object.entries({ payeeName, securityQuestion, securityAnswer })) {
+    if (value !== null && value.length > 200) {
+      errors[field] = "Keep this to 200 characters or fewer.";
+    }
+  }
+  if (holdPeriodText !== null && holdPeriodText.length > 500) {
+    errors.holdPeriodText = "Keep this to 500 characters or fewer.";
+  }
 
   if (Object.keys(errors).length > 0) {
     return errorState(errors, form);
@@ -81,6 +93,10 @@ export async function saveStoreSettings(_previous: FormState, form: FormData): P
     orderNotifyEmail,
     etransferEmail,
     etransferInstructions,
+    payeeName,
+    securityQuestion,
+    securityAnswer,
+    holdPeriodText,
   };
   await prisma.storeSetting.upsert({
     where: { id: SETTINGS_ID },

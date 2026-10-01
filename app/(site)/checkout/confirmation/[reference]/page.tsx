@@ -19,7 +19,7 @@ type ConfirmationPageProps = {
 };
 
 export const metadata: Metadata = {
-  title: "Order received",
+  title: "Thank you for your order",
   robots: { index: false, follow: false },
 };
 
@@ -51,9 +51,29 @@ function storedFigures(order: {
   };
 }
 
+/** The Payment Instructions lines that have a value, in display order. */
+function paymentRows(
+  settings: {
+    etransferEmail: string | null;
+    payeeName: string | null;
+    securityQuestion: string | null;
+    securityAnswer: string | null;
+  } | null,
+): Array<[string, string]> {
+  const rows: Array<[string, string | null | undefined]> = [
+    ["Send an Interac e-Transfer to", settings?.etransferEmail],
+    ["Payee name", settings?.payeeName],
+    ["Security question", settings?.securityQuestion],
+    ["Security answer", settings?.securityAnswer],
+  ];
+  return rows.filter((row): row is [string, string] => Boolean(row[1]?.trim()));
+}
+
 /**
- * /checkout/confirmation/[reference]: the order is received, not yet confirmed (the
- * client's Terms: an acknowledgement is not acceptance). References are sequential, so
+ * /checkout/confirmation/[reference]: "Thank you for your order", the order number, then
+ * the Payment Instructions, every value from StoreSetting (Admin > Settings) and each line
+ * hidden while empty. Informational text only: no payment is taken here. The order is
+ * received, not yet confirmed (the client's Terms: an acknowledgement is not acceptance). References are sequential, so
  * the order's contents are shown only to the browser that placed it (a short-lived
  * cookie set at submission); anyone else with the link sees the reference and the next
  * steps only. Never listed or linked anywhere public. It says an email was sent only when
@@ -71,7 +91,14 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
     }),
     prisma.storeSetting.findUnique({
       where: { id: "store" },
-      select: { etransferEmail: true, etransferInstructions: true },
+      select: {
+        etransferEmail: true,
+        etransferInstructions: true,
+        payeeName: true,
+        securityQuestion: true,
+        securityAnswer: true,
+        holdPeriodText: true,
+      },
     }),
     cookies(),
   ]);
@@ -83,10 +110,10 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
   return (
     <ListingPage padTop>
       <Container as="section" className={styles.section} aria-labelledby="confirmation-heading">
-        <SectionDivider id="confirmation-heading" as="h1" title="Order received" />
+        <SectionDivider id="confirmation-heading" as="h1" title="Thank you for your order" />
 
         <div className={styles.intro}>
-          <p className={styles.referenceLabel}>Order reference</p>
+          <p className={styles.referenceLabel}>Order number</p>
           <p className={`numeric ${styles.reference}`}>{order.referenceNumber}</p>
           <p className={styles.status}>
             Your order has been received and is not yet confirmed. {SITE_NAME} will contact you by
@@ -95,31 +122,29 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
         </div>
 
         <div className={styles.layout}>
-          <section className={styles.card} aria-labelledby="next-steps-heading">
-            <h2 id="next-steps-heading" className={styles.heading}>
-              What happens next
+          <section className={styles.card} aria-labelledby="payment-heading">
+            <h2 id="payment-heading" className={styles.heading}>
+              Payment Instructions
             </h2>
-            <ol className={styles.steps}>
-              <li>{SITE_NAME} emails you to arrange payment by Interac e-Transfer.</li>
-              <li>
-                Send the e-Transfer and include your order reference, {order.referenceNumber}.
-              </li>
-              <li>After payment, orders ship by Canada Post Priority with tracking.</li>
-            </ol>
-            {(settings?.etransferEmail || settings?.etransferInstructions) && (
-              <div className={styles.etransfer}>
-                <h3 className={styles.subheading}>Interac e-Transfer</h3>
-                {settings.etransferEmail && (
-                  <p>
-                    Send to:{" "}
-                    <span className={styles.etransferEmail}>{settings.etransferEmail}</span>
-                  </p>
-                )}
-                {settings.etransferInstructions && (
-                  <p className={styles.instructions}>{settings.etransferInstructions}</p>
-                )}
-              </div>
+            <dl className={styles.payment}>
+              {paymentRows(settings).map(([label, value]) => (
+                <div key={label} className={styles.paymentRow}>
+                  <dt>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
+            {settings?.holdPeriodText && (
+              <p className={styles.instructions}>{settings.holdPeriodText}</p>
             )}
+            {settings?.etransferInstructions && (
+              <p className={styles.instructions}>{settings.etransferInstructions}</p>
+            )}
+            <p className={styles.include}>
+              Include your order number, <span className="numeric">{order.referenceNumber}</span>,
+              in the e-Transfer message.
+            </p>
+            <p>After payment, orders ship by Canada Post Priority with tracking.</p>
             {isPlacer && (
               <p className={styles.emailNote}>
                 {order.notificationSentAt

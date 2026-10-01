@@ -13,7 +13,10 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { ProductHero } from "@/components/product/ProductHero";
 import { ProductInfoBand } from "@/components/product/ProductInfoBand";
 import { ProductJsonLd } from "@/components/product/ProductJsonLd";
-import type { SelectableVariant } from "@/components/product/ProductSelection";
+import {
+  ProductSelectionProvider,
+  type SelectableVariant,
+} from "@/components/product/ProductSelection";
 import { SpecTable } from "@/components/product/SpecTable";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 import { TrustBar, type TrustItem } from "@/components/ui/TrustBar";
@@ -162,63 +165,70 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <article className={styles.page}>
-      <ProductHero
-        product={product}
-        images={pageImages(product)}
-        variants={variants}
-        tiers={tiers}
-        collectionSlugs={collectionSlugs}
-        headingId={HEADING_ID}
-      />
-
-      <Container as="section" className={styles.band} data-reveal="" aria-label="Unit information">
-        <ProductInfoBand
-          form={product.form}
-          presentations={variants.map((variant) => variant.label)}
+      {/* The selected strength drives the hero, including its Test Reports badge. */}
+      <ProductSelectionProvider variants={variants}>
+        <ProductHero
+          product={product}
+          images={pageImages(product)}
+          tiers={tiers}
+          collectionSlugs={collectionSlugs}
+          headingId={HEADING_ID}
         />
-      </Container>
 
-      {specRows.length > 0 && (
         <Container
           as="section"
-          className={styles.section}
+          className={styles.band}
           data-reveal=""
-          aria-labelledby="specifications-heading"
+          aria-label="Unit information"
         >
-          <SectionDivider id="specifications-heading" title="Specifications" />
-          <SpecTable rows={specRows} />
+          <ProductInfoBand
+            form={product.form}
+            presentations={variants.map((variant) => variant.label)}
+          />
         </Container>
-      )}
 
-      {documents.length > 0 && (
-        <Container
-          as="section"
-          className={styles.section}
-          data-reveal=""
-          aria-labelledby="documentation-heading"
-        >
-          <SectionDivider id="documentation-heading" title="Documentation" />
-          <DocumentationList documents={documents} />
-        </Container>
-      )}
+        {specRows.length > 0 && (
+          <Container
+            as="section"
+            className={styles.section}
+            data-reveal=""
+            aria-labelledby="specifications-heading"
+          >
+            <SectionDivider id="specifications-heading" title="Specifications" />
+            <SpecTable rows={specRows} />
+          </Container>
+        )}
 
-      {paragraphs.length > 0 && (
-        <Container
-          as="section"
-          className={styles.section}
-          data-reveal=""
-          aria-labelledby="description-heading"
-        >
-          <SectionDivider id="description-heading" title="Description" />
-          <div className={styles.description}>
-            {paragraphs.map((paragraph, index) => (
-              <p key={index} className="type-body">
-                {paragraph}
-              </p>
-            ))}
-          </div>
-        </Container>
-      )}
+        {documents.length > 0 && (
+          <Container
+            as="section"
+            className={styles.section}
+            data-reveal=""
+            aria-labelledby="documentation-heading"
+          >
+            <SectionDivider id="documentation-heading" title="Documentation" />
+            <DocumentationList documents={documents} />
+          </Container>
+        )}
+
+        {paragraphs.length > 0 && (
+          <Container
+            as="section"
+            className={styles.section}
+            data-reveal=""
+            aria-labelledby="description-heading"
+          >
+            <SectionDivider id="description-heading" title="Description" />
+            <div className={styles.description}>
+              {paragraphs.map((paragraph, index) => (
+                <p key={index} className="type-body">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </Container>
+        )}
+      </ProductSelectionProvider>
 
       <Container
         as="section"

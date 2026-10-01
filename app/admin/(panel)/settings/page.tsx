@@ -66,6 +66,10 @@ export default async function SettingsPage() {
           orderNotifyEmail: settings?.orderNotifyEmail ?? "",
           etransferEmail: settings?.etransferEmail ?? "",
           etransferInstructions: settings?.etransferInstructions ?? "",
+          payeeName: settings?.payeeName ?? "",
+          securityQuestion: settings?.securityQuestion ?? "",
+          securityAnswer: settings?.securityAnswer ?? "",
+          holdPeriodText: settings?.holdPeriodText ?? "",
         }}
       />
       <TaxRatesForm

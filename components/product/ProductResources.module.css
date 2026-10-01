@@ -1,14 +1,10 @@
 /*
- * The client's two badges as the product page's document controls (his product-page
- * mockup): side by side, centred on each other, 24px apart. Left-aligned under the copy
- * from 768px; below 768px at 80% of their size and centred. The row is a size container:
- * where it is narrower than the pair (344px with the gap), both badges scale down together
- * and stay side by side. That happens at 768-799px and 1024-1155px, where the product
- * page's copy column is 299-343px wide. They would stack, still centred, only in a row too
- * narrow even for that (not reached from 320px up).
+ * The client's two badges as the product page's document controls, in the hero's left
+ * column under the copy: side by side, centred on each other, 24px apart, at 65 x 99 and
+ * 95 x 94, so the pair fits every width (wrapping, still centred, only if it could not).
+ * Centred below 768px, left-aligned with the copy from 768px.
  */
 .resources {
-  container-type: inline-size;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -46,28 +42,16 @@
   height: auto;
 }
 
-/*
- * 80% of 130 x 198 and 190 x 188 below 768px, full size from 768px; each capped at its
- * share (130 : 190) of the row minus the gap, less 1px so rounding never forces a wrap.
- */
 .informationImage {
-  width: min(104px, calc((100cqw - var(--kinetus-space-6) - 1px) * 130 / 320));
+  width: 65px;
 }
 
 .reportsImage {
-  width: min(152px, calc((100cqw - var(--kinetus-space-6) - 1px) * 190 / 320));
+  width: 95px;
 }
 
 @media (min-width: 768px) {
   .resources {
     justify-content: flex-start;
-  }
-
-  .informationImage {
-    width: min(130px, calc((100cqw - var(--kinetus-space-6) - 1px) * 130 / 320));
-  }
-
-  .reportsImage {
-    width: min(190px, calc((100cqw - var(--kinetus-space-6) - 1px) * 190 / 320));
   }
 }

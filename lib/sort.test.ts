@@ -64,5 +64,6 @@ describe("parseSort and withSort", () => {
   it("builds hrefs", () => {
     assert.equal(withSort("/products/page/2", "price-asc"), "/products/page/2?sort=price-asc");
     assert.equal(withSort("/products", null), "/products");
+    assert.equal(withSort("/products?page=2", "price-asc"), "/products?page=2&sort=price-asc");
   });
 });

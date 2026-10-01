@@ -5,7 +5,7 @@ import { getProductsForSitemap } from "@/lib/products";
 import { canonicalUrl } from "@/lib/seo";
 import { ALL_PRODUCTS_LINK, collectionHref, STATIC_ROUTES } from "@/lib/site";
 
-/** `/base/page/2` up to the last page of a listing holding `totalItems` products. */
+/** `/base?page=2` up to the last page of a listing holding `totalItems` products. */
 function pagedEntries(
   base: string,
   totalItems: number,
@@ -20,7 +20,7 @@ function pagedEntries(
 
 /**
  * Sitemap: static top-level routes (including /products and /collections), the
- * paginated /products/page/N and /collections/{slug}/page/N routes for N >= 2, and every
+ * paginated /products?page=N and /collections/{slug}?page=N listings for N >= 2, and every
  * PUBLISHED product and collection with its real last-modified date. The homepage lists
  * collections and featured products, so its lastModified is the newest of those.
  */
