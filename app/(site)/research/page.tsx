@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { ListingPage } from "@/components/collection/ListingPage";
 import { ShopByCategory } from "@/components/home/ShopByCategory";
+import { ResearchClassification } from "@/components/research/ResearchClassification";
 import { PAGE_HERO_PHOTOS, PageHero } from "@/components/ui/PageHero";
 import { canonicalUrl, defaultShareImage } from "@/lib/seo";
 import { RESEARCH_USE_COPY, SITE_NAME } from "@/lib/site";
@@ -40,8 +41,9 @@ const CATEGORIES_IMAGE = {
 /**
  * /research, the Research Area. The client's plan: "the Categories page at the top and
  * the information outlined in the word document below it". The photo hero, the client's
- * categories graphic directly under it, then the category cards; the section below them
- * is intentionally empty.
+ * categories graphic directly under it, the client's Research Classification Outline
+ * (published at AJ's direction, 2026-10-02; it was held back earlier because it describes
+ * what the materials are studied for), then the category cards.
  */
 export default function ResearchPage() {
   return (
@@ -68,19 +70,13 @@ export default function ResearchPage() {
         </div>
       </div>
 
+      <ResearchClassification />
+
       <ShopByCategory
         headingId="research-categories-heading"
         title="Research Material Categories"
         intro={<p className="type-body-s">{RESEARCH_USE_COPY}</p>}
       />
-
-      {/*
-        CLIENT COPY PENDING. The client asked for the content of "Research Tab/
-        Classification Outline.docx" to appear here. It cannot be published: it describes
-        what these materials do in an organism (mechanism of action), which the content
-        rules forbid. This section stays empty until the client supplies compliant copy,
-        or approves the outline through his own legal review.
-      */}
     </ListingPage>
   );
 }

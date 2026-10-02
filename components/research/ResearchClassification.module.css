@@ -1,0 +1,168 @@
+/*
+ * Six collapsible cards in the site's card language (white panel, card border and radius,
+ * panel shadow). The table is two columns; below 640px each row stacks, material over
+ * description.
+ */
+.section {
+  display: block;
+}
+
+.section > * + * {
+  margin-top: var(--kinetus-space-6);
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-4);
+}
+
+.card {
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-card);
+  border-radius: var(--kinetus-radius-card);
+  box-shadow: var(--kinetus-shadow-panel);
+  overflow: hidden;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: var(--kinetus-space-4);
+  min-height: var(--kinetus-tap-target);
+  padding: var(--kinetus-space-4) var(--kinetus-space-5);
+  cursor: pointer;
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Disclosure chevron at the right; turns when the card is open. */
+.summary::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  margin-left: auto;
+  border-right: 2px solid var(--kinetus-brand-teal);
+  border-bottom: 2px solid var(--kinetus-brand-teal);
+  transform: rotate(45deg);
+}
+
+.card[open] > .summary::after {
+  transform: rotate(-135deg);
+}
+
+.summary:focus-visible {
+  outline: 2px solid var(--kinetus-brand-teal);
+  outline-offset: -2px;
+}
+
+.icon {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--kinetus-space-1) var(--kinetus-space-3);
+  min-width: 0;
+}
+
+.number {
+  color: var(--kinetus-brand-teal);
+  font-family: var(--kinetus-font-display);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.title {
+  color: var(--kinetus-text-heading);
+  font-family: var(--kinetus-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--kinetus-type-body-s-size);
+  line-height: 1.5;
+}
+
+.table th,
+.table td {
+  padding: var(--kinetus-space-3) var(--kinetus-space-5);
+  border-top: 1px solid var(--kinetus-border-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table thead th {
+  background: var(--kinetus-bg-subtle);
+  color: var(--kinetus-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.table tbody th {
+  width: 30%;
+  color: var(--kinetus-text-heading);
+  font-weight: 700;
+}
+
+.table td {
+  color: var(--kinetus-text-primary);
+}
+
+/* Phones: each row stacks, material over description; the column labels are hidden. */
+@media (max-width: 639px) {
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .table tr,
+  .table tbody th,
+  .table td {
+    display: block;
+    width: auto;
+  }
+
+  .table tbody tr {
+    padding: var(--kinetus-space-3) var(--kinetus-space-4);
+    border-top: 1px solid var(--kinetus-border-subtle);
+  }
+
+  .table tbody th,
+  .table td {
+    padding: 0;
+    border-top: 0;
+  }
+
+  .table td {
+    margin-top: var(--kinetus-space-1);
+  }
+
+  .summary {
+    padding-inline: var(--kinetus-space-4);
+  }
+
+  .title {
+    font-size: 17px;
+  }
+}

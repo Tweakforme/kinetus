@@ -11,8 +11,8 @@
 }
 
 /*
- * Hero photograph (public/images/hero/kinetus-hero-v2.jpg, 2880 x 882) on the homepage and
- * the Peptides and Blends listings: the navy field and falloff on its left and the three
+ * Hero photograph (public/images/hero/kinetus-hero-v2.jpg, 2880 x 882) on the homepage:
+ * the navy field and falloff on its left and the three
  * vials (about 50-70% across) are part of the image, placed at the client's positions,
  * with headroom above the caps and below the bases. Up to about 1690px the band is taller
  * in proportion than the photo, so `cover` crops its sides and the copy reaches past the

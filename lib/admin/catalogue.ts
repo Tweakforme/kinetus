@@ -45,6 +45,8 @@ export type ProductFormData = {
   status: ProductStatus;
   shortDescription: string;
   description: string;
+  /** Plain text under the product page's two document buttons; empty hides it. */
+  productInfoText: string;
   metaTitle: string;
   metaDescription: string;
   featured: boolean;
@@ -84,6 +86,7 @@ export const EMPTY_PRODUCT: ProductFormData = {
   status: "DRAFT",
   shortDescription: "",
   description: "",
+  productInfoText: "",
   metaTitle: "",
   metaDescription: "",
   featured: false,
@@ -123,6 +126,7 @@ export function toProductFormData(product: ProductForEdit): ProductFormData {
     status: product.status,
     shortDescription: product.shortDescription ?? "",
     description: product.description ?? "",
+    productInfoText: product.productInfoText ?? "",
     metaTitle: product.metaTitle ?? "",
     metaDescription: product.metaDescription ?? "",
     featured: product.featured,

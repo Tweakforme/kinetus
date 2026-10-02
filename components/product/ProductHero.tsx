@@ -2,7 +2,7 @@ import { DnaHelix } from "@/components/decor/DnaHelix";
 import { HexLattice } from "@/components/decor/HexLattice";
 import { Container } from "@/components/layout/Container";
 import type { VolumeTier } from "@/lib/pricing";
-import { productKindLabel, type ProductDetail } from "@/lib/products";
+import { descriptionParagraphs, productKindLabel, type ProductDetail } from "@/lib/products";
 import { COLLECTION_SLUGS, RESEARCH_USE_COPY } from "@/lib/site";
 import { ProductBreadcrumb } from "./ProductBreadcrumb";
 import { ProductGallery } from "./ProductGallery";
@@ -33,8 +33,8 @@ const HANDLING_COPY = `Supplied in a sealed glass vial and labelled with a batch
  * in the panel and the render (each strength shows its own render, or the product-level
  * fallback) and the Test Reports badge through ProductSelectionProvider, which the
  * product page wraps around the hero; the heading and copy stay server-rendered. The
- * Product Information and Test Reports badges sit in the left column under the copy,
- * beside the gallery.
+ * document badges and the optional "Text below buttons" sit in the left column under the
+ * fixed paragraph, beside the gallery.
  */
 export function ProductHero({
   product,
@@ -96,6 +96,7 @@ export function ProductHero({
                     }
                   : null
               }
+              text={descriptionParagraphs(product.productInfoText)}
             />
           </div>
         </div>

@@ -41,6 +41,7 @@ const LIMITS = {
   name: 120,
   shortDescription: 300,
   description: 5000,
+  productInfoText: 5000,
   metaTitle: 120,
   metaDescription: 320,
   spec: 200,
@@ -135,6 +136,10 @@ export async function saveProduct(_previous: FormState, form: FormData): Promise
   const description = optionalText(form, "description");
   if (tooLong(description, LIMITS.description)) {
     errors.description = `Keep the description to ${LIMITS.description} characters or fewer.`;
+  }
+  const productInfoText = optionalText(form, "productInfoText");
+  if (tooLong(productInfoText, LIMITS.productInfoText)) {
+    errors.productInfoText = `Keep the text below the buttons to ${LIMITS.productInfoText} characters or fewer.`;
   }
   const metaTitle = optionalText(form, "metaTitle");
   if (tooLong(metaTitle, LIMITS.metaTitle)) {
@@ -378,6 +383,7 @@ export async function saveProduct(_previous: FormState, form: FormData): Promise
     status: status as ProductStatus,
     shortDescription,
     description,
+    productInfoText,
     metaTitle,
     metaDescription,
     featured: checkbox(form, "featured"),

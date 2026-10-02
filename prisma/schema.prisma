@@ -108,6 +108,9 @@ model Product {
   // client uploads one; the alt text is required with the image.
   informationSheetUrl String?
   informationSheetAlt String?
+  /// Optional plain text shown under the Product Information / Test Reports buttons;
+  /// blank lines split paragraphs. Hidden while empty.
+  productInfoText     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
