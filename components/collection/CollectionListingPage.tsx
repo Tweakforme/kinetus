@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { CollectionKind } from "@prisma/client";
 import { notFound, permanentRedirect } from "next/navigation";
-import { HERO_PHOTO, PAGE_HERO_PHOTOS } from "@/components/ui/PageHero";
+import { PAGE_HERO_PHOTOS } from "@/components/ui/PageHero";
 import {
   COLLECTION_HERO,
   DEFAULT_COLLECTION_HERO,
@@ -43,7 +43,7 @@ const EMPTY_RANGE_MESSAGE = "No products are published in this range yet.";
  */
 const PHOTO_HEROES: Record<string, string> = {
   [COLLECTION_SLUGS.peptides]: PAGE_HERO_PHOTOS.peptides,
-  [COLLECTION_SLUGS.blends]: HERO_PHOTO,
+  [COLLECTION_SLUGS.blends]: PAGE_HERO_PHOTOS.blends,
   [COLLECTION_SLUGS.labSupplies]: PAGE_HERO_PHOTOS.labSupplies,
 };
 

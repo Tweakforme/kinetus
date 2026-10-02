@@ -1,15 +1,36 @@
 /*
  * The client's two badges as the product page's document controls, in the hero's left
- * column under the copy: side by side, centred on each other, 24px apart, at 65 x 99 and
- * 95 x 94, so the pair fits every width (wrapping, still centred, only if it could not).
- * Centred below 768px, left-aligned with the copy from 768px.
+ * column under the fixed paragraph and beside the gallery, set 48px below it so the area
+ * stays open: side by side, centred on each other, 24px apart, at 65 x 99 and 95 x 94,
+ * left-aligned like the paragraph at every width (wrapping only if the column could not
+ * hold the pair). The optional text sits under them, never wider than the column.
  */
+.block {
+  margin-top: var(--kinetus-space-12);
+  max-width: 100%;
+  min-width: 0;
+}
+
 .resources {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--kinetus-space-6);
+}
+
+/* "Text below buttons": plain text paragraphs, wrapping within the column. */
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+  margin-top: var(--kinetus-space-5);
+  color: var(--kinetus-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.text p {
+  margin: 0;
 }
 
 /* The artwork is the whole control: no frame, padding or background of its own. */
@@ -48,10 +69,4 @@
 
 .reportsImage {
   width: 95px;
-}
-
-@media (min-width: 768px) {
-  .resources {
-    justify-content: flex-start;
-  }
 }

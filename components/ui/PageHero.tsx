@@ -43,7 +43,7 @@ type PageHeroProps = {
 };
 
 /**
- * The hero photograph (2880 x 882) on the homepage and the Peptides and Blends listings:
+ * The hero photograph (2880 x 882) on the homepage:
  * the navy field and falloff on the left, three vials right of centre, headroom above and
  * below. Files in public/ are not fingerprinted, so a new version gets a new name rather
  * than replacing this one in place.
@@ -52,13 +52,14 @@ export const HERO_PHOTO = "/images/hero/kinetus-hero-v2.jpg";
 
 /**
  * The client's page heroes (1376 x 688 WebP): his originals with only the bottom 80px
- * cropped off. Peptides, Lab Supplies and the category listings use them through
+ * cropped off. Peptides, Blends, Lab Supplies and the category listings use them through
  * CollectionListingPage; /products uses allMaterials.
  */
 export const PAGE_HERO_PHOTOS = {
   about: "/images/hero/hero-about.webp",
   research: "/images/hero/hero-research.webp",
   peptides: "/images/hero/hero-peptides.webp",
+  blends: "/images/hero/hero-blends.webp",
   labSupplies: "/images/hero/hero-lab-supplies.webp",
   contact: "/images/hero/hero-contact.webp",
   allMaterials: "/images/hero/hero-all-materials.webp",

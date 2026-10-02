@@ -28,17 +28,20 @@ type ProductResourcesProps = {
   productName: string;
   /** The product's information sheet image, or null when none has been uploaded. */
   sheet: InformationSheet | null;
+  /** "Text below buttons" (admin), split into paragraphs; plain text, hidden when empty. */
+  text?: string[];
 };
 
 /**
- * The client's two badges in the product hero's left column, under the copy and beside
- * the gallery: side by side and centred on each other. PRODUCT INFORMATION opens the product's information
+ * The client's two badges in the product hero's left column, under the fixed paragraph
+ * and beside the gallery: side by side and centred on each other, with the product's
+ * optional "Text below buttons" under them. PRODUCT INFORMATION opens the product's information
  * sheet in the full-screen viewer, and is shown only when a sheet has been uploaded. TEST
  * REPORTS is always shown: it opens the selected size's third-party report in a new tab
  * when the size has one, and otherwise the test reports and batch documentation page,
  * where batch-specific COAs are available on request, as the packaging states.
  */
-export function ProductResources({ productName, sheet }: ProductResourcesProps) {
+export function ProductResources({ productName, sheet, text = [] }: ProductResourcesProps) {
   const { selected } = useProductSelection();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -55,44 +58,55 @@ export function ProductResources({ productName, sheet }: ProductResourcesProps) 
   );
 
   return (
-    <div className={styles.resources}>
-      {sheet && (
-        <button
-          ref={triggerRef}
-          type="button"
-          className={styles.badge}
-          aria-haspopup="dialog"
-          onClick={() => setOpen(true)}
-        >
-          <Image
-            src={INFORMATION_BADGE.src}
-            alt="View product information"
-            width={INFORMATION_BADGE.width}
-            height={INFORMATION_BADGE.height}
-            className={`${styles.image} ${styles.informationImage}`}
+    <div className={styles.block}>
+      <div className={styles.resources}>
+        {sheet && (
+          <button
+            ref={triggerRef}
+            type="button"
+            className={styles.badge}
+            aria-haspopup="dialog"
+            onClick={() => setOpen(true)}
+          >
+            <Image
+              src={INFORMATION_BADGE.src}
+              alt="View product information"
+              width={INFORMATION_BADGE.width}
+              height={INFORMATION_BADGE.height}
+              className={`${styles.image} ${styles.informationImage}`}
+            />
+          </button>
+        )}
+        {reportUrl ? (
+          <a href={reportUrl} target="_blank" rel="noopener noreferrer" className={styles.badge}>
+            {reportsBadge}
+            <span className="visually-hidden"> (opens in a new tab)</span>
+          </a>
+        ) : (
+          <Link href={DOCUMENTATION_HREF} className={styles.badge}>
+            {reportsBadge}
+          </Link>
+        )}
+        {sheet && (
+          <InformationSheetDialog
+            open={open}
+            onClose={() => {
+              setOpen(false);
+              triggerRef.current?.focus();
+            }}
+            productName={productName}
+            sheet={sheet}
           />
-        </button>
-      )}
-      {reportUrl ? (
-        <a href={reportUrl} target="_blank" rel="noopener noreferrer" className={styles.badge}>
-          {reportsBadge}
-          <span className="visually-hidden"> (opens in a new tab)</span>
-        </a>
-      ) : (
-        <Link href={DOCUMENTATION_HREF} className={styles.badge}>
-          {reportsBadge}
-        </Link>
-      )}
-      {sheet && (
-        <InformationSheetDialog
-          open={open}
-          onClose={() => {
-            setOpen(false);
-            triggerRef.current?.focus();
-          }}
-          productName={productName}
-          sheet={sheet}
-        />
+        )}
+      </div>
+      {text.length > 0 && (
+        <div className={styles.text}>
+          {text.map((paragraph, index) => (
+            <p key={index} className="type-body">
+              {paragraph}
+            </p>
+          ))}
+        </div>
       )}
     </div>
   );

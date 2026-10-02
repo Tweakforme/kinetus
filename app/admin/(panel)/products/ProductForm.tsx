@@ -181,6 +181,13 @@ function ProductFields({ state, product, collections, isNew }: FieldsProps) {
             error={error("description")}
             hint="Shown under Description on the product page, following the rule above. Leave a blank line between paragraphs. Leave it empty until the copy is approved: nothing is shown."
           />
+          <TextArea
+            label="Text below buttons"
+            name="productInfoText"
+            defaultValue={value("productInfoText", product.productInfoText)}
+            error={error("productInfoText")}
+            hint="Plain text shown under the Product Information and Test Reports buttons, following the rule above. Leave a blank line between paragraphs. Empty: nothing is shown."
+          />
         </div>
       </section>
 
