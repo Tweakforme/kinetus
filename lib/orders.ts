@@ -205,12 +205,24 @@ export async function notifyOrder(order: OrderForEmail): Promise<SendOutcome> {
   try {
     const settings = await prisma.storeSetting.findUnique({
       where: { id: "store" },
-      select: { orderNotifyEmail: true, etransferEmail: true, etransferInstructions: true },
+      select: {
+        orderNotifyEmail: true,
+        etransferEmail: true,
+        etransferInstructions: true,
+        payeeName: true,
+        securityQuestion: true,
+        securityAnswer: true,
+        holdPeriodText: true,
+      },
     });
     const outcome = await sendOrderEmails(order, {
       orderNotifyEmail: settings?.orderNotifyEmail ?? null,
       etransferEmail: settings?.etransferEmail ?? null,
       etransferInstructions: settings?.etransferInstructions ?? null,
+      payeeName: settings?.payeeName ?? null,
+      securityQuestion: settings?.securityQuestion ?? null,
+      securityAnswer: settings?.securityAnswer ?? null,
+      holdPeriodText: settings?.holdPeriodText ?? null,
     });
     await prisma.orderRequest.update({
       where: { id: order.id },

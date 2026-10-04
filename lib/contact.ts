@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import type { ContactDetails } from "@/lib/contact-fields";
 import { prisma } from "@/lib/db";
+import { renderEmail } from "@/lib/email-template";
 import { DEFAULT_FROM } from "@/lib/order-email";
 import { CONTACT_EMAIL, RESEARCH_USE_COPY, SITE_NAME } from "@/lib/site";
 
@@ -20,21 +21,23 @@ export async function contactRateLimited(ip: string): Promise<boolean> {
   return recent >= MAX_MESSAGES_PER_IP;
 }
 
-function messageBody(details: ContactDetails, id: string): string {
-  return [
-    `New message from the ${SITE_NAME} contact form`,
-    "",
-    `Name: ${details.name}`,
-    `Email: ${details.email}`,
-    `Phone: ${details.phone ?? "Not provided"}`,
-    "",
-    "Message:",
-    details.message,
-    "",
-    `Reference: ${id}`,
-    "",
-    RESEARCH_USE_COPY,
-  ].join("\n");
+/** The message in the site's email layout, with its plain-text version. */
+function messageBody(details: ContactDetails, id: string): { html: string; text: string } {
+  return renderEmail({
+    title: `New message from the ${SITE_NAME} contact form`,
+    sections: [
+      {
+        rows: [
+          ["Name", details.name],
+          ["Email", details.email],
+          ["Phone", details.phone ?? "Not provided"],
+        ],
+      },
+      { heading: "Message", lines: [details.message] },
+      { lines: [`Reference: ${id}`] },
+    ],
+    footer: [RESEARCH_USE_COPY],
+  });
 }
 
 /**
@@ -48,11 +51,13 @@ export async function deliverContactMessage(details: ContactDetails, ip: string)
     select: { id: true },
   });
 
+  const body = messageBody(details, row.id);
   const email = {
     // TODO: confirm the mailbox for contact messages (the published address for now).
     to: CONTACT_EMAIL,
     subject: `Contact form: ${details.name}`,
-    text: messageBody(details, row.id),
+    text: body.text,
+    html: body.html,
     replyTo: details.email,
   };
 
@@ -61,7 +66,7 @@ export async function deliverContactMessage(details: ContactDetails, ip: string)
   if (!apiKey) {
     console.info(
       `[contact] RESEND_API_KEY is not set; not sent. Saved as ${row.id}:\n` +
-        JSON.stringify(email, null, 2),
+        JSON.stringify({ to: email.to, subject: email.subject, text: email.text }, null, 2),
     );
     sendError = "RESEND_API_KEY is not set; the message was saved and logged, not sent.";
   } else {

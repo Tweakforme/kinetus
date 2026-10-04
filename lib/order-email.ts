@@ -1,6 +1,7 @@
 import type { OrderRequest, OrderRequestItem } from "@prisma/client";
 import { Resend } from "resend";
 import { provinceName } from "@/lib/checkout-fields";
+import { renderEmail, type EmailItemRow, type EmailSection } from "@/lib/email-template";
 import { formatCad } from "@/lib/pricing";
 import { canonicalUrl } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
@@ -29,20 +30,16 @@ export type EmailSettings = {
   orderNotifyEmail: string | null;
   etransferEmail: string | null;
   etransferInstructions: string | null;
+  /** Payment Instructions fields (Admin > Settings); each is left out while empty. */
+  payeeName?: string | null;
+  securityQuestion?: string | null;
+  securityAnswer?: string | null;
+  holdPeriodText?: string | null;
 };
 
 type Message = { to: string; subject: string; text: string; html: string; replyTo?: string };
 
 export type SendOutcome = { sent: true } | { sent: false; reason: string };
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
 
 /** Summary lines in the order the site shows them; zero discounts and tax-off are omitted. */
 export function summaryLines(order: OrderRequest): Array<[string, string]> {
@@ -73,6 +70,26 @@ function itemLines(order: OrderForEmail): string[] {
   );
 }
 
+/** The items as table rows for the HTML email: product, strength, quantity, line total. */
+function itemRows(order: OrderForEmail): EmailItemRow[] {
+  return order.items.map((item) => ({
+    product: item.productNameSnapshot,
+    strength: item.variantLabelSnapshot,
+    quantity: item.quantity,
+    price: formatCad(item.lineTotalCents),
+  }));
+}
+
+/** Items (table in HTML, the item lines in text) with the order's totals beneath. */
+function itemsSection(order: OrderForEmail, heading: string) {
+  const totals = summaryLines(order);
+  return {
+    heading,
+    items: { rows: itemRows(order), totals },
+    lines: [...itemLines(order), ...totals.map(([label, value]) => `${label}: ${value}`)],
+  };
+}
+
 function addressLines(order: OrderRequest): string[] {
   return [
     order.customerName,
@@ -83,108 +100,87 @@ function addressLines(order: OrderRequest): string[] {
   ];
 }
 
-function paymentLines(settings: EmailSettings): string[] {
-  const lines: string[] = [];
-  if (settings.etransferEmail) {
-    lines.push(`Interac e-Transfer email: ${settings.etransferEmail}`);
-  }
-  if (settings.etransferInstructions) {
-    lines.push(settings.etransferInstructions);
-  }
-  return lines;
-}
-
-/** Plain HTML from sections of text lines: headings bold, everything escaped. */
-function toHtml(sections: Array<{ heading?: string; lines: string[] }>): string {
-  const body = sections
-    .map((section) => {
-      const heading = section.heading
-        ? `<p style="margin:16px 0 4px;font-weight:bold">${escapeHtml(section.heading)}</p>`
-        : "";
-      const lines = section.lines
-        .map((line) => `<p style="margin:0 0 4px">${escapeHtml(line)}</p>`)
-        .join("");
-      return heading + lines;
-    })
-    .join("");
-  return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#071b34">${body}<p style="margin:24px 0 0;font-size:12px;color:#49586c">${escapeHtml(FOOTER)}</p></div>`;
-}
-
-function toText(sections: Array<{ heading?: string; lines: string[] }>): string {
-  return (
-    sections
-      .map((section) =>
-        [section.heading?.toUpperCase(), ...section.lines].filter(Boolean).join("\n"),
-      )
-      .join("\n\n") + `\n\n${FOOTER}\n`
-  );
-}
-
 export function clientMessage(order: OrderForEmail, settings: EmailSettings): Message {
-  const sections = [
-    { lines: [`New order ${order.referenceNumber}`, `Placed ${order.createdAt.toISOString()}`] },
-    {
-      heading: "Customer",
-      lines: [order.customerName, order.customerEmail, order.customerPhone],
-    },
-    { heading: "Ship to", lines: addressLines(order) },
-    { heading: "Items", lines: itemLines(order) },
-    {
-      heading: "Summary",
-      lines: summaryLines(order).map(([label, value]) => `${label}: ${value}`),
-    },
-    { heading: "Order note", lines: [order.note ?? "None"] },
-    {
-      heading: "Confirmations",
-      lines: [
-        `18 or older: ${order.ageConfirmed ? "confirmed" : "not confirmed"}`,
-        `Laboratory research use only: ${order.researchUseAcknowledged ? "confirmed" : "not confirmed"}`,
-      ],
-    },
-    {
-      heading: "Admin",
-      lines: [canonicalUrl(`/admin/orders/${order.referenceNumber}`)],
-    },
-  ];
+  const { html, text } = renderEmail({
+    title: "New order",
+    reference: order.referenceNumber,
+    sections: [
+      { lines: [`New order ${order.referenceNumber}`, `Placed ${order.createdAt.toISOString()}`] },
+      {
+        heading: "Customer",
+        lines: [order.customerName, order.customerEmail, order.customerPhone],
+      },
+      { heading: "Ship to", lines: addressLines(order) },
+      itemsSection(order, "Items"),
+      { heading: "Order note", lines: [order.note ?? "None"] },
+      {
+        heading: "Confirmations",
+        lines: [
+          `18 or older: ${order.ageConfirmed ? "confirmed" : "not confirmed"}`,
+          `Laboratory research use only: ${order.researchUseAcknowledged ? "confirmed" : "not confirmed"}`,
+        ],
+      },
+      {
+        heading: "Admin",
+        lines: [canonicalUrl(`/admin/orders/${order.referenceNumber}`)],
+      },
+    ],
+    footer: [FOOTER],
+  });
   return {
     to: settings.orderNotifyEmail?.trim() || FALLBACK_NOTIFY_EMAIL,
     subject: `New order ${order.referenceNumber} (${formatCad(order.totalCents)})`,
-    text: toText(sections),
-    html: toHtml(sections),
+    text,
+    html,
     replyTo: order.customerEmail,
   };
 }
 
 export function customerMessage(order: OrderForEmail, settings: EmailSettings): Message {
-  const payment = paymentLines(settings);
-  const sections = [
-    {
-      lines: [
-        `Thank you. We have received order ${order.referenceNumber}.`,
-        "This email acknowledges that the order was received. It does not confirm the order, which is not confirmed until payment has been arranged.",
-      ],
-    },
-    { heading: "What you ordered", lines: itemLines(order) },
-    {
-      heading: "Summary",
-      lines: summaryLines(order).map(([label, value]) => `${label}: ${value}`),
-    },
-    { heading: "Ship to", lines: addressLines(order) },
-    {
-      heading: "What happens next",
-      lines: [
-        `${SITE_NAME} will contact you by email to arrange payment by Interac e-Transfer.`,
-        "After payment, orders ship by Canada Post Priority with tracking.",
-        `Please include ${order.referenceNumber} with your e-Transfer.`,
-        ...payment,
-      ],
-    },
+  // The bordered Payment Instructions box: StoreSetting values only, each hidden while
+  // empty, and the box itself only when at least one is set.
+  const paymentRows: Array<[string, string | null | undefined]> = [
+    ["Interac e-Transfer email", settings.etransferEmail],
+    ["Payee name", settings.payeeName],
+    ["Security question", settings.securityQuestion],
+    ["Security answer", settings.securityAnswer],
   ];
+  const paymentText = [settings.holdPeriodText, settings.etransferInstructions].filter(
+    (line): line is string => Boolean(line?.trim()),
+  );
+  const hasPayment = paymentRows.some(([, value]) => value?.trim()) || paymentText.length > 0;
+
+  const { html, text } = renderEmail({
+    title: "Thank you for your order",
+    reference: order.referenceNumber,
+    sections: [
+      {
+        lines: [
+          `Thank you. We have received order ${order.referenceNumber}.`,
+          "This email acknowledges that the order was received. It does not confirm the order, which is not confirmed until payment has been arranged.",
+        ],
+      },
+      itemsSection(order, "What you ordered"),
+      { heading: "Ship to", lines: addressLines(order) },
+      {
+        heading: "What happens next",
+        lines: [
+          `${SITE_NAME} will contact you by email to arrange payment by Interac e-Transfer.`,
+          "After payment, orders ship by Canada Post Priority with tracking.",
+          `Please include ${order.referenceNumber} with your e-Transfer.`,
+        ],
+      },
+      ...(hasPayment
+        ? [{ heading: "Payment Instructions", boxed: true, rows: paymentRows, lines: paymentText }]
+        : []),
+    ],
+    footer: [FOOTER],
+  });
   return {
     to: order.customerEmail,
     subject: `${SITE_NAME} order ${order.referenceNumber} received`,
-    text: toText(sections),
-    html: toHtml(sections),
+    text,
+    html,
   };
 }
 
@@ -193,21 +189,31 @@ export function customerMessage(order: OrderForEmail, settings: EmailSettings): 
  * notification: the tracking number and carrier when recorded, what shipped and where.
  */
 export function shippingMessage(order: OrderForEmail): Message {
-  const tracking = [
-    order.carrier ? `Carrier: ${order.carrier}` : null,
-    order.trackingNumber ? `Tracking number: ${order.trackingNumber}` : null,
-  ].filter((line): line is string => line !== null);
-  const sections = [
-    { lines: [`Order ${order.referenceNumber} has shipped.`] },
-    ...(tracking.length > 0 ? [{ heading: "Tracking", lines: tracking }] : []),
-    { heading: "What was shipped", lines: itemLines(order) },
-    { heading: "Ship to", lines: addressLines(order) },
-  ];
+  const tracking: EmailSection = {
+    heading: "Tracking",
+    rows: [
+      ["Carrier", order.carrier],
+      ["Tracking number", order.trackingNumber],
+    ],
+  };
+  const { html, text } = renderEmail({
+    title: `Order ${order.referenceNumber} has shipped`,
+    sections: [
+      ...(order.carrier || order.trackingNumber ? [tracking] : []),
+      {
+        heading: "What was shipped",
+        items: { rows: itemRows(order), totals: [] },
+        lines: itemLines(order),
+      },
+      { heading: "Ship to", lines: addressLines(order) },
+    ],
+    footer: [FOOTER],
+  });
   return {
     to: order.customerEmail,
     subject: `${SITE_NAME} order ${order.referenceNumber} has shipped`,
-    text: toText(sections),
-    html: toHtml(sections),
+    text,
+    html,
   };
 }
 
