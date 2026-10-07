@@ -17,7 +17,6 @@ export type CodeRow = {
   endsAt: string;
   maxRedemptions: string;
   timesRedeemed: number;
-  stacksWithVolume: boolean;
   note: string;
 };
 
@@ -32,7 +31,6 @@ const BLANK_CODE: CodeRow = {
   endsAt: "",
   maxRedemptions: "",
   timesRedeemed: 0,
-  stacksWithVolume: false,
   note: "",
 };
 
@@ -126,13 +124,6 @@ export function DiscountCodesForm({ codes }: { codes: CodeRow[] }) {
                       name={name("isActive")}
                       defaultChecked={checked("isActive", row.isActive)}
                       hint="The code can be used (within its dates)."
-                    />
-                    <CheckboxField
-                      className={styles.span2}
-                      label="Combines with the volume discount"
-                      name={name("stacksWithVolume")}
-                      defaultChecked={checked("stacksWithVolume", row.stacksWithVolume)}
-                      hint="Off (the default): the customer receives whichever of the two discounts is larger."
                     />
                     <TextField
                       className={styles.spanAll}

@@ -80,7 +80,7 @@ describe("priceCart", () => {
     const summary = priceCart(
       input({
         lines: [{ unitPriceCents: 4500, quantity: 1 }],
-        code: { code: "SAVE15", percentOff: 15, stacksWithVolume: false },
+        code: { code: "SAVE15", percentOff: 15 },
       }),
     );
     assert.equal(summary.codeDiscountCents, 675);
@@ -89,54 +89,48 @@ describe("priceCart", () => {
     assert.equal(summary.totalCents, 4500 - 675 + 2000);
   });
 
-  it("both, volume larger: volume applies, code is zero", () => {
+  it("code with a volume tier reached: the code replaces the volume discount, even when smaller", () => {
     const summary = priceCart(
       input({
         lines: [{ unitPriceCents: 4500, quantity: 3 }],
-        code: { code: "SAVE5", percentOff: 5, stacksWithVolume: false },
+        code: { code: "SAVE5", percentOff: 5 },
       }),
     );
-    assert.equal(summary.volumeDiscountCents, 1350);
-    assert.equal(summary.codeDiscountCents, 0);
-    assert.equal(summary.appliedCode, null);
-    assert.equal(summary.codeOutweighed, true);
+    assert.equal(summary.codeDiscountCents, 675);
+    assert.deepEqual(summary.appliedCode, { code: "SAVE5", percentOff: 5 });
+    assert.equal(summary.volumeDiscountCents, 0);
+    assert.equal(summary.volumeTier, null);
+    assert.equal(summary.volumeReplacedByCode, true);
+    assert.equal(summary.discountedSubtotalCents, 13500 - 675);
   });
 
-  it("both, code larger: code applies, volume is zero", () => {
+  it("code larger than the tier: the code applies and the volume discount is zero", () => {
     const summary = priceCart(
       input({
         lines: [{ unitPriceCents: 4500, quantity: 2 }],
-        code: { code: "SAVE20", percentOff: 20, stacksWithVolume: false },
+        code: { code: "SAVE20", percentOff: 20 },
       }),
     );
     assert.equal(summary.codeDiscountCents, 1800);
     assert.equal(summary.volumeDiscountCents, 0);
     assert.equal(summary.volumeTier, null);
-    assert.equal(summary.codeOutweighed, false);
   });
 
-  it("both equal: volume applies and the code is not used", () => {
-    const summary = priceCart(
-      input({
-        lines: [{ unitPriceCents: 4500, quantity: 2 }],
-        code: { code: "SAVE5", percentOff: 5, stacksWithVolume: false },
-      }),
-    );
+  it("no code: the volume discount applies and nothing is replaced", () => {
+    const summary = priceCart(input({ lines: [{ unitPriceCents: 4500, quantity: 2 }] }));
     assert.equal(summary.volumeDiscountCents, 450);
-    assert.equal(summary.codeDiscountCents, 0);
-    assert.equal(summary.appliedCode, null);
+    assert.equal(summary.volumeReplacedByCode, false);
   });
 
-  it("stacksWithVolume: volume off the subtotal, then the code off the remainder", () => {
+  it("code below any tier: nothing is replaced", () => {
     const summary = priceCart(
       input({
-        lines: [{ unitPriceCents: 4500, quantity: 3 }],
-        code: { code: "STACK10", percentOff: 10, stacksWithVolume: true },
+        lines: [{ unitPriceCents: 4500, quantity: 1 }],
+        code: { code: "SAVE5", percentOff: 5 },
       }),
     );
-    assert.equal(summary.volumeDiscountCents, 1350);
-    assert.equal(summary.codeDiscountCents, 1215);
-    assert.equal(summary.discountedSubtotalCents, 13500 - 1350 - 1215);
+    assert.equal(summary.codeDiscountCents, 225);
+    assert.equal(summary.volumeReplacedByCode, false);
   });
 
   it("free shipping threshold: applies to the discounted subtotal, at the threshold exactly", () => {
@@ -211,7 +205,7 @@ describe("priceCart", () => {
     const summary = priceCart(
       input({
         lines: [{ unitPriceCents: 4500, quantity: 1 }],
-        code: { code: "ALL", percentOff: 150, stacksWithVolume: false },
+        code: { code: "ALL", percentOff: 150 },
       }),
     );
     assert.equal(summary.codeDiscountCents, 4500);
@@ -256,7 +250,6 @@ describe("discountCodeProblem", () => {
     endsAt: null,
     maxRedemptions: null,
     timesRedeemed: 0,
-    stacksWithVolume: false,
   };
 
   it("reports each failure mode", () => {

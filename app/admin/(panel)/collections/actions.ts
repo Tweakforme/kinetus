@@ -193,7 +193,6 @@ export async function saveCollection(_previous: FormState, form: FormData): Prom
   };
 
   let savedId: string;
-  let moved = 0;
   try {
     savedId = await prisma.$transaction(async (tx) => {
       const collection = existing
@@ -225,22 +224,6 @@ export async function saveCollection(_previous: FormState, form: FormData): Prom
         });
         next += 1;
       }
-
-      // A product belongs to one range: members of a range leave any other range.
-      if (collection.kind === CollectionKind.RANGE) {
-        const members = await tx.productCollection.findMany({
-          where: { collectionId: collection.id },
-          select: { productId: true },
-        });
-        const result = await tx.productCollection.deleteMany({
-          where: {
-            productId: { in: members.map((member) => member.productId) },
-            collectionId: { not: collection.id },
-            collection: { kind: CollectionKind.RANGE },
-          },
-        });
-        moved = result.count;
-      }
       return collection.id;
     }, TRANSACTION_OPTIONS);
   } catch (error) {
@@ -266,15 +249,11 @@ export async function saveCollection(_previous: FormState, form: FormData): Prom
   if (!existing) {
     redirect(`/admin/collections/${savedId}?created=1`);
   }
-  const notes = [
+  return successState(
     existing.slug !== slug
       ? `Saved. The address changed to /collections/${slug}; the old address /collections/${existing.slug} now redirects to it.`
       : "Saved. The public pages show the change on their next visit.",
-    moved > 0
-      ? `${moved} product${moved === 1 ? " was" : "s were"} moved here from another range (a product belongs to one range).`
-      : null,
-  ].filter(Boolean);
-  return successState(notes.join(" "));
+  );
 }
 
 export async function deleteCollection(_previous: FormState, form: FormData): Promise<FormState> {

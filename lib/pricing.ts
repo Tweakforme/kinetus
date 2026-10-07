@@ -85,7 +85,6 @@ export type DiscountCodeFields = {
   endsAt: Date | null;
   maxRedemptions: number | null;
   timesRedeemed: number;
-  stacksWithVolume: boolean;
 };
 
 export type DiscountCodeProblem =
@@ -135,7 +134,7 @@ export type PricingLine = {
 export type VolumeTier = { minQuantity: number; percentOff: number; isActive: boolean };
 
 /** A code that has already passed discountCodeProblem. */
-export type AppliedCode = { code: string; percentOff: number; stacksWithVolume: boolean };
+export type AppliedCode = { code: string; percentOff: number };
 
 export type PricingSettings = {
   taxEnabled: boolean;
@@ -166,14 +165,14 @@ export type ShippingReason = "flat" | "threshold" | "local";
 export type PriceSummary = {
   itemCount: number;
   subtotalCents: number;
-  /** The tier that applied, or null. */
+  /** The tier that applied, or null (always null while a code applies). */
   volumeTier: { minQuantity: number; percentOff: number } | null;
   volumeDiscountCents: number;
-  /** The code that applied, or null (including when a larger volume discount won). */
+  /** The code that applied, or null. */
   appliedCode: { code: string; percentOff: number } | null;
   codeDiscountCents: number;
-  /** True when a valid code was entered but the volume discount was larger or equal. */
-  codeOutweighed: boolean;
+  /** True when a code applied and the quantity reached a volume tier the code replaced. */
+  volumeReplacedByCode: boolean;
   discountedSubtotalCents: number;
   shippingCents: number;
   shippingReason: ShippingReason;
@@ -218,16 +217,16 @@ export function isLocalFreeDelivery(
 /**
  * Prices a cart. Order of operations:
  *  1. subtotal: sum of unit price × quantity
- *  2. volume discount: the highest active tier reached by the total quantity, off the subtotal
- *  3. code discount: the code's percentage off the subtotal
- *  4. the two never combine: the larger applies and the other is zero (volume on a tie).
- *     A code with stacksWithVolume takes its percentage off what remains after the volume
- *     discount instead, and both apply.
- *  5. shipping: flat, or free once the discounted subtotal reaches the threshold, or free
+ *  2. code discount: a valid code's percentage off the subtotal
+ *  3. volume discount: the highest active tier reached by the total quantity, off the
+ *     subtotal, but only without a code. The two never combine: a code replaces the volume
+ *     discount whatever either comes to (the client's rule), and removing the code brings
+ *     the volume discount back.
+ *  4. shipping: flat, or free once the discounted subtotal reaches the threshold, or free
  *     to the local city in Alberta
- *  6. tax, only when enabled: the destination province's rate on discounted subtotal plus
+ *  5. tax, only when enabled: the destination province's rate on discounted subtotal plus
  *     shipping
- *  7. total: discounted subtotal + shipping + tax, never below zero
+ *  6. total: discounted subtotal + shipping + tax, never below zero
  */
 export function priceCart(input: PriceCartInput): PriceSummary {
   const { lines, tiers, code, settings, taxRates, destination } = input;
@@ -235,30 +234,14 @@ export function priceCart(input: PriceCartInput): PriceSummary {
   const itemCount = lines.reduce((sum, line) => sum + line.quantity, 0);
   const subtotalCents = lines.reduce((sum, line) => sum + line.unitPriceCents * line.quantity, 0);
 
-  const tier = volumeTierFor(tiers, itemCount);
-  const volumeCandidate = tier
+  const reachedTier = volumeTierFor(tiers, itemCount);
+  const tier = code ? null : reachedTier;
+  const codeDiscountCents = code
+    ? Math.min(subtotalCents, percentOfCents(subtotalCents, code.percentOff))
+    : 0;
+  const volumeDiscountCents = tier
     ? Math.min(subtotalCents, percentOfCents(subtotalCents, tier.percentOff))
     : 0;
-
-  let volumeDiscountCents = 0;
-  let codeDiscountCents = 0;
-  let codeOutweighed = false;
-
-  if (code && code.stacksWithVolume) {
-    volumeDiscountCents = volumeCandidate;
-    const remainder = subtotalCents - volumeDiscountCents;
-    codeDiscountCents = Math.min(remainder, percentOfCents(remainder, code.percentOff));
-  } else {
-    const codeCandidate = code
-      ? Math.min(subtotalCents, percentOfCents(subtotalCents, code.percentOff))
-      : 0;
-    if (codeCandidate > volumeCandidate) {
-      codeDiscountCents = codeCandidate;
-    } else {
-      volumeDiscountCents = volumeCandidate;
-      codeOutweighed = code !== null;
-    }
-  }
 
   const discountedSubtotalCents = Math.max(
     0,
@@ -309,7 +292,7 @@ export function priceCart(input: PriceCartInput): PriceSummary {
     appliedCode:
       code && codeDiscountCents > 0 ? { code: code.code, percentOff: code.percentOff } : null,
     codeDiscountCents,
-    codeOutweighed,
+    volumeReplacedByCode: codeDiscountCents > 0 && reachedTier !== null,
     discountedSubtotalCents,
     shippingCents,
     shippingReason,

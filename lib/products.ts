@@ -59,6 +59,8 @@ export const productSummaryInclude = {
       salePrice: true,
       saleStartsAt: true,
       saleEndsAt: true,
+      trackInventory: true,
+      stock: true,
     },
   },
   // Every image with its variant: the card shows what the product page shows on load.
@@ -325,6 +327,8 @@ export type ProductCardModel = {
   /** Lowest active price in cents, for sorting; null without an active variant. */
   lowestPriceCents: number | null;
   variantCount: number;
+  /** Every active size has tracked stock at 0: the card shows a Sold out pill. */
+  soldOut: boolean;
 };
 
 export function toProductCardModel(product: ProductSummary, now: Date): ProductCardModel {
@@ -356,6 +360,9 @@ export function toProductCardModel(product: ProductSummary, now: Date): ProductC
     fromPrice: lowest !== null && highest !== null && highest > lowest,
     lowestPriceCents: lowest,
     variantCount,
+    soldOut:
+      variantCount > 0 &&
+      product.variants.every((variant) => variant.trackInventory && (variant.stock ?? 0) <= 0),
   };
 }
 

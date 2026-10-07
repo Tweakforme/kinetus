@@ -14,7 +14,6 @@ import styles from "./DiscountCodeForm.module.css";
 export type CodeStatus =
   | { kind: "none" }
   | { kind: "applied"; code: string; percentOff: number; savingLabel: string }
-  | { kind: "outweighed"; code: string; percentOff: number }
   | { kind: "invalid"; code: string; message: string };
 
 const IDLE: CodeFormState = { status: "idle", message: "" };
@@ -78,19 +77,9 @@ export function DiscountCodeForm({ status }: { status: CodeStatus }) {
         {showFormError && <p className={styles.error}>{state.message}</p>}
         {!showFormError && current && (
           <div className={styles.current}>
-            <p
-              className={
-                current.kind === "applied"
-                  ? styles.ok
-                  : current.kind === "invalid"
-                    ? styles.error
-                    : styles.info
-              }
-            >
+            <p className={current.kind === "applied" ? styles.ok : styles.error}>
               {current.kind === "applied" &&
                 `${current.code} applied: ${current.percentOff}% off, saving ${current.savingLabel}.`}
-              {current.kind === "outweighed" &&
-                `${current.code} (${current.percentOff}% off) is valid, but the volume discount saves as much or more, so the volume discount applies instead.`}
               {current.kind === "invalid" && `${current.code}: ${current.message}`}
             </p>
             <button type="button" className={styles.remove} onClick={onRemove} disabled={removing}>

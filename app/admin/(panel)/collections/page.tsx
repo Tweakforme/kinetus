@@ -13,7 +13,7 @@ const GROUPS = [
   {
     kind: CollectionKind.RANGE,
     title: "Ranges",
-    intro: "The menu tabs. A product belongs to one range.",
+    intro: "The menu tabs. A product can be in more than one range.",
     empty: "No ranges yet.",
   },
   {

@@ -54,6 +54,36 @@
   transform: scale(1.02);
 }
 
+/*
+ * Every size sold out: a navy pill with a white uppercase label (the classification pill's
+ * look, scaled to the card) over muted media and price.
+ */
+.soldOut {
+  position: absolute;
+  top: var(--kinetus-space-2);
+  left: var(--kinetus-space-2);
+  z-index: 1;
+  padding: 6px var(--kinetus-space-3);
+  border-radius: var(--kinetus-radius-pill);
+  background: var(--kinetus-bg-deep);
+  color: var(--kinetus-text-inverse);
+  font-family: var(--kinetus-font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.soldOutCard .image {
+  opacity: 0.55;
+}
+
+.soldOutCard .price {
+  color: var(--kinetus-text-secondary);
+}
+
 .body {
   display: flex;
   flex-direction: column;

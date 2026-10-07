@@ -16,13 +16,17 @@ type ProductCardProps = {
  * Deck product card (slide 7): landscape media with box and vial, uppercase name,
  * "10 mg · Lyophilized powder" subline, hairline, large bold price with "CAD / VIAL"
  * beside it, and "VIEW PRODUCT →". One fluid card. The deck's four micro-badges are not
- * shown, at the client's request.
+ * shown, at the client's request. When every size is sold out the card is muted and a
+ * navy "Sold out" pill sits on the media.
  */
 export function ProductCard({ product, priority = false }: ProductCardProps) {
   const blur = product.imageUrl ? blurPlaceholder(product.imageUrl) : undefined;
 
   return (
-    <Link href={product.href} className={styles.card}>
+    <Link
+      href={product.href}
+      className={product.soldOut ? `${styles.card} ${styles.soldOutCard}` : styles.card}
+    >
       <span className={styles.media}>
         {product.imageUrl && (
           // Decorative inside the link: the visible name already labels the target.
@@ -37,6 +41,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             blurDataURL={blur}
           />
         )}
+        {product.soldOut && <span className={styles.soldOut}>Sold out</span>}
       </span>
 
       <span className={styles.body}>

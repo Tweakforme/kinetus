@@ -58,7 +58,7 @@ export type ProductFormData = {
   molecularFormula: string;
   molecularWeight: string;
   purityMethod: string;
-  rangeId: string;
+  rangeIds: string[];
   categoryIds: string[];
   variants: VariantFormData[];
 };
@@ -98,7 +98,7 @@ export const EMPTY_PRODUCT: ProductFormData = {
   molecularFormula: "",
   molecularWeight: "",
   purityMethod: "",
-  rangeId: "",
+  rangeIds: [],
   categoryIds: [],
   variants: [],
 };
@@ -118,7 +118,6 @@ export async function getProductForEdit(id: string) {
 type ProductForEdit = NonNullable<Awaited<ReturnType<typeof getProductForEdit>>>;
 
 export function toProductFormData(product: ProductForEdit): ProductFormData {
-  const range = product.collections.find((link) => link.collection.kind === CollectionKind.RANGE);
   return {
     id: product.id,
     name: product.name,
@@ -138,7 +137,9 @@ export function toProductFormData(product: ProductForEdit): ProductFormData {
     molecularFormula: product.molecularFormula ?? "",
     molecularWeight: product.molecularWeight ?? "",
     purityMethod: product.purityMethod ?? "",
-    rangeId: range?.collectionId ?? "",
+    rangeIds: product.collections
+      .filter((link) => link.collection.kind === CollectionKind.RANGE)
+      .map((link) => link.collectionId),
     categoryIds: product.collections
       .filter((link) => link.collection.kind === CollectionKind.CATEGORY)
       .map((link) => link.collectionId),
@@ -171,7 +172,7 @@ export type CollectionMember = {
   name: string;
   status: ProductStatus;
   order: string;
-  /** For a range: another range the product is also in (saving moves it here). */
+  /** For a range: the other ranges the product is also in, or null. */
   otherRange: string | null;
 };
 
@@ -179,7 +180,7 @@ export type CollectionCandidate = {
   productId: string;
   name: string;
   status: ProductStatus;
-  /** The product's current range, if any. */
+  /** The product's current ranges, if any. */
   range: string | null;
 };
 
@@ -250,7 +251,7 @@ export async function getCollectionForm(id: string | null): Promise<CollectionFo
         order: String(memberOrder.get(product.id)),
         otherRange:
           collection?.kind === CollectionKind.RANGE
-            ? (otherRanges[0]?.collection.name ?? null)
+            ? otherRanges.map((link) => link.collection.name).join(", ") || null
             : null,
       });
     } else {
@@ -258,7 +259,7 @@ export async function getCollectionForm(id: string | null): Promise<CollectionFo
         productId: product.id,
         name: product.name,
         status: product.status,
-        range: product.collections[0]?.collection.name ?? null,
+        range: product.collections.map((link) => link.collection.name).join(", ") || null,
       });
     }
   }

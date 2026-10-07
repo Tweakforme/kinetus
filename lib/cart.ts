@@ -304,7 +304,6 @@ export function findDiscountCode(
       endsAt: true,
       maxRedemptions: true,
       timesRedeemed: true,
-      stacksWithVolume: true,
     },
   });
 }
@@ -329,7 +328,7 @@ export async function checkDiscountCode(
   }
   return {
     status: "valid",
-    code: { code: code.code, percentOff: code.percentOff, stacksWithVolume: code.stacksWithVolume },
+    code: { code: code.code, percentOff: code.percentOff },
   };
 }
 

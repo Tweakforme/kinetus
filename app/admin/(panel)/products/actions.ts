@@ -354,8 +354,10 @@ export async function saveProduct(_previous: FormState, form: FormData): Promise
     errors.status = "A published product needs at least one active size with a price.";
   }
 
-  // Collections: one range, any number of categories.
-  const rangeId = text(form, "rangeId") || null;
+  // Collections: at least one range, any number of categories.
+  const rangeIds = form
+    .getAll("rangeIds")
+    .filter((value): value is string => typeof value === "string" && value !== "");
   const categoryIds = form
     .getAll("categoryIds")
     .filter((value): value is string => typeof value === "string" && value !== "");
@@ -364,10 +366,10 @@ export async function saveProduct(_previous: FormState, form: FormData): Promise
   });
   const kindById = new Map(collections.map((collection) => [collection.id, collection.kind]));
   const hasRanges = collections.some((collection) => collection.kind === CollectionKind.RANGE);
-  if (rangeId === null && hasRanges) {
-    errors.rangeId = "Choose the range this product belongs to.";
-  } else if (rangeId !== null && kindById.get(rangeId) !== CollectionKind.RANGE) {
-    errors.rangeId = "Choose a range from the list.";
+  if (rangeIds.length === 0 && hasRanges) {
+    errors.rangeIds = "Choose at least one range for this product.";
+  } else if (rangeIds.some((id) => kindById.get(id) !== CollectionKind.RANGE)) {
+    errors.rangeIds = "Choose ranges from the list.";
   }
   if (categoryIds.some((id) => kindById.get(id) !== CollectionKind.CATEGORY)) {
     errors.categoryIds = "Choose categories from the list.";
@@ -439,7 +441,7 @@ export async function saveProduct(_previous: FormState, form: FormData): Promise
         }
       }
 
-      const wanted = new Set([rangeId, ...categoryIds].filter((id): id is string => id !== null));
+      const wanted = new Set([...rangeIds, ...categoryIds]);
       const current = new Set((existing?.collections ?? []).map((link) => link.collectionId));
       const removed = [...current].filter((id) => !wanted.has(id));
       if (removed.length > 0) {

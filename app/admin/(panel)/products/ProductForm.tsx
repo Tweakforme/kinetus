@@ -89,6 +89,7 @@ function ProductFields({ state, product, collections, isNew }: FieldsProps) {
 
   const ranges = collections.filter((collection) => collection.kind === "RANGE");
   const categories = collections.filter((collection) => collection.kind === "CATEGORY");
+  const echoedRanges = echoed ? (echoed.rangeIds ?? "").split("\n").filter(Boolean) : null;
   const echoedCategories = echoed ? (echoed.categoryIds ?? "").split("\n").filter(Boolean) : null;
 
   return (
@@ -289,24 +290,33 @@ function ProductFields({ state, product, collections, isNew }: FieldsProps) {
           Collections
         </h2>
         <p className={styles.panelIntro}>
-          A product belongs to one range (the menu tabs) and to any number of categories.
+          A product belongs to at least one range (the menu tabs) and to any number of
+          categories. A product in several ranges is listed in each of them.
         </p>
-        <div className={`${styles.grid} ${styles.grid2}`}>
-          <SelectField
-            label="Range"
-            name="rangeId"
-            required={ranges.length > 0}
-            options={[
-              { value: "", label: ranges.length > 0 ? "Choose a range" : "No ranges exist yet" },
-              ...ranges.map((range) => ({
-                value: range.id,
-                label: range.status === "PUBLISHED" ? range.name : `${range.name} (draft)`,
-              })),
-            ]}
-            defaultValue={value("rangeId", product.rangeId)}
-            error={error("rangeId")}
-          />
-        </div>
+        <fieldset className={styles.field}>
+          <legend className={styles.label}>Ranges</legend>
+          {ranges.length === 0 ? (
+            <p className={styles.hint}>No ranges exist yet.</p>
+          ) : (
+            <ul className={styles.checkList}>
+              {ranges.map((range) => (
+                <li key={range.id}>
+                  <CheckboxField
+                    label={range.status === "PUBLISHED" ? range.name : `${range.name} (draft)`}
+                    name="rangeIds"
+                    value={range.id}
+                    defaultChecked={
+                      echoedRanges
+                        ? echoedRanges.includes(range.id)
+                        : product.rangeIds.includes(range.id)
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+          {error("rangeIds") && <p className={styles.error}>{error("rangeIds")}</p>}
+        </fieldset>
         <fieldset className={styles.field} style={{ marginTop: 18 }}>
           <legend className={styles.label}>Categories</legend>
           {categories.length === 0 ? (
@@ -523,7 +533,7 @@ function VariantCard({
           label="Track stock"
           name={name("trackInventory")}
           defaultChecked={echoed ? echoed[name("trackInventory")] === "on" : row.trackInventory}
-          hint="The product page then shows In stock or Out of stock for this size."
+          hint="The product page then shows In stock or Sold out for this size."
         />
         <TextField
           className={styles.spanAll}

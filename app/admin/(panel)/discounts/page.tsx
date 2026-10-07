@@ -14,7 +14,6 @@ export default async function DiscountsPage() {
     prisma.discountCode.findMany({ orderBy: { createdAt: "asc" } }),
     prisma.volumeDiscountTier.findMany({ orderBy: { minQuantity: "asc" } }),
   ]);
-  const stacking = codes.filter((code) => code.stacksWithVolume).map((code) => code.code);
 
   return (
     <>
@@ -28,17 +27,11 @@ export default async function DiscountsPage() {
       <div className={`${styles.notice} ${styles.noticeInfo}`}>
         <p>
           <strong>
-            A discount code and the volume discount never combine, and the customer receives
-            whichever is larger.
+            A discount code and the volume discount never combine: a valid code replaces the
+            volume discount, and removing the code brings it back.
           </strong>
-          {stacking.length > 0 &&
-            ` Exception: ${stacking.join(", ")} ${stacking.length === 1 ? "is" : "are"} set to combine with the volume discount.`}
         </p>
-        <p>
-          The cart and checkout apply these to every order. When both discounts come to the same
-          amount, the volume discount applies. A code set to combine takes its percentage off what
-          remains after the volume discount.
-        </p>
+        <p>The cart and checkout apply these to every order.</p>
       </div>
 
       <DiscountCodesForm
@@ -51,7 +44,6 @@ export default async function DiscountsPage() {
           endsAt: toStoreDateTimeInput(code.endsAt),
           maxRedemptions: code.maxRedemptions === null ? "" : String(code.maxRedemptions),
           timesRedeemed: code.timesRedeemed,
-          stacksWithVolume: code.stacksWithVolume,
           note: code.note ?? "",
         }))}
       />

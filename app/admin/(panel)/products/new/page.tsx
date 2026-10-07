@@ -25,7 +25,7 @@ export default async function NewProductPage() {
           </Link>
           <h1 className={styles.pageTitle}>New product</h1>
           <p className={styles.pageIntro}>
-            Fill in at least the name, one size with its price, and the range. The product stays off
+            Fill in at least the name, one size with its price, and a range. The product stays off
             the site until you set its status to Published. Create product saves it and opens its
             image upload straight away.
           </p>

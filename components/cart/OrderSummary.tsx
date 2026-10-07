@@ -41,6 +41,8 @@ type OrderSummaryProps = {
   heading?: string;
   /** Cart page: the local free delivery city, whose discount is applied at checkout. */
   localFreeCityBeforeAddress?: string | null;
+  /** Cart page: a code replaced the volume discount the quantity reached. */
+  volumeReplacedByCode?: boolean;
 };
 
 function shippingText(figures: SummaryFigures): string {
@@ -61,6 +63,7 @@ export function OrderSummary({
   headingId,
   heading = "Order summary",
   localFreeCityBeforeAddress = null,
+  volumeReplacedByCode = false,
 }: OrderSummaryProps) {
   return (
     <section className={styles.summary} aria-labelledby={headingId}>
@@ -120,6 +123,9 @@ export function OrderSummary({
         <p className={styles.note}>
           Free delivery within {localFreeCityBeforeAddress} is applied at checkout.
         </p>
+      )}
+      {volumeReplacedByCode && (
+        <p className={styles.note}>Volume discount isn&rsquo;t combined with discount codes.</p>
       )}
     </section>
   );

@@ -74,6 +74,23 @@
   color: var(--kinetus-text-inverse);
 }
 
+/* Sold out size: muted label with a small "Sold out" line under it; still selectable. */
+.chipSoldOut {
+  flex-direction: column;
+  gap: 4px;
+  border-style: dashed;
+}
+
+.chipSoldOut:not(.chipSelected) {
+  color: var(--kinetus-text-secondary);
+}
+
+.chipNote {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
 .rule {
   margin: 0;
   border: 0;

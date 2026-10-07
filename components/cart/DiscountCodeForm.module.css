@@ -72,8 +72,7 @@
 }
 
 .ok,
-.error,
-.info {
+.error {
   margin: 0;
   font-size: var(--kinetus-type-body-s-size);
   line-height: var(--kinetus-type-body-s-line-height);
@@ -87,10 +86,6 @@
 .error {
   color: var(--kinetus-state-error);
   font-weight: 500;
-}
-
-.info {
-  color: var(--kinetus-text-secondary);
 }
 
 .remove {

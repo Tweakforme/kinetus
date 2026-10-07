@@ -23,8 +23,8 @@ type ProductsListingProps = {
   sort: SortKey | null;
 };
 
-export const PRODUCTS_TITLE = "All Research Materials";
-export const PRODUCTS_DESCRIPTION = `The complete list of research materials currently published by ${SITE_NAME}.`;
+export const PRODUCTS_TITLE = "All Products";
+export const PRODUCTS_DESCRIPTION = `The complete list of products currently published by ${SITE_NAME}.`;
 
 const BASE = ALL_PRODUCTS_LINK.href;
 
@@ -59,8 +59,8 @@ export function productsListingMetadata(page: number): Metadata {
 
 /**
  * The canonical full listing, in the same layout as every collection page: hero "All
- * Research Materials", the "Research Materials" divider with nodes, the pill bar with
- * "All Products" current, twenty cards per page and pagination. Pages past the end 404.
+ * Products", the "Products Catalogue" divider with nodes (as a collection's "{name}
+ * Catalogue"), the pill bar with "All Products" current, twenty cards per page and pagination. Pages past the end 404.
  */
 export async function ProductsListingPage({ page, sort }: ProductsListingProps) {
   const now = new Date();
@@ -93,7 +93,7 @@ export async function ProductsListingPage({ page, sort }: ProductsListingProps) 
         }}
         divider={{
           id: "products-catalogue-heading",
-          title: "Research Materials",
+          title: "Products Catalogue",
           subtitle: CATALOGUE_SUBTITLE,
           note: CATALOGUE_NOTE,
           nodes: true,

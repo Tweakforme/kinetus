@@ -31,7 +31,6 @@ type ParsedCode = {
   startsAt: Date | null;
   endsAt: Date | null;
   maxRedemptions: number | null;
-  stacksWithVolume: boolean;
   note: string | null;
 };
 
@@ -115,7 +114,6 @@ export async function saveDiscountCodes(_previous: FormState, form: FormData): P
       startsAt: starts.value,
       endsAt: ends.value,
       maxRedemptions,
-      stacksWithVolume: checkbox(form, field("stacksWithVolume")),
       note,
     });
   }
@@ -153,7 +151,6 @@ export async function saveDiscountCodes(_previous: FormState, form: FormData): P
           startsAt: item.startsAt,
           endsAt: item.endsAt,
           maxRedemptions: item.maxRedemptions,
-          stacksWithVolume: item.stacksWithVolume,
           note: item.note,
         };
         if (item.id) {

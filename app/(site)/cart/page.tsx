@@ -30,15 +30,13 @@ function codeStatus(cart: PricedCart): CodeStatus {
       message: DISCOUNT_CODE_MESSAGES[codeCheck.problem],
     };
   }
-  if (summary.appliedCode) {
-    return {
-      kind: "applied",
-      code: summary.appliedCode.code,
-      percentOff: summary.appliedCode.percentOff,
-      savingLabel: formatCad(summary.codeDiscountCents),
-    };
-  }
-  return { kind: "outweighed", code: codeCheck.code.code, percentOff: codeCheck.code.percentOff };
+  // A valid code always applies: it replaces the volume discount (lib/pricing.ts).
+  return {
+    kind: "applied",
+    code: codeCheck.code.code,
+    percentOff: codeCheck.code.percentOff,
+    savingLabel: formatCad(summary.codeDiscountCents),
+  };
 }
 
 /**
@@ -100,6 +98,7 @@ export default async function CartPage() {
                   headingId="cart-totals-heading"
                   heading="Cart totals"
                   localFreeCityBeforeAddress={context.settings.localFreeCity}
+                  volumeReplacedByCode={summary.volumeReplacedByCode}
                 />
                 {blocked ? (
                   <p className={styles.blocked} role="alert">

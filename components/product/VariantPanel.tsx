@@ -80,7 +80,7 @@ export function VariantPanel({ tiers }: VariantPanelProps) {
     selected && available !== null
       ? available > 0
         ? { text: "In stock", tone: styles.inStock }
-        : { text: "Out of stock", tone: styles.outOfStock }
+        : { text: "Sold out", tone: styles.outOfStock }
       : null;
   const maxQuantity = Math.min(99, available ?? 99);
 
@@ -121,6 +121,8 @@ export function VariantPanel({ tiers }: VariantPanelProps) {
             <div role="radiogroup" aria-labelledby={labelId} className={styles.chips}>
               {variants.map((variant, index) => {
                 const isSelected = variant.id === selected.id;
+                // Still selectable, so its price and Sold out state can be seen.
+                const soldOut = variant.trackInventory && (variant.stock ?? 0) <= 0;
                 return (
                   <button
                     key={variant.id}
@@ -131,11 +133,18 @@ export function VariantPanel({ tiers }: VariantPanelProps) {
                     role="radio"
                     aria-checked={isSelected}
                     tabIndex={isSelected ? 0 : -1}
-                    className={isSelected ? `${styles.chip} ${styles.chipSelected}` : styles.chip}
+                    className={[
+                      styles.chip,
+                      isSelected ? styles.chipSelected : null,
+                      soldOut ? styles.chipSoldOut : null,
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
                     onClick={() => onSelectVariant(variant.id)}
                     onKeyDown={(event) => onChipKeyDown(event, index)}
                   >
                     {variant.label}
+                    {soldOut && <span className={styles.chipNote}>Sold out</span>}
                   </button>
                 );
               })}
@@ -204,7 +213,7 @@ export function VariantPanel({ tiers }: VariantPanelProps) {
             disabled={outOfStock}
             aria-disabled={pending || undefined}
           >
-            {outOfStock ? "Out of stock" : pending ? "Adding" : "Add to cart"}
+            {outOfStock ? "Sold out" : pending ? "Adding" : "Add to cart"}
             {!outOfStock && <CartIcon size={22} />}
           </button>
         )}

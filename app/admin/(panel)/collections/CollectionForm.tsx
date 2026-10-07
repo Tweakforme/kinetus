@@ -163,7 +163,7 @@ function CollectionFields({
             options={KIND_OPTIONS}
             defaultValue={value("kind", collection.kind)}
             error={errors.kind}
-            hint="A product belongs to one range and to any number of categories."
+            hint="A product belongs to at least one range and to any number of categories."
           />
           <SelectField
             label="Status"
@@ -297,7 +297,7 @@ function CollectionFields({
                       defaultChecked={echoed ? echoed[removeName] === "on" : false}
                       hint={
                         member.otherRange
-                          ? `Also in ${member.otherRange}; saving moves it here.`
+                          ? `Also in ${member.otherRange}.`
                           : undefined
                       }
                     />
@@ -310,9 +310,6 @@ function CollectionFields({
 
         <fieldset className={styles.field} style={{ marginTop: 20 }}>
           <legend className={styles.label}>Add products</legend>
-          <p className={styles.hint}>
-            For a range, adding a product moves it out of the range it is in now.
-          </p>
           {collection.candidates.length === 0 ? (
             <p className={styles.hint}>Every product is already in this collection.</p>
           ) : (
