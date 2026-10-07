@@ -5,7 +5,7 @@ import { CheckboxField, TextArea, TextField } from "@/components/admin/Fields";
 import { FormNotice, SaveBar } from "@/components/admin/FormNotice";
 import styles from "@/components/admin/admin.module.css";
 import { IDLE_STATE } from "@/lib/admin/forms";
-import { saveStoreSettings, saveTaxRates } from "./actions";
+import { saveProductPageText, saveStoreSettings, saveTaxRates } from "./actions";
 
 export type SettingsData = {
   taxEnabled: boolean;
@@ -181,6 +181,33 @@ export function StoreSettingsForm({ settings }: { settings: SettingsData }) {
         </div>
       </section>
       <SaveBar state={state} label="Save settings" idleText="Saves tax and shipping settings." />
+    </form>
+  );
+}
+
+export function ProductPageTextForm({ introText }: { introText: string }) {
+  const [state, formAction] = useActionState(saveProductPageText, IDLE_STATE);
+  const echoed = state.status === "error" ? state.values : undefined;
+
+  return (
+    <form action={formAction} noValidate>
+      <section className={styles.panel} aria-labelledby="product-text-heading">
+        <h2 id="product-text-heading" className={styles.panelTitle}>
+          Product page text
+        </h2>
+        <FormNotice state={state} />
+        <div className={styles.grid} key={state.savedAt ?? "initial"}>
+          <TextArea
+            label="Text under the product name"
+            name="productIntroText"
+            bold
+            defaultValue={echoed?.productIntroText ?? introText}
+            error={state.errors?.productIntroText}
+            hint="Shown under the product name on every product page. Leave blank for the default. The line 'For Research Use Only. Not for Human or Animal Use.' is always added automatically."
+          />
+        </div>
+      </section>
+      <SaveBar state={state} label="Save product page text" idleText="Updates every product page." />
     </form>
   );
 }

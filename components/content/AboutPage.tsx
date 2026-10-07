@@ -12,12 +12,14 @@ import {
 } from "@/components/icons/LineIcons";
 import { Container } from "@/components/layout/Container";
 import { PAGE_HERO_PHOTOS, PageHero } from "@/components/ui/PageHero";
+import { RichInline, RichText } from "@/components/ui/RichText";
 import buttons from "@/components/ui/buttons.module.css";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 import type { AboutDocument } from "@/content/types";
+import { ABOUT_SIGN_OFF, ABOUT_VALUE_SECTIONS } from "@/lib/about-content";
 import { blurPlaceholder } from "@/lib/images";
 import { canonicalUrl } from "@/lib/seo";
-import { ALL_PRODUCTS_LINK, CONTACT_EMAIL, CONTACT_LINK, LOCATION, SITE_NAME } from "@/lib/site";
+import { ALL_PRODUCTS_LINK, CONTACT_EMAIL, CONTACT_LINK, SITE_NAME } from "@/lib/site";
 import { ContentBlocks } from "./ContentBlocks";
 import { ContentJsonLd } from "./ContentJsonLd";
 import layout from "./ContentLayout.module.css";
@@ -50,57 +52,60 @@ const PILLARS: { Icon: IconComponent; label: string }[] = [
 
 /**
  * The client's six value badges ("About us Graphics"), each titled as printed on the badge
- * ("Science driven symbol.png" reads "Science Driven. Quality Focused."). `copy` is the
- * client's text under each badge: none has been supplied, and nothing is shown until it is.
+ * ("Science driven symbol.png" reads "Science Driven. Quality Focused."). Each links to its
+ * section below the grid (lib/about-content.ts), whose heading shows the badge again.
  */
-const VALUES: { src: string; width: number; height: number; title: string; copy: string | null }[] =
+const VALUES: { src: string; width: number; height: number; title: string; sectionId: string }[] =
   [
     {
       src: "/images/about/built-around-research.webp",
       width: 192,
       height: 192,
       title: "Built Around Research",
-      copy: null,
+      sectionId: "built-around-research",
     },
     {
       src: "/images/about/commitment-to-quality.webp",
       width: 192,
       height: 192,
       title: "Commitment to Quality",
-      copy: null,
+      sectionId: "commitment-to-quality",
     },
     {
       src: "/images/about/our-mission.webp",
       width: 192,
       height: 192,
       title: "Our Mission",
-      copy: null,
+      sectionId: "our-mission",
     },
     {
       src: "/images/about/proudly-canadian.webp",
       width: 192,
       height: 192,
       title: "Proudly Canadian",
-      copy: null,
+      sectionId: "proudly-canadian",
     },
     {
       src: "/images/about/research-with-confidence.webp",
       width: 192,
       height: 192,
       title: "Research with Confidence",
-      copy: null,
+      sectionId: "research-with-confidence",
     },
     {
       src: "/images/about/science-driven-symbol.webp",
       width: 192,
       height: 160,
       title: "Science Driven. Quality Focused.",
-      copy: null,
+      sectionId: "science-driven",
     },
   ];
 
 /** Badges are shown at 96px wide at most. */
 const VALUE_BADGE_WIDTH = 96;
+/** The same badge, small, beside its section's heading. */
+const SECTION_BADGE_WIDTH = 40;
+const BADGE_BY_SECTION = new Map(VALUES.map((value) => [value.sectionId, value]));
 
 const EXPLORE_LINKS = [
   { ...ALL_PRODUCTS_LINK, primary: true },
@@ -110,15 +115,16 @@ const EXPLORE_LINKS = [
 
 /**
  * About (deck slide 19): the welcome copy beside a ghosted hex mesh and the four-icon
- * row, the client's six value badges with the Product Information poster, then the
- * client's "Why Choose Kinetus BioLabs" document verbatim (minus the comparison table)
- * under the four anchors the navigation links to.
+ * row, the client's six value badges, each linking to its section of the client's About
+ * copy below them (one readable column, ending on the sign-off), then the client's "Why
+ * Choose Kinetus BioLabs" document verbatim (minus the comparison table). The navigation
+ * links to #our-story, #quality-standards, #why-choose-kinetus and #proudly-canadian.
  */
 export function AboutPage({ doc }: AboutPageProps) {
   const lockupBlur = blurPlaceholder(LOCKUP.src);
 
   return (
-    <article className={`${layout.page} ${styles.page}`}>
+    <article className={layout.page}>
       <PageHero
         variant="category"
         eyebrow="About Us"
@@ -193,22 +199,83 @@ export function AboutPage({ doc }: AboutPageProps) {
           </h2>
           <ul className={styles.valueGrid}>
             {VALUES.map((value) => (
-              <li key={value.title} className={styles.value}>
-                {/* Decorative: the badge repeats the title set beneath it. */}
-                <Image
-                  src={value.src}
-                  alt=""
-                  width={VALUE_BADGE_WIDTH}
-                  height={Math.round((VALUE_BADGE_WIDTH * value.height) / value.width)}
-                  className={styles.valueBadge}
-                />
-                <h3 className={styles.valueTitle}>{value.title}</h3>
-                {value.copy && <p className={styles.valueCopy}>{value.copy}</p>}
+              <li key={value.title}>
+                {/* The link's name is the title: the badge image repeats it, so alt is empty. */}
+                <a href={`#${value.sectionId}`} className={styles.value}>
+                  <Image
+                    src={value.src}
+                    alt=""
+                    width={VALUE_BADGE_WIDTH}
+                    height={Math.round((VALUE_BADGE_WIDTH * value.height) / value.width)}
+                    className={styles.valueBadge}
+                  />
+                  <span className={styles.valueTitle}>{value.title}</span>
+                </a>
               </li>
             ))}
           </ul>
         </Container>
       </section>
+
+      <div className={styles.aboutCopy}>
+        <Container>
+          <div className={styles.aboutColumn}>
+            {ABOUT_VALUE_SECTIONS.map((section) => {
+              const badge = BADGE_BY_SECTION.get(section.id);
+              return (
+                <section
+                  key={section.id}
+                  id={section.id}
+                  className={styles.aboutSection}
+                  aria-labelledby={`${section.id}-heading`}
+                >
+                  <div className={styles.aboutHead}>
+                    {badge && (
+                      <Image
+                        src={badge.src}
+                        alt=""
+                        width={SECTION_BADGE_WIDTH}
+                        height={Math.round((SECTION_BADGE_WIDTH * badge.height) / badge.width)}
+                        className={styles.aboutBadge}
+                      />
+                    )}
+                    <div className={styles.aboutHeadText}>
+                      <h2 id={`${section.id}-heading`} className={`type-h3 ${styles.aboutHeading}`}>
+                        {section.heading}
+                      </h2>
+                      {section.subheading && (
+                        <p className={styles.aboutSubheading}>{section.subheading}</p>
+                      )}
+                    </div>
+                  </div>
+                  {section.blocks.map((block, index) =>
+                    block.type === "list" ? (
+                      <ul key={index} className={`type-body ${styles.aboutList}`}>
+                        {block.items.map((item) => (
+                          <li key={item}>
+                            <RichInline text={item} />
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <RichText
+                        key={index}
+                        text={block.text}
+                        paragraphClassName={`type-body ${styles.aboutParagraph}`}
+                      />
+                    ),
+                  )}
+                </section>
+              );
+            })}
+            <p className={`type-body ${styles.signOff}`}>
+              <strong>{ABOUT_SIGN_OFF.name}</strong>
+              <br />
+              <em>{ABOUT_SIGN_OFF.tagline}</em>
+            </p>
+          </div>
+        </Container>
+      </div>
 
       {doc.sections.map((section, index) => {
         const id = index === 0 ? "quality-standards" : section.id;
@@ -258,6 +325,8 @@ export function AboutPage({ doc }: AboutPageProps) {
           <div className={styles.whyGrid}>
             <div className={`${layout.blocks} ${styles.whyCopy}`}>
               <ContentBlocks blocks={doc.intro} />
+              {/* The document's closing line, formerly in the Proudly Canadian band. */}
+              <ContentBlocks blocks={doc.closing} />
             </div>
 
             <div className={styles.explore}>
@@ -276,27 +345,6 @@ export function AboutPage({ doc }: AboutPageProps) {
                 ))}
               </ul>
             </div>
-          </div>
-        </Container>
-      </section>
-
-      <section
-        id="proudly-canadian"
-        className={styles.canada}
-        aria-labelledby="proudly-canadian-heading"
-        data-reveal=""
-      >
-        <div className={styles.canadaBackdrop} aria-hidden="true">
-          <HexMesh className={styles.canadaMesh} cell={30} />
-        </div>
-        <Container className={styles.canadaInner}>
-          <MapleLeafIcon size={64} className={styles.canadaLeaf} />
-          <h2 id="proudly-canadian-heading" className={`type-section ${styles.canadaTitle}`}>
-            Proudly Canadian
-          </h2>
-          <p className={styles.canadaLocation}>Based in {LOCATION}</p>
-          <div className={styles.canadaCopy}>
-            <ContentBlocks blocks={doc.closing} />
           </div>
         </Container>
       </section>

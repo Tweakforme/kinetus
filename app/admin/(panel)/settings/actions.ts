@@ -11,7 +11,7 @@ import {
   text,
   type FormState,
 } from "@/lib/admin/forms";
-import { refreshAdmin } from "@/lib/admin/revalidate";
+import { expireProductPages, refreshAdmin } from "@/lib/admin/revalidate";
 import { prisma } from "@/lib/db";
 
 const SETTINGS_ID = "store";
@@ -108,6 +108,35 @@ export async function saveStoreSettings(_previous: FormState, form: FormData): P
     taxEnabled
       ? "Settings saved. Sales tax is switched on and is charged on new orders."
       : "Settings saved. Sales tax is off.",
+  );
+}
+
+const PRODUCT_INTRO_LIMIT = 2000;
+
+/** "Product page text": the intro under the name on every product page. */
+export async function saveProductPageText(
+  _previous: FormState,
+  form: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+  const productIntroText = optionalText(form, "productIntroText");
+  if (productIntroText !== null && productIntroText.length > PRODUCT_INTRO_LIMIT) {
+    return errorState(
+      { productIntroText: `Keep the text to ${PRODUCT_INTRO_LIMIT} characters or fewer.` },
+      form,
+    );
+  }
+  await prisma.storeSetting.upsert({
+    where: { id: SETTINGS_ID },
+    create: { id: SETTINGS_ID, productIntroText },
+    update: { productIntroText },
+  });
+  // Every product page shows it.
+  expireProductPages();
+  return successState(
+    productIntroText === null
+      ? "Saved. Product pages show the default text on their next visit."
+      : "Saved. Product pages show the new text on their next visit.",
   );
 }
 

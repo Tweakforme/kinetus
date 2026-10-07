@@ -1,8 +1,9 @@
 import { DnaHelix } from "@/components/decor/DnaHelix";
 import { HexLattice } from "@/components/decor/HexLattice";
 import { Container } from "@/components/layout/Container";
+import { RichText } from "@/components/ui/RichText";
 import type { VolumeTier } from "@/lib/pricing";
-import { descriptionParagraphs, productKindLabel, type ProductDetail } from "@/lib/products";
+import { DEFAULT_PRODUCT_INTRO, productKindLabel, type ProductDetail } from "@/lib/products";
 import { COLLECTION_SLUGS, RESEARCH_USE_COPY } from "@/lib/site";
 import { ProductBreadcrumb } from "./ProductBreadcrumb";
 import { ProductGallery } from "./ProductGallery";
@@ -19,12 +20,11 @@ type ProductHeroProps = {
   tiers: VolumeTier[];
   /** Slugs of the product's published collections, used for the eyebrow. */
   collectionSlugs: string[];
+  /** Admin > Settings "Product page text"; null or blank uses DEFAULT_PRODUCT_INTRO. */
+  introText: string | null;
   /** Id of the h1, for the section's accessible name. */
   headingId: string;
 };
-
-/** Neutral handling copy: how the unit arrives, nothing about what it does. */
-const HANDLING_COPY = `Supplied in a sealed glass vial and labelled with a batch reference. Batch-specific documentation is available on request. ${RESEARCH_USE_COPY}`;
 
 /**
  * Product hero (deck slides 9 and 13): white ground, ghosted hex lattice behind the
@@ -41,10 +41,13 @@ export function ProductHero({
   images,
   tiers,
   collectionSlugs,
+  introText,
   headingId,
 }: ProductHeroProps) {
   const isBlend = collectionSlugs.includes(COLLECTION_SLUGS.blends);
   const subhead = product.form ? `Research material · ${product.form}` : "Research material";
+  // The research-use line always closes the intro, in the same paragraph as its last line.
+  const intro = `${introText?.trim() || DEFAULT_PRODUCT_INTRO} ${RESEARCH_USE_COPY}`;
 
   return (
     <section className={styles.hero} aria-labelledby={headingId}>
@@ -84,7 +87,9 @@ export function ProductHero({
 
           <div className={styles.detail}>
             <p className={styles.subhead}>{subhead}</p>
-            <p className={styles.paragraph}>{HANDLING_COPY}</p>
+            <div className={styles.intro}>
+              <RichText text={intro} paragraphClassName={styles.paragraph} />
+            </div>
             <ProductResources
               productName={product.name}
               sheet={
@@ -96,7 +101,7 @@ export function ProductHero({
                     }
                   : null
               }
-              text={descriptionParagraphs(product.productInfoText)}
+              text={product.productInfoText}
             />
           </div>
         </div>

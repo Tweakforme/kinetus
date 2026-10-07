@@ -381,6 +381,30 @@ export function defaultImages(product: ProductDetail): ProductDetail["images"] {
 }
 
 /**
+ * The product page's intro under the name when Admin > Settings "Product page text" is
+ * blank. Neutral handling copy: how the unit arrives, nothing about what it does. The
+ * research-use line is added after it (or after the admin's text) by ProductHero.
+ */
+export const DEFAULT_PRODUCT_INTRO =
+  "Supplied in a sealed glass vial and labelled with a batch reference. Batch-specific documentation is available on request.";
+
+/**
+ * Admin > Settings "Product page text" (null while blank), shown on every product page.
+ * Tagged `products`, so saving it expires the product pages.
+ */
+export const getProductIntroText = cachedQuery(
+  "product-intro-text",
+  async (): Promise<string | null> => {
+    const settings = await prisma.storeSetting.findUnique({
+      where: { id: "store" },
+      select: { productIntroText: true },
+    });
+    return settings?.productIntroText ?? null;
+  },
+  () => [CACHE_TAGS.products],
+);
+
+/**
  * Product-page eyebrow by primary collection (deck slide 9 "RESEARCH PEPTIDE", slide 13
  * "RESEARCH PEPTIDE BLEND"). Neutral: names the kind of material, never a use.
  */
@@ -453,16 +477,6 @@ export function collectDocuments(product: ProductDetail): DocumentRow[] {
   return [...productLevel, ...variantLevel];
 }
 
-/** Splits stored description text into paragraphs on blank lines. */
-export function descriptionParagraphs(text: string | null): string[] {
-  if (!text) {
-    return [];
-  }
-  return text
-    .split(/\r?\n\s*\r?\n/)
-    .map((paragraph) => paragraph.trim())
-    .filter((paragraph) => paragraph.length > 0);
-}
 
 /* -------------------------------------------------------------------------- */
 /*  Listing helpers (paginated index routes, sitemap, search)                 */

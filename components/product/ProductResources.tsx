@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { RichText } from "@/components/ui/RichText";
+import { parseRichText } from "@/lib/rich-text";
 import { HEADER_ICON_LINKS } from "@/lib/site";
 import { InformationSheetDialog } from "./InformationSheetDialog";
 import { useProductSelection } from "./ProductSelection";
@@ -28,8 +30,8 @@ type ProductResourcesProps = {
   productName: string;
   /** The product's information sheet image, or null when none has been uploaded. */
   sheet: InformationSheet | null;
-  /** "Text below buttons" (admin), split into paragraphs; plain text, hidden when empty. */
-  text?: string[];
+  /** "Text below buttons" (admin): plain text with **bold**, hidden when empty. */
+  text?: string | null;
 };
 
 /**
@@ -41,7 +43,7 @@ type ProductResourcesProps = {
  * when the size has one, and otherwise the test reports and batch documentation page,
  * where batch-specific COAs are available on request, as the packaging states.
  */
-export function ProductResources({ productName, sheet, text = [] }: ProductResourcesProps) {
+export function ProductResources({ productName, sheet, text = null }: ProductResourcesProps) {
   const { selected } = useProductSelection();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -99,13 +101,9 @@ export function ProductResources({ productName, sheet, text = [] }: ProductResou
           />
         )}
       </div>
-      {text.length > 0 && (
+      {parseRichText(text).length > 0 && (
         <div className={styles.text}>
-          {text.map((paragraph, index) => (
-            <p key={index} className="type-body">
-              {paragraph}
-            </p>
-          ))}
+          <RichText text={text} paragraphClassName="type-body" />
         </div>
       )}
     </div>

@@ -363,6 +363,9 @@ model StoreSetting {
   securityQuestion           String?
   securityAnswer             String?
   holdPeriodText             String?
+  /// Admin > Settings "Product page text": the intro under the name on every product page
+  /// (bold supported). Null uses the default; the research-use line is always appended.
+  productIntroText           String?
   /// Where new-order notifications go.
   orderNotifyEmail           String?
   createdAt                  DateTime @default(now())

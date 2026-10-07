@@ -18,16 +18,17 @@ import {
   type SelectableVariant,
 } from "@/components/product/ProductSelection";
 import { SpecTable } from "@/components/product/SpecTable";
+import { RichText } from "@/components/ui/RichText";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 import { TrustBar, type TrustItem } from "@/components/ui/TrustBar";
 import {
   collectDocuments,
   defaultImages,
-  descriptionParagraphs,
   effectivePriceCents,
   formatCad,
   getAllProductSlugs,
   getProductBySlug,
+  getProductIntroText,
   getProductRedirectTarget,
   getRelatedProducts,
   getVolumeTiers,
@@ -38,6 +39,7 @@ import {
   toProductCardModel,
   toVariantViews,
 } from "@/lib/products";
+import { parseRichText, stripBold } from "@/lib/rich-text";
 import { absoluteUrl, canonicalUrl, DEFAULT_DESCRIPTION, defaultShareImage } from "@/lib/seo";
 import { PACKAGING, SITE_NAME } from "@/lib/site";
 import styles from "./page.module.css";
@@ -87,7 +89,10 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   }
 
   const title = product.metaTitle ?? product.name;
-  const description = product.metaDescription ?? product.shortDescription ?? DEFAULT_DESCRIPTION;
+  // Meta and share text cannot show bold, so any **marks** are dropped.
+  const description = stripBold(
+    product.metaDescription ?? product.shortDescription ?? DEFAULT_DESCRIPTION,
+  );
   const canonical = canonicalUrl(`/products/${product.slug}`);
   // The render the page shows on load, so a share card never shows another strength.
   const primaryImage = defaultImages(product)[0];
@@ -148,12 +153,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
   // Form already appears in the information band, so the table lists the other fields only.
   const specRows = specificationRows(product).filter((row) => row.key !== "Form");
   const documents = collectDocuments(product);
-  const paragraphs = descriptionParagraphs(product.description);
+  const hasDescription = parseRichText(product.description).length > 0;
   const collectionSlugs = product.collections.map((link) => link.collection.slug);
-  const [relatedRows, tiers] = await Promise.all([
+  const [relatedRows, tiers, introText] = await Promise.all([
     getRelatedProducts(product.id, RELATED_LIMIT),
     getVolumeTiers(),
+    getProductIntroText(),
   ]);
+  const jsonLdDescription = product.shortDescription ?? product.metaDescription;
   const related = relatedRows.map((item) => toProductCardModel(item, now));
   await revalidateAtNextPriceChange(
     [...product.variants, ...relatedRows.flatMap((item) => item.variants)],
@@ -172,6 +179,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           images={pageImages(product)}
           tiers={tiers}
           collectionSlugs={collectionSlugs}
+          introText={introText}
           headingId={HEADING_ID}
         />
 
@@ -211,7 +219,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </Container>
         )}
 
-        {paragraphs.length > 0 && (
+        {hasDescription && (
           <Container
             as="section"
             className={styles.section}
@@ -220,11 +228,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           >
             <SectionDivider id="description-heading" title="Description" />
             <div className={styles.description}>
-              {paragraphs.map((paragraph, index) => (
-                <p key={index} className="type-body">
-                  {paragraph}
-                </p>
-              ))}
+              <RichText text={product.description} paragraphClassName="type-body" />
             </div>
           </Container>
         )}
@@ -261,7 +265,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <ProductJsonLd
         name={product.name}
-        description={product.shortDescription ?? product.metaDescription}
+        description={jsonLdDescription ? stripBold(jsonLdDescription) : null}
         images={defaultImages(product).map((image) => absoluteUrl(image.url))}
         sku={firstSku}
         url={pageUrl}

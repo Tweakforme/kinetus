@@ -84,6 +84,13 @@
   text-transform: uppercase;
 }
 
+/* The intro: one paragraph by default; an admin intro may have several. */
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kinetus-space-3);
+}
+
 .paragraph {
   margin: 0;
   max-width: 40em;

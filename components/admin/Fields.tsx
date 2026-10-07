@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { fieldId } from "@/lib/admin/forms";
 import styles from "./admin.module.css";
 
@@ -157,7 +157,23 @@ type TextAreaProps = FieldBase & {
   maxLength?: number;
   /** Extra content between the hint and the textarea (the content rule). */
   before?: ReactNode;
+  /** The site shows **text** as bold here: adds the B button and its hint above the box. */
+  bold?: boolean;
 };
+
+const BOLD_MARK = "**";
+
+/**
+ * Wraps the textarea's selection in ** ** (or inserts **** with the caret between) and
+ * leaves the wrapped text selected, so a second click is easy to undo by hand.
+ */
+function wrapSelectionInBold(area: HTMLTextAreaElement): void {
+  const { selectionStart: start, selectionEnd: end } = area;
+  const selected = area.value.slice(start, end);
+  area.focus();
+  area.setRangeText(`${BOLD_MARK}${selected}${BOLD_MARK}`, start, end, "end");
+  area.setSelectionRange(start + BOLD_MARK.length, end + BOLD_MARK.length);
+}
 
 export function TextArea({
   label,
@@ -172,8 +188,10 @@ export function TextArea({
   guide,
   maxLength,
   before,
+  bold,
 }: TextAreaProps) {
   const id = fieldId(name);
+  const areaRef = useRef<HTMLTextAreaElement>(null);
   const [length, setLength] = useState(defaultValue.length);
   const classes = [
     styles.textarea,
@@ -186,7 +204,28 @@ export function TextArea({
     <div className={className ? `${styles.field} ${className}` : styles.field}>
       <Label id={id} label={label} required={required} />
       {before}
+      {bold && (
+        <div className={styles.boldBar}>
+          <button
+            type="button"
+            className={styles.boldButton}
+            aria-label="Bold"
+            aria-controls={id}
+            onClick={() => {
+              const area = areaRef.current;
+              if (area) {
+                wrapSelectionInBold(area);
+                setLength(area.value.length);
+              }
+            }}
+          >
+            B
+          </button>
+          <p className={styles.hint}>Select text and click B, or type **bold**.</p>
+        </div>
+      )}
       <textarea
+        ref={areaRef}
         id={id}
         name={name}
         rows={rows}

@@ -317,6 +317,36 @@
   min-height: 96px;
 }
 
+/* Bold button and its hint, above a textarea whose text the site shows with **bold**. */
+.boldBar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.boldButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: var(--kinetus-bg-base);
+  border: 1px solid var(--kinetus-border-default);
+  border-radius: var(--kinetus-radius-button);
+  color: var(--kinetus-text-heading);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.boldButton:hover {
+  border-color: var(--kinetus-brand-teal-deep);
+  color: var(--kinetus-brand-teal-deep);
+}
+
 .input:focus-visible,
 .select:focus-visible,
 .textarea:focus-visible {

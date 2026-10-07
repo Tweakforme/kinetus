@@ -3,7 +3,7 @@ import styles from "@/components/admin/admin.module.css";
 import { requireAdmin } from "@/lib/admin/auth";
 import { bpsToInput, centsToInput } from "@/lib/admin/forms";
 import { prisma } from "@/lib/db";
-import { StoreSettingsForm, TaxRatesForm } from "./SettingsForms";
+import { ProductPageTextForm, StoreSettingsForm, TaxRatesForm } from "./SettingsForms";
 
 export const metadata: Metadata = { title: "Settings" };
 
@@ -72,6 +72,7 @@ export default async function SettingsPage() {
           holdPeriodText: settings?.holdPeriodText ?? "",
         }}
       />
+      <ProductPageTextForm introText={settings?.productIntroText ?? ""} />
       <TaxRatesForm
         rates={rates.map((rate) => ({
           id: rate.id,
